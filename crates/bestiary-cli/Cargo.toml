@@ -8,3 +8,13 @@ license.workspace = true
 [[bin]]
 name = "bestiary"
 path = "src/main.rs"
+
+[dependencies]
+bestiary-core = { path = "../bestiary-core" }
+bestiary-sim = { path = "../bestiary-sim" }
+bestiary-world = { path = "../bestiary-world" }
+bestiary-archive = { path = "../bestiary-archive" }
+bestiary-daemon = { path = "../bestiary-daemon" }
+postcard.workspace = true
+serde_json.workspace = true
+serde.workspace = true

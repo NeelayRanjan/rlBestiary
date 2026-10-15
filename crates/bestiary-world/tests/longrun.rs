@@ -13,6 +13,7 @@ fn founder(config: &Config) -> Genome {
 fn conservation_determinism_and_snapshot_resume() {
     let mut config = Config::bundled();
     config.world.grid = 8;
+    config.reproduction.epoch = 2_000_000;
     let g = founder(&config);
     let mut a = World::with_founder(42, config, 8, g).unwrap();
     let mut b = a.clone();
@@ -37,6 +38,7 @@ fn five_seeds_one_million_ticks_conservation_stability_and_determinism() {
     for seed in 0..5 {
         let mut config = Config::bundled();
         config.world.grid = 8;
+        config.reproduction.epoch = 2_000_000;
         let g = founder(&config);
         let mut a = World::with_founder(seed, config, 8, g).unwrap();
         let mut b = a.clone();

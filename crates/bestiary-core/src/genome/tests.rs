@@ -53,6 +53,10 @@ fn recursive_cycles_stop_cleanly_at_bounds_and_terminal_edges_attach() {
     small.max_parts = 1;
     assert_eq!(g.expand(&small).unwrap().parts.len(), 1);
     let mut terminal = g.bones[0].edges[0].clone();
+    let mut terminal_bone = g.bones[0].clone();
+    terminal_bone.edges.clear();
+    terminal_bone.muscles.clear();
+    g.bones.push(terminal_bone);
     terminal.child = 1;
     terminal.terminal_only = true;
     g.bones[0].edges.push(terminal);

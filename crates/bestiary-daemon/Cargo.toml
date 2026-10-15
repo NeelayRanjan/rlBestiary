@@ -8,3 +8,14 @@ license.workspace = true
 [[bin]]
 name = "bestiary-daemon"
 path = "src/main.rs"
+
+[dependencies]
+bestiary-core = { path = "../bestiary-core" }
+bestiary-sim = { path = "../bestiary-sim" }
+bestiary-world = { path = "../bestiary-world" }
+bestiary-archive = { path = "../bestiary-archive" }
+serde.workspace = true
+postcard.workspace = true
+interprocess.workspace = true
+fs2.workspace = true
+ctrlc.workspace = true

@@ -7,6 +7,17 @@ pub struct Pathogen {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum EcologyEvent {
+    Fragmentation { before: usize, after: usize },
+    Birth { creature: u64, parents: Vec<u64> },
+    SpeciesBorn { species: u64 },
+    SpeciesExtinct { species: u64 },
+    FirstPredation,
+    FirstSwimmer { genome: [u8; 32] },
+    PopulationCrash { before: usize, after: usize },
+    MassExtinction,
+    RecordLifespan { creature: u64, age: u64 },
+    RecordSize { genome: [u8; 32], mass: f32 },
+    Exploit { genome: [u8; 32] },
     Predation { attacker: u64, victim: u64 },
     Death { creature: u64 },
     Geography,
@@ -21,6 +32,40 @@ pub struct Neighbor {
     pub genome: [u8; 32],
 }
 impl World {
+    pub fn land_components(&self) -> usize {
+        self.land_regions().into_iter().max().unwrap_or(0)
+    }
+    pub fn land_regions(&self) -> Vec<usize> {
+        let n = self.config.world.grid;
+        let mut seen = vec![false; self.cells.len()];
+        let mut count = 0;
+        let mut regions = vec![0; self.cells.len()];
+        for i in 0..seen.len() {
+            if seen[i] || self.cells[i].height <= self.sea_level {
+                continue;
+            }
+            count += 1;
+            seen[i] = true;
+            let mut stack = vec![i];
+            while let Some(p) = stack.pop() {
+                regions[p] = count;
+                let x = p % n;
+                let z = p / n;
+                for j in [
+                    z * n + (x + 1) % n,
+                    z * n + (x + n - 1) % n,
+                    ((z + 1) % n) * n + x,
+                    ((z + n - 1) % n) * n + x,
+                ] {
+                    if !seen[j] && self.cells[j].height > self.sea_level {
+                        seen[j] = true;
+                        stack.push(j);
+                    }
+                }
+            }
+        }
+        regions
+    }
     pub fn neighbors(&self) -> Vec<Option<Neighbor>> {
         let cfg = &self.config.world;
         let mut cells = vec![vec![]; self.cells.len()];
@@ -239,11 +284,17 @@ impl World {
             }
         }
         if self.tick % cfg.tectonic_epoch == 0 {
+            let before = self.land_components();
             self.sea_level = wc.water_level
                 + cfg.sea_amplitude
                     * libm::sinf(self.tick as f32 / (cfg.tectonic_epoch as f32 * 10.0));
             for (i, c) in self.cells.iter_mut().enumerate() {
                 c.height = (c.height + cfg.uplift * libm::sinf(i as f32 * 0.1)).clamp(-2.0, 2.0);
+            }
+            let after = self.land_components();
+            if after > before {
+                self.ecological_events
+                    .push(EcologyEvent::Fragmentation { before, after });
             }
             self.ecological_events.push(EcologyEvent::Geography);
             let mut rng = bestiary_core::rng(self.seed, 0x53484f43, 0, self.tick);

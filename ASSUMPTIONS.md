@@ -30,3 +30,14 @@ The M1 performance gate is staged because the named combine trials, world and vi
 - The world performance fixture disables starvation damage for its short measurement window to retain exactly 5,000 agents; feeding, metabolic accounting, brains, plants and movement still run. Ecological survival is tested separately without that override.
 
 - M5's million-tick trophic coexistence and plant/herbivore arms-race acceptance checks are deferred until reproduction is present in M6. A finite non-reproducing prey population cannot validate sustainable predator turnover. Mechanism tests and conservation checks remain required at M5, and the deferred acceptance boxes remain unticked.
+
+- M6 mutations are evaluated synchronously in fixed proposal order, including intermediate mutants that are never born. Existing genome hashes reuse stored traits; asynchronous worker completion never controls birth order.
+- Reproductive energy and nutrients are transferred from parents, with gestation loss explicitly dissipated. Designer releases draw their resources from existing soil and plants rather than creating biomass.
+- Replay byte caches are derived artifacts, excluded from canonical simulation hashes and stored separately in SQLite. Snapshots retain a replay-cache field for schema compatibility; those bytes are not needed for simulation. The daemon frees successfully persisted replay caches to bound resident memory.
+- `config/demo.ron` records the complete seed-42 diversification scenario; `config/world.ron` remains the baseline. Both use the same validated schema and are embedded in created worlds.
+- macOS accepted local sockets are explicitly switched to blocking mode before framed I/O; otherwise large snapshot writes can return WouldBlock despite accept-only nonblocking listener configuration.
+
+- Terrain frequency is configurable; the demo uses two waves per axis and a larger sea-level cycle to produce connected land that later fragments. Terrestrial mating requires the same connected land region, and movement integrates across cells at the measured land/swim speed.
+- Senescence reduces the maximum attainable health after onset; feeding cannot heal away aging. The regression test verifies death in a fed population.
+- M6's typed event stream is consumed by SQLite and exposed over IPC; archive-cell events arrive in M7 and remaining director heuristics in M8. Geographic acceptance establishes a recorded split after fragmentation, not a causal experiment proving fragmentation was the sole cause.
+- M6 demo: seed 42, config/demo.ron, 24 founders, 100,000 ticks: 81 living creatures, 11 living species, first fragmentation at tick 11,000. The named acceptance test checks coexistence, descendant species after fragmentation, actual turnover, mutations and conservation.

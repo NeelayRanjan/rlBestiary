@@ -1,4 +1,24 @@
 (
+    reproduction: (
+        // Deterministic mating/evaluation epoch in world ticks.
+        epoch: 1000,
+        // Maximum mate distance in metres and genetic compatibility distance.
+        mate_radius: 128.0,
+        compatibility_threshold: 0.2,
+        // Fraction of parent's energy reserve required before mating.
+        energy_fraction: 0.65,
+        // Fraction of reproductive energy dissipated during gestation.
+        gestation_loss: 0.1,
+        // Probability of proposing mutations on an offspring genome copy.
+        mutation_probability: 0.1,
+        // Default founder life-history genes in world ticks.
+        founder_maturity: 10000,
+        founder_senescence: 100000,
+        // Species clustering epoch and registration persistence requirements.
+        species_epoch: 1000,
+        species_min_population: 2,
+        species_min_duration: 1000,
+    ),
     ecology: (
         // Damage coefficient for measured strike impulse relative to defender bulk.
         attack_scale: 20.0,
@@ -68,6 +88,8 @@
         healing: 0.01,
         // Terrain threshold separating land from water.
         water_level: -0.4,
+        // Number of procedural terrain waves per map axis; higher values create islands.
+        terrain_frequency: 1.0,
         // Seasonal variation in temperature and solar availability.
         season_amplitude: 0.3,
         // Explicit finite carrying bound; births beyond it are not admitted.

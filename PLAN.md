@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M6 — reproduction, species, persistence and daemon; M5 long-run trophic acceptance remains open.
+Current task: M7 — sparse MAP-Elites archive; M5 long-run trophic acceptance remains open.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -64,22 +64,22 @@ Current task: M6 — reproduction, species, persistence and daemon; M5 long-run 
 - [x] Evolving pathogens, immunity/resistance and transmission.
 - [x] Four pheromone channels, emission cost, diffusion/decay and sensing.
 - [x] Slow uplift, sea-level change, habitat fragmentation and shocks.
-- [x] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series.
+- [ ] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series.
 - [x] Pass make check and commit M5.
 
 ## M6 Reproduction, persistence and daemon
-- [ ] Sexual reproduction, compatibility, mate preference, gestation, clutch and offspring size.
-- [ ] Deterministic combine job scheduling and ordered birth admission.
-- [ ] Persistent species clustering, minimum size/duration, naming, extinction and phylogeny.
-- [ ] SQLite genome/creature/species/phylogeny/event/timeseries/archive/exploit/mutation tables.
-- [ ] Every mutation records operator, parent/child, traits, viability, birth and lineage outcomes.
-- [ ] Interval/shutdown snapshots and replay storage; reproducible restart.
-- [ ] Typed events and subscribers for store/CLI/viewer.
-- [ ] Local Unix socket / Windows named pipe, length-prefixed postcard codec and tests.
-- [ ] Headless daemon, world new/run/attach/status commands and JSON output.
-- [ ] Combine/archive/phylo/replay/genome/bench CLI commands and JSON output.
-- [ ] Three coexisting species and recorded geographic split at documented seed/tick.
-- [ ] Pass make check and commit M6.
+- [x] Sexual reproduction, compatibility, mate preference, gestation, clutch and offspring size.
+- [x] Deterministic combine job scheduling and ordered birth admission.
+- [x] Persistent species clustering, minimum size/duration, naming, extinction and phylogeny.
+- [x] SQLite genome/creature/species/phylogeny/event/timeseries/archive/exploit/mutation tables.
+- [x] Every mutation records operator, parent/child, traits, viability, birth and lineage outcomes.
+- [x] Interval/shutdown snapshots and replay storage; reproducible restart.
+- [x] Typed events and subscribers for store/CLI/viewer.
+- [x] Local Unix socket / Windows named pipe, length-prefixed postcard codec and tests.
+- [x] Headless daemon, world new/run/attach/status commands and JSON output.
+- [x] Combine/archive/phylo/replay/genome/bench CLI commands and JSON output.
+- [x] Three coexisting species and recorded geographic split at documented seed/tick.
+- [x] Pass make check and commit M6.
 
 ## M7 Archive
 - [ ] Sparse MAP-Elites grid over all seven specified descriptors and deterministic elite selection.

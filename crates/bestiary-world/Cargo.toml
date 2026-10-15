@@ -6,6 +6,7 @@ rust-version.workspace = true
 license.workspace = true
 
 [dependencies]
+bestiary-archive = { path = "../bestiary-archive" }
 bestiary-core = { path = "../bestiary-core" }
 bestiary-sim = { path = "../bestiary-sim" }
 serde.workspace = true

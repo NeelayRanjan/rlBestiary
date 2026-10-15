@@ -97,6 +97,32 @@ pub struct MutationRecord {
 impl Genome {
     /// Restore local references and inherited joint-spanning muscle genes.
     pub fn repair(&mut self, limits: &Limits) {
+        let mut reachable = BTreeSet::new();
+        let mut pending = vec![self.root];
+        while let Some(i) = pending.pop() {
+            if i < self.bones.len() && reachable.insert(i) {
+                pending.extend(self.bones[i].edges.iter().map(|e| e.child));
+            }
+        }
+        let remap: BTreeMap<_, _> = reachable
+            .iter()
+            .enumerate()
+            .map(|(new, old)| (*old, new))
+            .collect();
+        if reachable.len() != self.bones.len() {
+            self.bones = reachable
+                .iter()
+                .map(|i| {
+                    let mut b = self.bones[*i].clone();
+                    b.edges.retain(|e| remap.contains_key(&e.child));
+                    for e in &mut b.edges {
+                        e.child = remap[&e.child];
+                    }
+                    b
+                })
+                .collect();
+            self.root = remap[&self.root];
+        }
         let len = self.bones.len();
         let parent_muscles: Vec<_> = self
             .bones
@@ -473,6 +499,9 @@ impl Genome {
         (g, record)
     }
     pub fn crossover(&self, other: &Self, seed: u64, limits: &Limits) -> Self {
+        if self == other {
+            return self.clone();
+        }
         let mut g = self.clone();
         let mut r = crate::rng(seed, 0x43524f53, 0, 0);
         let bi = r.gen_range(0..g.bones.len());

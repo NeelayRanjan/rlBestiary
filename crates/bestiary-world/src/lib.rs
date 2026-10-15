@@ -1,5 +1,6 @@
 //! Fixed-tick trait ecology. Rendering and asynchronous execution are forbidden here.
 mod ecology;
+mod reproduction;
 use bestiary_core::{
     brain::{Activation, Brain, BrainState, Connection, Input, Neuron},
     genome::Genome,
@@ -10,6 +11,7 @@ use bestiary_sim::{
 };
 pub use ecology::*;
 use rand::Rng;
+pub use reproduction::*;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -33,6 +35,8 @@ pub struct Cell {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct LineageGenome {
+    pub exploit: bool,
+    pub replays: Vec<Vec<u8>>,
     pub genome: Genome,
     pub traits: Traits,
     pub viability: f32,
@@ -65,6 +69,12 @@ pub struct Carcass {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct World {
+    pub first_predation: bool,
+    pub first_swimmer: bool,
+    pub record_lifespan: u64,
+    pub registry: bestiary_archive::Registry,
+    pub history: BTreeMap<u64, LifeRecord>,
+    pub mutations: Vec<(u64, bestiary_core::genome::MutationRecord)>,
     pub pathogens: Vec<Pathogen>,
     pub sea_level: f32,
     pub ecological_events: Vec<EcologyEvent>,
@@ -88,9 +98,28 @@ pub trait WorldRules {
 pub struct NaturalRules;
 impl WorldRules for NaturalRules {
     fn step(&self, world: &mut World) {
+        let before = world.agents.len();
         world.ecological_events.clear();
         world.natural_step();
         world.ecology_step();
+        world.reproduce();
+        if !world.first_predation
+            && world
+                .ecological_events
+                .iter()
+                .any(|e| matches!(e, EcologyEvent::Predation { .. }))
+        {
+            world.first_predation = true;
+            world.ecological_events.push(EcologyEvent::FirstPredation);
+        }
+        if before > 0 && world.agents.is_empty() {
+            world.ecological_events.push(EcologyEvent::MassExtinction);
+        } else if world.agents.len() * 2 < before {
+            world.ecological_events.push(EcologyEvent::PopulationCrash {
+                before,
+                after: world.agents.len(),
+            });
+        }
     }
 }
 
@@ -134,6 +163,9 @@ impl World {
     pub fn new(seed: u64, config: Config, population: usize) -> Result<Self, String> {
         let mut g = Genome::starter(&config.genome);
         g.ethology = forager_brain();
+        g.life.maturity = config.reproduction.founder_maturity;
+        g.life.senescence = config.reproduction.founder_senescence;
+        g.life.clutch_size = 2;
         Self::with_founder(seed, config, population, g)
     }
     pub fn with_founder(
@@ -144,6 +176,7 @@ impl World {
     ) -> Result<Self, String> {
         config.world.validate()?;
         config.ecology.validate()?;
+        config.reproduction.validate()?;
         if population > config.world.population_limit {
             return Err("initial population exceeds configured bound".into());
         }
@@ -158,8 +191,8 @@ impl World {
             let mut rng = bestiary_core::rng(seed, 0x54455252, i as u64, 0);
             let x = (i % cfg.grid) as f32 / cfg.grid as f32;
             let z = (i / cfg.grid) as f32 / cfg.grid as f32;
-            let height = libm::sinf(x * std::f32::consts::TAU) * 0.3
-                + libm::cosf(z * std::f32::consts::TAU) * 0.3
+            let height = libm::sinf(x * std::f32::consts::TAU * cfg.terrain_frequency) * 0.3
+                + libm::cosf(z * std::f32::consts::TAU * cfg.terrain_frequency) * 0.3
                 + rng.gen_range(-0.1..0.1);
             cells.push(Cell {
                 height,
@@ -215,6 +248,13 @@ impl World {
         genomes.insert(
             hash,
             LineageGenome {
+                replays: evaluated
+                    .trials
+                    .iter()
+                    .filter_map(|t| t.replay.as_ref())
+                    .map(|r| r.encode())
+                    .collect::<Result<Vec<_>, _>>()?,
+                exploit: evaluated.exploit_suspect,
                 genome,
                 traits: evaluated.traits,
                 viability: evaluated.viability,
@@ -229,7 +269,31 @@ impl World {
                 antigen: [i as f32 / config.ecology.pathogen_count.max(1) as f32; 4],
             })
             .collect();
+        let history = agents
+            .iter()
+            .map(|a| {
+                (
+                    a.id,
+                    LifeRecord {
+                        id: a.id,
+                        genome: a.genome,
+                        born: 0,
+                        died: None,
+                        species: 0,
+                        cause: None,
+                        offspring: 0,
+                        parents: vec![],
+                    },
+                )
+            })
+            .collect();
         let mut w = Self {
+            first_predation: false,
+            first_swimmer: false,
+            record_lifespan: 0,
+            registry: Default::default(),
+            history,
+            mutations: vec![],
             pathogens,
             sea_level: config.world.water_level,
             ecological_events: vec![],
@@ -272,7 +336,11 @@ impl World {
         e + self.dissipated == self.initial_energy + self.solar_input && n == self.initial_nutrients
     }
     pub fn state_hash(&self) -> [u8; 32] {
-        bestiary_core::digest(self).expect("world serializes")
+        let mut canonical = self.clone();
+        for genome in canonical.genomes.values_mut() {
+            genome.replays.clear();
+        }
+        bestiary_core::digest(&canonical).expect("world serializes")
     }
     pub fn step(&mut self) {
         NaturalRules.step(self)
@@ -399,19 +467,42 @@ impl World {
                 }
             }
             let norm = libm::sqrtf(dir[0] * dir[0] + dir[1] * dir[1]).max(1.0);
-            let speed = if self.cells[cell_id].height < self.sea_level {
-                traits.swim_speed
+            let mut remaining = cfg.seconds_per_tick;
+            let mut actual_distance = 0.0;
+            let max_distance = if output(4) > output(3) && output(5) <= output(4) {
+                neighbors[agent_index]
+                    .as_ref()
+                    .map_or(f32::INFINITY, |n| n.distance)
             } else {
-                traits.speed
+                f32::INFINITY
             };
-            let distance =
-                speed * effort * agent.growth * (1.0 - agent.injury) * cfg.seconds_per_tick;
-            let moved = [dir[0] / norm * distance, dir[1] / norm * distance];
-            agent.position = [
-                (agent.position[0] + moved[0]).rem_euclid(extent),
-                (agent.position[1] + moved[1]).rem_euclid(extent),
-            ];
-            let actual_distance = libm::sqrtf(moved[0] * moved[0] + moved[1] * moved[1]);
+            // Integrate across terrain cells so a long world tick cannot jump over water
+            // using its initial land speed. The cost uses total path length, including wraps.
+            while remaining > 0.0 && actual_distance < max_distance {
+                let speed = if self.cells[cell_at(agent.position, cfg)].height < self.sea_level {
+                    traits.swim_speed
+                } else {
+                    traits.speed
+                } * effort
+                    * agent.growth
+                    * (1.0 - agent.injury);
+                let direction_length = libm::sqrtf(dir[0] * dir[0] + dir[1] * dir[1]) / norm;
+                let velocity = speed * direction_length;
+                if velocity <= 1e-6 {
+                    break;
+                }
+                let distance = (velocity * remaining)
+                    .min(cfg.cell_metres * 0.25)
+                    .min(max_distance - actual_distance);
+                remaining = (remaining - distance / velocity).max(0.0);
+                actual_distance += distance;
+                agent.position = [
+                    (agent.position[0] + dir[0] / norm / direction_length * distance)
+                        .rem_euclid(extent),
+                    (agent.position[1] + dir[1] / norm / direction_length * distance)
+                        .rem_euclid(extent),
+                ];
+            }
             let cell = &mut self.cells[cell_at(agent.position, cfg)];
             if output(3) > output(8) && agent.energy < reserve {
                 let meal = take(
@@ -466,12 +557,41 @@ impl World {
             }
             agent.age += 1;
             if agent.age > genes.life.senescence {
-                agent.health -= 1.0 / (genes.life.senescence - genes.life.maturity).max(1) as f32;
+                let remaining = 1.0
+                    - (agent.age - genes.life.senescence) as f32
+                        / (genes.life.senescence - genes.life.maturity).max(1) as f32;
+                agent.health = agent.health.min(remaining);
             }
         }
         let mut living = Vec::with_capacity(self.agents.len());
         for agent in self.agents.drain(..) {
             if agent.health <= 0.0 {
+                if agent.age > self.record_lifespan {
+                    self.record_lifespan = agent.age;
+                    self.ecological_events.push(EcologyEvent::RecordLifespan {
+                        creature: agent.id,
+                        age: agent.age,
+                    });
+                }
+                if let Some(record) = self.history.get_mut(&agent.id) {
+                    record.died = Some(self.tick);
+                    record.cause = Some(
+                        if agent.energy == 0 {
+                            "starvation"
+                        } else if agent.age > self.genomes[&agent.genome].genome.life.senescence {
+                            "senescence"
+                        } else if agent.injury > 0.0 {
+                            "predation"
+                        } else if agent.infection.is_some() {
+                            "pathogen"
+                        } else {
+                            "health"
+                        }
+                        .into(),
+                    );
+                }
+                self.ecological_events
+                    .push(EcologyEvent::Death { creature: agent.id });
                 self.carcasses.push(Carcass {
                     position: agent.position,
                     energy: agent.energy,

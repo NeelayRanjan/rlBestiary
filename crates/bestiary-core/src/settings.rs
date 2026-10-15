@@ -23,6 +23,7 @@ pub struct WorldConfig {
     pub starvation_damage: f32,
     pub healing: f32,
     pub water_level: f32,
+    pub terrain_frequency: f32,
     pub season_amplitude: f32,
     pub population_limit: usize,
     pub energy_units_per_joule: f32,
@@ -38,6 +39,7 @@ impl WorldConfig {
             || self.plant_epoch == 0
             || [
                 self.cell_metres,
+                self.terrain_frequency,
                 self.seconds_per_tick,
                 self.reserve_per_kg as f32,
                 self.energy_units_per_joule,
@@ -120,6 +122,46 @@ impl EcologyConfig {
             .any(|x| !x.is_finite() || !(0.0..=1.0).contains(x))
         {
             return Err("invalid ecology configuration".into());
+        }
+        Ok(())
+    }
+}
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ReproductionConfig {
+    pub epoch: u64,
+    pub mate_radius: f32,
+    pub compatibility_threshold: f32,
+    pub energy_fraction: f32,
+    pub gestation_loss: f32,
+    pub mutation_probability: f32,
+    pub founder_maturity: u64,
+    pub founder_senescence: u64,
+    pub species_epoch: u64,
+    pub species_min_population: usize,
+    pub species_min_duration: u64,
+}
+impl ReproductionConfig {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.epoch == 0
+            || self.species_epoch == 0
+            || self.species_min_population == 0
+            || self.founder_maturity == 0
+            || self.founder_senescence <= self.founder_maturity
+            || !self.mate_radius.is_finite()
+            || self.mate_radius <= 0.0
+            || !self.compatibility_threshold.is_finite()
+            || self.compatibility_threshold <= 0.0
+            || [
+                self.energy_fraction,
+                self.gestation_loss,
+                self.mutation_probability,
+            ]
+            .iter()
+            .any(|x| !x.is_finite() || !(0.0..=1.0).contains(x))
+        {
+            return Err("invalid reproduction configuration".into());
         }
         Ok(())
     }

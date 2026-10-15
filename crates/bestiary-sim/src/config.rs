@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
+    pub reproduction: bestiary_core::settings::ReproductionConfig,
     pub ecology: bestiary_core::settings::EcologyConfig,
     pub world: bestiary_core::settings::WorldConfig,
     pub combine: CombineConfig,
@@ -37,6 +38,7 @@ impl Config {
         value.combine.validate()?;
         value.world.validate()?;
         value.ecology.validate()?;
+        value.reproduction.validate()?;
         Ok(value)
     }
     pub fn bundled() -> Self {
