@@ -13,6 +13,7 @@ serde.workspace = true
 postcard.workspace = true
 rand.workspace = true
 libm.workspace = true
+rayon.workspace = true
 
 [[bench]]
 name = "world"

@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: User-requested credit-limited handoff — fix the viewer performance gate, document remaining work, check, package, commit and push the untagged candidate. M5/M7 failures and unfinished M10 checks remain open.
+Current task: Linux host resume (2026-10-15) — fresh-clone make check, parallel offspring combines (bit-identical), then rescale demo/trophic worlds and rerun M5/M7 acceptance.
 
 ## MVP checkpoint (scope changed at the user's request)
 - [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
@@ -11,6 +11,13 @@ Current task: User-requested credit-limited handoff — fix the viewer performan
 - [x] Complete final checks and make a local, pushable MVP commit; no full v1 tag.
 
 The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5/M7 acceptance, M9 and M10 in that order; the full SPEC Completion checklist is binding. Numeric failures remain unticked and prohibit tagging.
+
+## Linux resume (2026-10-15)
+- [x] Install pinned toolchain under ignored .tools; fresh-clone make check on Linux x86_64 (28.5 min, evidence/linux/fresh-clone-check.log).
+- [x] Parallel offspring combines with serial-equivalence state-hash test; make check.
+- [ ] Measure per-epoch evaluation throughput; rescale demo/trophic populations within budget.
+- [ ] Rerun M5 trophic, M7 demo and stagnation acceptance on the current binary.
+- [ ] Measure core/sim/world line coverage; rerun longrun, bench and the long-run viewer panel audit.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.

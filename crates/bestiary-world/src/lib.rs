@@ -96,6 +96,11 @@ pub struct World {
     pub dissipated: i64,
     pub initial_energy: i64,
     pub initial_nutrients: i64,
+    /// Evaluate offspring combines one at a time instead of in parallel batches.
+    /// Never serialized or hashed: both modes produce identical worlds, and the
+    /// determinism tests compare them.
+    #[serde(skip)]
+    pub serial_combines: bool,
 }
 /// All rule execution passes through this interface, leaving phase-two hooks additive.
 pub trait WorldRules {
@@ -373,6 +378,7 @@ impl World {
             dissipated: 0,
             initial_energy: 0,
             initial_nutrients: 0,
+            serial_combines: false,
         };
         let (energy, nutrients) = w.totals();
         w.initial_energy = energy;

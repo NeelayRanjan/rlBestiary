@@ -308,3 +308,41 @@ fn optional_archive_reseeding_is_off_by_default_and_conserves_resources() {
     assert!(w.conserved());
     assert_eq!(w.archive.cells.len(), 1);
 }
+
+#[test]
+fn parallel_offspring_combines_match_serial_state_hash() {
+    let mut config = Config::bundled();
+    config.world.grid = 4;
+    config.world.initial_energy = 500_000_000;
+    config.world.decision_interval = 10_000;
+    // Births are truncated mid-epoch by the population limit.
+    config.world.population_limit = 9;
+    config.reproduction.epoch = 1;
+    config.reproduction.mutation_probability = 1.0;
+    config.reproduction.compatibility_threshold = 1.0;
+    let mut genome = Genome::starter(&config.genome);
+    genome.ethology = forager_brain();
+    genome.life.maturity = 2;
+    genome.mutation_rates.fill(0.1);
+    let mut parallel = World::with_founder(42, config, 8, genome).unwrap();
+    for cell in &mut parallel.cells {
+        cell.height = 1.0;
+    }
+    parallel.tick = 100;
+    let mut serial = parallel.clone();
+    serial.serial_combines = true;
+    for _ in 0..2 {
+        ready_to_mate(&mut parallel);
+        ready_to_mate(&mut serial);
+        parallel.step();
+        serial.step();
+        assert_eq!(parallel.state_hash(), serial.state_hash());
+    }
+    assert!(!parallel.mutations.is_empty(), "mutation chains exercised");
+    assert_eq!(
+        parallel.agents.len(),
+        9,
+        "population limit truncated births"
+    );
+    assert!(parallel.conserved());
+}

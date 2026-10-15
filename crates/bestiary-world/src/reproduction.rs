@@ -4,7 +4,11 @@ use bestiary_archive::{
     Population,
 };
 use bestiary_core::genome::Operator;
+use bestiary_sim::combine::Evaluation;
+use rayon::prelude::*;
 use std::collections::BTreeSet;
+/// Offspring evaluations computed ahead of the serial birth loop, keyed by genome hash.
+type Prepared = BTreeMap<[u8; 32], Result<Evaluation, String>>;
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct LifeRecord {
     pub id: u64,
@@ -22,11 +26,26 @@ impl World {
         genome: Genome,
         parents: Vec<[u8; 32]>,
     ) -> Result<[u8; 32], String> {
+        self.register_prepared(genome, parents, &mut BTreeMap::new())
+    }
+    /// Registers a genome, taking its evaluation from `prepared` when present.
+    /// Evaluation is a pure function of genome and config, so a prepared result is
+    /// identical to evaluating here; only the archive/registry order matters, and
+    /// that order is still set by the caller.
+    fn register_prepared(
+        &mut self,
+        genome: Genome,
+        parents: Vec<[u8; 32]>,
+        prepared: &mut Prepared,
+    ) -> Result<[u8; 32], String> {
         let hash = genome.hash();
         if self.genomes.contains_key(&hash) {
             return Ok(hash);
         }
-        let evaluation = evaluate(&genome, &self.config)?;
+        let evaluation = match prepared.remove(&hash) {
+            Some(result) => result?,
+            None => evaluate(&genome, &self.config)?,
+        };
         if let Some(cell) = self
             .archive
             .insert(&evaluation, self.tick, &self.config.archive)
@@ -173,28 +192,86 @@ impl World {
         pairs
     }
 
+    fn crossover_child(&self, i: usize, j: usize) -> Genome {
+        self.genomes[&self.agents[i].genome].genome.crossover(
+            &self.genomes[&self.agents[j].genome].genome,
+            self.seed ^ self.tick ^ self.agents[i].id,
+            &self.config.genome,
+        )
+    }
+    fn mutation_rng(&self, i: usize) -> impl Rng {
+        bestiary_core::rng(self.seed, 0x4d555442, self.agents[i].id, self.tick)
+    }
+    /// Speculatively replays the genome-generation half of `reproduce` for a batch of
+    /// proposals and combines every uncached candidate in parallel. The draws match
+    /// the serial loop exactly; if an evaluation error makes the serial loop diverge,
+    /// it simply evaluates the missing genome itself.
+    fn prefetch_offspring(
+        &self,
+        proposals: &[(usize, usize)],
+        cfg: &bestiary_core::settings::ReproductionConfig,
+    ) -> Prepared {
+        let mut jobs = BTreeMap::new();
+        for &(i, j) in proposals {
+            let mut child = self.crossover_child(i, j);
+            jobs.entry(child.hash()).or_insert_with(|| child.clone());
+            let mut rng = self.mutation_rng(i);
+            if rng.gen::<f32>() < cfg.mutation_probability {
+                for (oi, op) in Operator::ALL.iter().enumerate() {
+                    if rng.gen::<f32>() >= child.mutation_rates[oi] {
+                        continue;
+                    }
+                    let (next, _) = child.mutate(
+                        *op,
+                        self.seed ^ self.agents[i].id,
+                        self.tick,
+                        &self.config.genome,
+                    );
+                    jobs.entry(next.hash()).or_insert_with(|| next.clone());
+                    child = next;
+                }
+            }
+        }
+        jobs.retain(|hash, _| !self.genomes.contains_key(hash));
+        let jobs: Vec<_> = jobs.into_iter().collect();
+        jobs.into_par_iter()
+            .map(|(hash, genome)| (hash, evaluate(&genome, &self.config)))
+            .collect::<Vec<_>>()
+            .into_iter()
+            .collect()
+    }
+
     pub(crate) fn reproduce(&mut self) {
         let cfg = self.config.reproduction.clone();
         if self.tick % cfg.epoch == 0 {
             let proposals = self.mating_pairs(&cfg);
-            // All evaluation happens synchronously in proposal order. Worker wall-clock cannot change birth order.
-            for (i, j) in proposals {
+            // Births, archive insertion and registration happen synchronously in proposal
+            // order. Physics combines for each batch run in parallel beforehand, and their
+            // completion order never reaches simulation state. Batching bounds the
+            // speculative work wasted when the population limit is reached mid-epoch.
+            let batch = if self.serial_combines {
+                0
+            } else {
+                rayon::current_num_threads().max(1)
+            };
+            let mut prepared = Prepared::new();
+            for (n, &(i, j)) in proposals.iter().enumerate() {
                 if self.agents.len() >= self.config.world.population_limit {
                     break;
                 }
+                if batch > 0 && n % batch == 0 {
+                    prepared = self
+                        .prefetch_offspring(&proposals[n..(n + batch).min(proposals.len())], &cfg);
+                }
                 let pa = self.agents[i].genome;
                 let pb = self.agents[j].genome;
-                let mut child = self.genomes[&pa].genome.crossover(
-                    &self.genomes[&pb].genome,
-                    self.seed ^ self.tick ^ self.agents[i].id,
-                    &self.config.genome,
-                );
-                let mut parent_hash = match self.register_genome(child.clone(), vec![pa, pb]) {
-                    Ok(h) => h,
-                    Err(_) => continue,
-                };
-                let mut rng =
-                    bestiary_core::rng(self.seed, 0x4d555442, self.agents[i].id, self.tick);
+                let mut child = self.crossover_child(i, j);
+                let mut parent_hash =
+                    match self.register_prepared(child.clone(), vec![pa, pb], &mut prepared) {
+                        Ok(h) => h,
+                        Err(_) => continue,
+                    };
+                let mut rng = self.mutation_rng(i);
                 let start = self.mutations.len();
                 if rng.gen::<f32>() < cfg.mutation_probability {
                     for (oi, op) in Operator::ALL.iter().enumerate() {
@@ -207,7 +284,11 @@ impl World {
                             self.tick,
                             &self.config.genome,
                         );
-                        let hash = match self.register_genome(next.clone(), vec![parent_hash]) {
+                        let hash = match self.register_prepared(
+                            next.clone(),
+                            vec![parent_hash],
+                            &mut prepared,
+                        ) {
                             Ok(h) => h,
                             Err(_) => continue,
                         };

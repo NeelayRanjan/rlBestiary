@@ -1,0 +1,1708 @@
+python3 scripts/test-coverage.py
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.016s
+
+OK
+python3 scripts/test-dist.py
+test_make_dist_dirty_source_is_explicit_and_unknown_files_survive_regeneration (__main__.DistributionTests.test_make_dist_dirty_source_is_explicit_and_unknown_files_survive_regeneration) ... ok
+test_make_dist_integrity_check_detects_tampered_binary_manifest_and_checksums (__main__.DistributionTests.test_make_dist_integrity_check_detects_tampered_binary_manifest_and_checksums) ... ok
+test_make_dist_integrity_requires_hashed_binaries_and_well_formed_metadata (__main__.DistributionTests.test_make_dist_integrity_requires_hashed_binaries_and_well_formed_metadata) ... ok
+test_make_dist_missing_binary_or_document_preserves_existing_package (__main__.DistributionTests.test_make_dist_missing_binary_or_document_preserves_existing_package) ... ok
+test_make_dist_produces_three_host_binaries_config_docs_checksums_and_unreleased_provenance (__main__.DistributionTests.test_make_dist_produces_three_host_binaries_config_docs_checksums_and_unreleased_provenance) ... ok
+test_make_dist_refuses_to_discard_edited_shipped_config (__main__.DistributionTests.test_make_dist_refuses_to_discard_edited_shipped_config) ... ok
+test_make_dist_refuses_unowned_collisions_and_symlink_destinations (__main__.DistributionTests.test_make_dist_refuses_unowned_collisions_and_symlink_destinations) ... ok
+test_make_dist_rejects_untrusted_manifest_paths_without_touching_outside_files (__main__.DistributionTests.test_make_dist_rejects_untrusted_manifest_paths_without_touching_outside_files) ... ok
+test_make_dist_rolls_back_directory_swap_when_install_fails (__main__.DistributionTests.test_make_dist_rolls_back_directory_swap_when_install_fails) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.727s
+
+OK
+./scripts/cargo fmt --all -- --check
+./scripts/cargo clippy --workspace --all-targets --locked -- -D warnings
+    Updating crates.io index
+ Downloading crates ...
+  Downloaded aligned v0.4.3
+  Downloaded ab_glyph_rasterizer v0.1.10
+  Downloaded bit_field v0.10.3
+  Downloaded aligned-vec v0.6.4
+  Downloaded cfg_aliases v0.2.2
+  Downloaded as-slice v0.2.1
+  Downloaded as-raw-xcb-connection v1.0.1
+  Downloaded arrayref v0.3.9
+  Downloaded cfg_aliases v0.1.1
+  Downloaded cfg-if v1.0.5
+  Downloaded calloop-wayland-source v0.3.0
+  Downloaded bit-vec v0.6.3
+  Downloaded xkbcommon-dl v0.4.2
+  Downloaded nohash-hasher v0.2.0
+  Downloaded fixedbitset v0.5.7
+  Downloaded cursor-icon v1.2.0
+  Downloaded crossbeam-queue v0.3.14
+  Downloaded crossbeam-utils v0.8.23
+  Downloaded unarray v0.1.4
+  Downloaded typewit v1.15.2
+  Downloaded thiserror v2.0.21
+  Downloaded wayland-sys v0.31.11
+  Downloaded equator v0.4.2
+  Downloaded futures-io v0.3.34
+  Downloaded hexf-parse v0.2.1
+  Downloaded hexasphere v15.1.0
+  Downloaded rstar v0.12.2
+  Downloaded hash32 v0.3.1
+  Downloaded ron v0.8.1
+  Downloaded winnow v0.7.15
+  Downloaded glow v0.14.2
+  Downloaded hashbrown v0.16.1
+  Downloaded gpu-alloc v0.6.2
+  Downloaded rusqlite v0.33.0
+  Downloaded petgraph v0.6.5
+  Downloaded x11rb v0.13.2
+  Downloaded wgpu-core v23.0.1
+  Downloaded wgpu v23.0.1
+  Downloaded glam v0.29.3
+  Downloaded image v0.25.9
+  Downloaded hashlink v0.10.0
+  Downloaded exr v1.74.2
+  Downloaded wgpu-hal v23.0.1
+  Downloaded pxfm v0.1.30
+  Downloaded libc v0.2.190
+  Downloaded regex-automata v0.4.18
+  Downloaded heapless v0.8.0
+  Downloaded heapless v0.7.17
+  Downloaded naga v23.1.0
+  Downloaded hash32 v0.2.1
+  Downloaded half v2.7.1
+  Downloaded winit v0.30.13
+  Downloaded gpu-descriptor-types v0.2.0
+  Downloaded getrandom v0.2.17
+  Downloaded epaint v0.31.1
+  Downloaded wayland-protocols v0.32.13
+  Downloaded gpu-alloc-types v0.3.1
+  Downloaded getrandom v0.4.3
+  Downloaded futures-lite v2.6.1
+  Downloaded foldhash v0.1.5
+  Downloaded event-listener v5.4.2
+  Downloaded gpu-descriptor v0.3.2
+  Downloaded gif v0.14.2
+  Downloaded getrandom v0.3.4
+  Downloaded foldhash v0.2.0
+  Downloaded fastrand v2.5.0
+  Downloaded epaint_default_fonts v0.31.1
+  Downloaded egui v0.31.1
+  Downloaded gethostname v1.1.0
+  Downloaded futures-core v0.3.34
+  Downloaded fnv v1.0.7
+  Downloaded fallible-streaming-iterator v0.1.9
+  Downloaded rav1e v0.8.1
+  Downloaded fallible-iterator v0.3.0
+  Downloaded errno v0.3.14
+  Downloaded ena v0.14.4
+  Downloaded ecolor v0.31.1
+  Downloaded dpi v0.1.2
+  Downloaded downcast-rs v1.2.1
+  Downloaded document-features v0.2.12
+  Downloaded tiff v0.10.3
+  Downloaded doctest-file v1.1.1
+  Downloaded dlib v0.5.3
+  Downloaded disqualified v1.1.0
+  Downloaded derive_more v1.0.0
+  Downloaded x11rb-protocol v0.13.2
+  Downloaded fs2 v0.4.3
+  Downloaded event-listener-strategy v0.5.4
+  Downloaded event-listener v2.5.3
+  Downloaded erased-serde v0.4.6
+  Downloaded equivalent v1.0.3
+  Downloaded equator-macro v0.4.2
+  Downloaded encase_derive_impl v0.10.0
+  Downloaded encase v0.10.0
+  Downloaded embedded-io v0.6.1
+  Downloaded embedded-io v0.4.0
+  Downloaded emath v0.31.1
+  Downloaded either v1.19.0
+  Downloaded x11-dl v2.21.0
+  Downloaded wide v0.7.33
+  Downloaded wgpu-types v23.0.0
+  Downloaded wayland-protocols-plasma v0.3.12
+  Downloaded wayland-client v0.31.15
+  Downloaded encase_derive v0.10.0
+  Downloaded derive_more-impl v1.0.0
+  Downloaded linux-raw-sys v0.4.15
+  Downloaded data-encoding v2.11.1
+  Downloaded xkeysym v0.2.1
+  Downloaded xcursor v0.3.11
+  Downloaded weezl v0.1.12
+  Downloaded wayland-scanner v0.31.11
+  Downloaded wayland-protocols-wlr v0.3.12
+  Downloaded wayland-cursor v0.31.14
+  Downloaded wasm-bindgen-macro-support v0.2.129
+  Downloaded wasm-bindgen v0.2.129
+  Downloaded wait-timeout v0.2.1
+  Downloaded unicode-width v0.1.14
+  Downloaded unicode-ident v1.0.27
+  Downloaded wayland-csd-frame v0.3.0
+  Downloaded wayland-backend v0.3.17
+  Downloaded wasm-bindgen-shared v0.2.129
+  Downloaded wasm-bindgen-macro v0.2.129
+  Downloaded walkdir v2.5.0
+  Downloaded version_check v0.9.5
+  Downloaded vcpkg v0.2.15
+  Downloaded v_frame v0.3.9
+  Downloaded uuid v1.12.1
+  Downloaded unicode-xid v0.2.6
+  Downloaded syn v2.0.119
+  Downloaded rustix v1.1.5
+  Downloaded regex-syntax v0.8.11
+  Downloaded nalgebra v0.33.2
+  Downloaded tempfile v3.27.0
+  Downloaded stable_deref_trait v1.2.1
+  Downloaded spin v0.9.9
+  Downloaded simba v0.9.1
+  Downloaded shlex v2.0.1
+  Downloaded sharded-slab v0.1.7
+  Downloaded serde_json v1.0.140
+  Downloaded serde_derive v1.0.219
+  Downloaded serde v1.0.219
+  Downloaded semver v1.0.28
+  Downloaded sctk-adwaita v0.10.1
+  Downloaded scopeguard v1.2.0
+  Downloaded safe_arch v0.7.4
+  Downloaded ryu v1.0.23
+  Downloaded rustix v0.38.44
+  Downloaded rapier3d v0.23.1
+  Downloaded parry3d v0.18.0
+  Downloaded nix v0.29.0
+  Downloaded typenum v1.20.1
+  Downloaded thiserror-impl v1.0.69
+  Downloaded thiserror v1.0.69
+  Downloaded termcolor v1.4.1
+  Downloaded syn v3.0.9
+  Downloaded strict-num v0.1.1
+  Downloaded static_assertions v1.1.0
+  Downloaded stackfuture v0.3.1
+  Downloaded spirv v0.3.0+sdk-1.3.268.0
+  Downloaded simd-adler32 v0.3.10
+  Downloaded scoped-tls v1.0.1
+  Downloaded linux-raw-sys v0.12.1
+  Downloaded same-file v1.0.6
+  Downloaded ruzstd v0.7.3
+  Downloaded rusty-fork v0.3.1
+  Downloaded rustversion v1.0.23
+  Downloaded rustc_version v0.4.1
+  Downloaded rustc-hash v2.1.3
+  Downloaded rustc-hash v1.1.0
+  Downloaded color_quant v1.1.0
+  Downloaded cobs v0.2.3
+  Downloaded clap_builder v4.6.7
+  Downloaded clap v4.6.7
+  Downloaded zune-inflate v0.2.54
+  Downloaded zerocopy-derive v0.8.63
+  Downloaded zerocopy v0.8.63
+  Downloaded rayon v1.10.0
+  Downloaded quick-xml v0.41.0
+  Downloaded proptest v1.6.0
+  Downloaded plotters v0.3.7
+  Downloaded typeid v1.0.3
+  Downloaded twox-hash v1.6.3
+  Downloaded thread_local v1.1.10
+  Downloaded thiserror-impl v2.0.21
+  Downloaded simd_helpers v0.1.0
+  Downloaded crossbeam-deque v0.8.8
+  Downloaded codespan-reporting v0.11.1
+  Downloaded clap_lex v1.1.1
+  Downloaded ciborium-ll v0.2.2
+  Downloaded ciborium-io v0.2.2
+  Downloaded zune-core v0.5.3
+  Downloaded zune-core v0.4.12
+  Downloaded y4m v0.8.0
+  Downloaded ttf-parser v0.25.1
+  Downloaded tracing-subscriber v0.3.23
+  Downloaded tracing v0.1.44
+  Downloaded tiny-skia v0.11.4
+  Downloaded spade v2.15.1
+  Downloaded robust v1.2.0
+  Downloaded regex v1.13.1
+  Downloaded raw-cpuid v11.6.0
+  Downloaded pulp v0.22.3
+  Downloaded png v0.18.1
+  Downloaded num-bigint v0.4.8
+  Downloaded nom v8.0.0
+  Downloaded memchr v2.8.3
+  Downloaded libm v0.2.11
+  Downloaded itertools v0.14.0
+  Downloaded itertools v0.13.0
+  Downloaded itertools v0.10.5
+  Downloaded bevy_core_pipeline v0.15.3
+  Downloaded tracing-log v0.2.0
+  Downloaded tracing-core v0.1.36
+  Downloaded tracing-attributes v0.1.31
+  Downloaded toml_edit v0.22.27
+  Downloaded tinyvec v1.13.3
+  Downloaded tinytemplate v1.2.1
+  Downloaded tiny-skia-path v0.11.4
+  Downloaded tiny-keccak v2.0.2
+  Downloaded interprocess v2.2.3
+  Downloaded rayon-core v1.13.0
+  Downloaded rand_distr v0.4.3
+  Downloaded rand v0.8.5
+  Downloaded qoi v0.4.1
+  Downloaded proc-macro2 v1.0.107
+  Downloaded polling v3.11.0
+  Downloaded num-traits v0.2.19
+  Downloaded naga_oil v0.16.0
+  Downloaded moxcms v0.7.11
+  Downloaded miniz_oxide v0.9.1
+  Downloaded miniz_oxide v0.8.9
+  Downloaded matrixmultiply v0.3.11
+  Downloaded log v0.4.34
+  Downloaded bevy_pbr v0.15.3
+  Downloaded bevy_ecs v0.15.4
+  Downloaded bevy v0.15.3
+  Downloaded av-scenechange v0.14.1
+  Downloaded ash v0.38.0+1.3.281
+  Downloaded crossbeam-epoch v0.9.21
+  Downloaded toml_datetime v0.6.11
+  Downloaded smol_str v0.2.2
+  Downloaded smithay-client-toolkit v0.19.2
+  Downloaded smallvec v1.16.3
+  Downloaded slab v0.4.12
+  Downloaded rgb v0.8.53
+  Downloaded renderdoc-sys v1.1.0
+  Downloaded is-terminal v0.4.17
+  Downloaded indexmap v2.11.1
+  Downloaded image-webp v0.2.4
+  Downloaded hashbrown v0.15.5
+  Downloaded hashbrown v0.14.5
+  Downloaded zlib-rs v0.6.8
+  Downloaded rawpointer v0.2.1
+  Downloaded ravif v0.12.0
+  Downloaded rand_core v0.6.4
+  Downloaded radsort v0.1.1
+  Downloaded quote v1.0.47
+  Downloaded ppv-lite86 v0.2.21
+  Downloaded pp-rs v0.2.1
+  Downloaded postcard v1.1.1
+  Downloaded pkg-config v0.3.34
+  Downloaded piper v0.2.5
+  Downloaded pin-project-lite v0.2.17
+  Downloaded paste v1.0.15
+  Downloaded parking_lot_core v0.9.12
+  Downloaded parking_lot v0.12.5
+  Downloaded ordered-float v4.6.0
+  Downloaded oorandom v11.1.5
+  Downloaded once_cell v1.21.4
+  Downloaded num-rational v0.4.2
+  Downloaded num-integer v0.1.47
+  Downloaded num-complex v0.4.6
+  Downloaded nu-ansi-term v0.50.3
+  Downloaded no_std_io2 v0.9.4
+  Downloaded memmap2 v0.9.11
+  Downloaded lock_api v0.4.14
+  Downloaded libloading v0.8.9
+  Downloaded khronos-egl v6.0.0
+  Downloaded jobserver v0.1.35
+  Downloaded itoa v1.0.18
+  Downloaded ciborium v0.2.2
+  Downloaded bevy_render v0.15.3
+  Downloaded libsqlite3-sys v0.31.0
+  Downloaded ctrlc v3.4.5
+  Downloaded crunchy v0.2.4
+  Downloaded imgref v1.12.3
+  Downloaded flate2 v1.1.10
+  Downloaded fax v0.2.7
+  Downloaded crossbeam-channel v0.5.17
+  Downloaded criterion v0.5.1
+  Downloaded const_soft_float v0.1.4
+  Downloaded const_panic v0.2.17
+  Downloaded reborrow v0.5.5
+  Downloaded raw-window-handle v0.6.2
+  Downloaded rand_xorshift v0.3.0
+  Downloaded rand_chacha v0.3.1
+  Downloaded quick-error v2.0.1
+  Downloaded quick-error v1.2.3
+  Downloaded pulp-wasm-simd-flag v0.1.1
+  Downloaded profiling-procmacros v1.0.18
+  Downloaded profiling v1.0.18
+  Downloaded plotters-svg v0.3.7
+  Downloaded plotters-backend v0.3.7
+  Downloaded pastey v0.1.1
+  Downloaded num-derive v0.4.2
+  Downloaded noop_proc_macro v0.3.0
+  Downloaded litrs v1.0.1
+  Downloaded cc v1.8.0
+  Downloaded blake3 v1.5.5
+  Downloaded bevy_reflect v0.15.3
+  Downloaded bevy_math v0.15.3
+  Downloaded bevy_egui v0.33.0
+  Downloaded bevy_asset v0.15.3
+  Downloaded aho-corasick v1.1.5
+  Downloaded fixedbitset v0.4.2
+  Downloaded find-msvc-tools v0.1.14
+  Downloaded fdeflate v0.3.7
+  Downloaded crossbeam v0.8.5
+  Downloaded criterion-plot v0.5.0
+  Downloaded crc32fast v1.5.2
+  Downloaded constgebra v0.1.4
+  Downloaded constant_time_eq v0.3.1
+  Downloaded const-random-macro v0.1.16
+  Downloaded const-random v0.1.18
+  Downloaded const-fnv1a-hash v1.1.0
+  Downloaded concurrent-queue v2.5.0
+  Downloaded zune-jpeg v0.5.15
+  Downloaded zune-jpeg v0.4.21
+  Downloaded percent-encoding v2.3.2
+  Downloaded parking v2.2.1
+  Downloaded owned_ttf_parser v0.25.1
+  Downloaded offset-allocator v0.2.0
+  Downloaded nonmax v0.5.5
+  Downloaded new_debug_unreachable v1.0.6
+  Downloaded nalgebra-macros v0.2.2
+  Downloaded lazy_static v1.5.1
+  Downloaded calloop v0.13.0
+  Downloaded bytemuck v1.25.2
+  Downloaded bumpalo v3.20.3
+  Downloaded built v0.8.1
+  Downloaded bitstream-io v4.10.0
+  Downloaded bevy_winit v0.15.3
+  Downloaded bevy_window v0.15.3
+  Downloaded bevy_scene v0.15.3
+  Downloaded bevy_reflect_derive v0.15.3
+  Downloaded bevy_picking v0.15.3
+  Downloaded bevy_mesh v0.15.3
+  Downloaded bevy_internal v0.15.3
+  Downloaded bevy_input v0.15.3
+  Downloaded bevy_image v0.15.3
+  Downloaded bevy_gizmos v0.15.3
+  Downloaded bevy_color v0.15.4
+  Downloaded base64 v0.22.1
+  Downloaded base64 v0.21.7
+  Downloaded arrayvec v0.7.8
+  Downloaded arboard v3.6.1
+  Downloaded allocator-api2 v0.2.21
+  Downloaded maybe-rayon v0.1.1
+  Downloaded matchers v0.2.0
+  Downloaded loop9 v0.1.5
+  Downloaded lebe v0.5.3
+  Downloaded ktx2 v0.3.0
+  Downloaded bitflags v2.9.4
+  Downloaded bevy_mikktspace v0.15.3
+  Downloaded bevy_log v0.15.3
+  Downloaded bevy_hierarchy v0.15.3
+  Downloaded bevy_ecs_macros v0.15.3
+  Downloaded bevy_app v0.15.3
+  Downloaded av1-grain v0.2.5
+  Downloaded async-task v4.7.1
+  Downloaded async-lock v3.4.2
+  Downloaded async-fs v2.2.0
+  Downloaded async-executor v1.14.0
+  Downloaded async-channel v2.5.0
+  Downloaded async-broadcast v0.5.1
+  Downloaded anyhow v1.0.104
+  Downloaded anstyle v1.0.14
+  Downloaded byteorder v1.5.0
+  Downloaded bytemuck_derive v1.12.1
+  Downloaded blocking v1.7.0
+  Downloaded bitflags v1.3.2
+  Downloaded bit-vec v0.8.0
+  Downloaded bit-vec v0.7.0
+  Downloaded bevy_utils v0.15.3
+  Downloaded bevy_transform v0.15.3
+  Downloaded bevy_time v0.15.3
+  Downloaded bevy_tasks v0.15.3
+  Downloaded bevy_diagnostic v0.15.3
+  Downloaded bevy_core v0.15.3
+  Downloaded avif-serialize v0.8.9
+  Downloaded autocfg v1.5.1
+  Downloaded assert_type_match v0.1.1
+  Downloaded ahash v0.8.12
+  Downloaded byteorder-lite v0.1.0
+  Downloaded bit-set v0.5.3
+  Downloaded bevy_utils_proc_macros v0.15.3
+  Downloaded bevy_render_macros v0.15.3
+  Downloaded bevy_ptr v0.15.3
+  Downloaded atomicow v1.2.0
+  Downloaded atomic-waker v1.1.2
+  Downloaded arg_enum_proc_macro v0.3.4
+  Downloaded accesskit v0.17.1
+  Downloaded ab_glyph v0.2.32
+  Downloaded cast v0.3.0
+  Downloaded bit-set v0.8.0
+  Downloaded bevy_macro_utils v0.15.3
+  Downloaded bevy_gizmos_macros v0.15.3
+  Downloaded bevy_encase_derive v0.15.3
+  Downloaded bevy_derive v0.15.3
+  Downloaded bevy_asset_macros v0.15.3
+  Downloaded bevy_a11y v0.15.3
+  Downloaded approx v0.5.1
+  Downloaded anes v0.1.6
+  Downloaded adler2 v2.0.1
+  Downloaded accesskit_winit v0.23.1
+   Compiling proc-macro2 v1.0.107
+   Compiling unicode-ident v1.0.27
+   Compiling quote v1.0.47
+   Compiling serde v1.0.219
+    Checking cfg-if v1.0.5
+   Compiling libc v0.2.190
+   Compiling zerocopy v0.8.63
+   Compiling autocfg v1.5.1
+   Compiling crossbeam-utils v0.8.23
+    Checking smallvec v1.16.3
+   Compiling libm v0.2.11
+    Checking foldhash v0.1.5
+    Checking equivalent v1.0.3
+    Checking arrayvec v0.7.8
+    Checking allocator-api2 v0.2.21
+    Checking slab v0.4.12
+    Checking downcast-rs v1.2.1
+    Checking log v0.4.34
+    Checking scopeguard v1.2.0
+    Checking once_cell v1.21.4
+   Compiling thiserror v1.0.69
+    Checking either v1.19.0
+   Compiling shlex v2.0.1
+    Checking hashbrown v0.15.5
+   Compiling find-msvc-tools v0.1.14
+    Checking lock_api v0.4.14
+    Checking memchr v2.8.3
+    Checking base64 v0.21.7
+    Checking constant_time_eq v0.3.1
+   Compiling cc v1.8.0
+    Checking arrayref v0.3.9
+    Checking pin-project-lite v0.2.17
+   Compiling cfg_aliases v0.2.2
+    Checking byteorder v1.5.0
+   Compiling crossbeam-epoch v0.9.21
+    Checking stable_deref_trait v1.2.1
+   Compiling paste v1.0.15
+   Compiling pkg-config v0.3.34
+   Compiling crunchy v0.2.4
+   Compiling crossbeam-deque v0.8.8
+   Compiling num-traits v0.2.19
+   Compiling matrixmultiply v0.3.11
+   Compiling semver v1.0.28
+   Compiling nix v0.29.0
+   Compiling winnow v0.7.15
+    Checking rawpointer v0.2.1
+   Compiling tiny-keccak v2.0.2
+   Compiling toml_datetime v0.6.11
+   Compiling heapless v0.8.0
+    Checking typenum v1.20.1
+    Checking hash32 v0.3.1
+    Checking hash32 v0.2.1
+    Checking spin v0.9.9
+    Checking tracing-core v0.1.36
+   Compiling rayon-core v1.13.0
+   Compiling rustc_version v0.4.1
+   Compiling version_check v0.9.5
+    Checking foldhash v0.2.0
+    Checking fastrand v2.5.0
+   Compiling getrandom v0.3.4
+    Checking cobs v0.2.3
+    Checking hashbrown v0.16.1
+    Checking robust v1.2.0
+   Compiling serde_json v1.0.140
+    Checking parking v2.2.1
+    Checking crossbeam-channel v0.5.17
+    Checking crossbeam-queue v0.3.14
+   Compiling ahash v0.8.12
+   Compiling indexmap v2.11.1
+    Checking ena v0.14.4
+    Checking itoa v1.0.18
+    Checking rustc-hash v2.1.3
+    Checking ryu v1.0.23
+   Compiling heapless v0.7.17
+    Checking base64 v0.22.1
+    Checking futures-core v0.3.34
+    Checking event-listener v5.4.2
+    Checking futures-io v0.3.34
+   Compiling typeid v1.0.3
+    Checking concurrent-queue v2.5.0
+    Checking thread_local v1.1.10
+   Compiling unicode-xid v0.2.6
+   Compiling vcpkg v0.2.15
+    Checking futures-lite v2.6.1
+    Checking async-task v4.7.1
+    Checking bevy_ptr v0.15.3
+    Checking event-listener-strategy v0.5.4
+   Compiling syn v2.0.119
+   Compiling syn v3.0.9
+    Checking crossbeam v0.8.5
+    Checking disqualified v1.1.0
+    Checking hashlink v0.10.0
+    Checking approx v0.5.1
+    Checking num-integer v0.1.47
+    Checking rstar v0.12.2
+    Checking ordered-float v4.6.0
+    Checking async-channel v2.5.0
+    Checking spade v2.15.1
+    Checking fallible-streaming-iterator v0.1.9
+    Checking fallible-iterator v0.3.0
+   Compiling cfg_aliases v0.1.1
+    Checking fixedbitset v0.4.2
+    Checking nonmax v0.5.5
+    Checking num-rational v0.4.2
+    Checking fixedbitset v0.5.7
+    Checking libloading v0.8.9
+    Checking regex-syntax v0.8.11
+   Compiling parking_lot_core v0.9.12
+    Checking aho-corasick v1.1.5
+    Checking bit-vec v0.8.0
+    Checking simd-adler32 v0.3.10
+   Compiling naga v23.1.0
+    Checking unicode-width v0.1.14
+    Checking raw-window-handle v0.6.2
+    Checking termcolor v1.4.1
+   Compiling crc32fast v1.5.2
+    Checking getrandom v0.2.17
+    Checking bit-set v0.8.0
+    Checking rayon v1.10.0
+    Checking rand_core v0.6.4
+    Checking adler2 v2.0.1
+   Compiling rustix v1.1.5
+    Checking codespan-reporting v0.11.1
+    Checking itertools v0.13.0
+    Checking rustc-hash v1.1.0
+    Checking async-executor v1.14.0
+    Checking hexf-parse v0.2.1
+   Compiling khronos-egl v6.0.0
+    Checking linux-raw-sys v0.12.1
+    Checking typewit v1.15.2
+    Checking parking_lot v0.12.5
+   Compiling ash v0.38.0+1.3.281
+   Compiling uuid v1.12.1
+   Compiling const-random-macro v0.1.16
+   Compiling blake3 v1.5.5
+   Compiling libsqlite3-sys v0.31.0
+    Checking bevy_tasks v0.15.3
+   Compiling toml_edit v0.22.27
+    Checking miniz_oxide v0.9.1
+   Compiling wgpu-hal v23.0.1
+    Checking atomic-waker v1.1.2
+    Checking const_panic v0.2.17
+    Checking piper v0.2.5
+    Checking const-random v0.1.18
+    Checking miniz_oxide v0.8.9
+    Checking fdeflate v0.3.7
+   Compiling wgpu-core v23.0.1
+   Compiling litrs v1.0.1
+    Checking static_assertions v1.1.0
+    Checking flate2 v1.1.10
+    Checking pxfm v0.1.30
+    Checking glow v0.14.2
+    Checking renderdoc-sys v1.1.0
+    Checking blocking v1.7.0
+   Compiling wgpu v23.0.1
+    Checking async-lock v3.4.2
+    Checking byteorder-lite v0.1.0
+    Checking event-listener v2.5.3
+    Checking stackfuture v0.3.1
+    Checking twox-hash v1.6.3
+    Checking async-broadcast v0.5.1
+    Checking bitflags v1.3.2
+    Checking atomicow v1.2.0
+    Checking accesskit v0.17.1
+    Checking regex-automata v0.4.18
+    Checking ktx2 v0.3.0
+    Checking const_soft_float v0.1.4
+   Compiling doctest-file v1.1.1
+    Checking ruzstd v0.7.3
+    Checking fs2 v0.4.3
+    Checking bit-vec v0.6.3
+   Compiling document-features v0.2.12
+    Checking tinyvec v1.13.3
+    Checking const-fnv1a-hash v1.1.0
+    Checking bit-set v0.5.3
+    Checking data-encoding v2.11.1
+    Checking constgebra v0.1.4
+    Checking async-fs v2.2.0
+   Compiling rustix v0.38.44
+    Checking lazy_static v1.5.1
+    Checking offset-allocator v0.2.0
+   Compiling x11-dl v2.21.0
+    Checking x11rb-protocol v0.13.2
+    Checking linux-raw-sys v0.4.15
+    Checking interprocess v2.2.3
+    Checking as-raw-xcb-connection v1.0.1
+    Checking dlib v0.5.3
+   Compiling winit v0.30.13
+    Checking xkeysym v0.2.1
+    Checking percent-encoding v2.3.2
+    Checking sharded-slab v0.1.7
+    Checking tracing-log v0.2.0
+    Checking nu-ansi-term v0.50.3
+    Checking dpi v0.1.2
+    Checking cursor-icon v1.2.0
+    Checking radsort v0.1.1
+    Checking ttf-parser v0.25.1
+    Checking ab_glyph_rasterizer v0.1.10
+    Checking nohash-hasher v0.2.0
+    Checking ciborium-io v0.2.2
+    Checking plotters-backend v0.3.7
+    Checking clap_lex v1.1.1
+    Checking anstyle v1.0.14
+    Checking epaint_default_fonts v0.31.1
+    Checking itertools v0.10.5
+    Checking same-file v1.0.6
+    Checking cast v0.3.0
+   Compiling getrandom v0.4.3
+    Checking is-terminal v0.4.17
+    Checking anes v0.1.6
+    Checking walkdir v2.5.0
+    Checking oorandom v11.1.5
+    Checking clap_builder v4.6.7
+    Checking plotters-svg v0.3.7
+    Checking wait-timeout v0.2.1
+    Checking quick-error v1.2.3
+    Checking fnv v1.0.7
+    Checking rand_xorshift v0.3.0
+    Checking unarray v0.1.4
+    Checking plotters v0.3.7
+   Compiling bytemuck_derive v1.12.1
+    Checking criterion-plot v0.5.0
+    Checking regex v1.13.1
+    Checking matchers v0.2.0
+    Checking bytemuck v1.25.2
+    Checking clap v4.6.7
+   Compiling bevy_macro_utils v0.15.3
+   Compiling encase_derive_impl v0.10.0
+    Checking owned_ttf_parser v0.25.1
+    Checking safe_arch v0.7.4
+    Checking emath v0.31.1
+    Checking ab_glyph v0.2.32
+    Checking ecolor v0.31.1
+    Checking wide v0.7.33
+    Checking moxcms v0.7.11
+   Compiling serde_derive v1.0.219
+   Compiling zerocopy-derive v0.8.63
+   Compiling thiserror-impl v1.0.69
+   Compiling profiling-procmacros v1.0.18
+   Compiling nalgebra-macros v0.2.2
+   Compiling tracing-attributes v0.1.31
+   Compiling num-derive v0.4.2
+   Compiling bevy_utils_proc_macros v0.15.3
+   Compiling derive_more-impl v1.0.0
+   Compiling bevy_reflect_derive v0.15.3
+   Compiling assert_type_match v0.1.1
+   Compiling bevy_ecs_macros v0.15.3
+   Compiling bevy_derive v0.15.3
+   Compiling encase_derive v0.10.0
+   Compiling bevy_asset_macros v0.15.3
+   Compiling bevy_render_macros v0.15.3
+   Compiling bevy_encase_derive v0.15.3
+   Compiling bevy_gizmos_macros v0.15.3
+    Checking profiling v1.0.18
+    Checking tracing v0.1.44
+    Checking tracing-subscriber v0.3.23
+    Checking derive_more v1.0.0
+    Checking bitflags v2.9.4
+    Checking num-complex v0.4.6
+    Checking bit-vec v0.7.0
+    Checking smol_str v0.2.2
+    Checking erased-serde v0.4.6
+    Checking ron v0.8.1
+    Checking spirv v0.3.0+sdk-1.3.268.0
+    Checking gpu-descriptor-types v0.2.0
+    Checking wgpu-types v23.0.0
+    Checking gpu-alloc-types v0.3.1
+    Checking png v0.18.1
+    Checking rusqlite v0.33.0
+    Checking xkbcommon-dl v0.4.2
+    Checking simba v0.9.1
+    Checking gpu-descriptor v0.3.2
+    Checking gpu-alloc v0.6.2
+    Checking postcard v1.1.1
+    Checking tinytemplate v1.2.1
+    Checking petgraph v0.6.5
+    Checking image v0.25.9
+    Checking ppv-lite86 v0.2.21
+    Checking half v2.7.1
+    Checking hashbrown v0.14.5
+    Checking epaint v0.31.1
+    Checking ctrlc v3.4.5
+    Checking ciborium-ll v0.2.2
+    Checking rand_chacha v0.3.1
+    Checking ciborium v0.2.2
+    Checking rand v0.8.5
+    Checking criterion v0.5.1
+    Checking bevy_utils v0.15.3
+    Checking egui v0.31.1
+    Checking glam v0.29.3
+    Checking rand_distr v0.4.3
+    Checking gethostname v1.1.0
+    Checking polling v3.11.0
+    Checking tempfile v3.27.0
+    Checking x11rb v0.13.2
+    Checking calloop v0.13.0
+    Checking rusty-fork v0.3.1
+    Checking proptest v1.6.0
+    Checking arboard v3.6.1
+    Checking naga_oil v0.16.0
+    Checking nalgebra v0.33.2
+    Checking bevy_reflect v0.15.3
+    Checking encase v0.10.0
+    Checking bevy_mikktspace v0.15.3
+    Checking hexasphere v15.1.0
+    Checking accesskit_winit v0.23.1
+    Checking bevy_ecs v0.15.4
+    Checking bevy_math v0.15.3
+    Checking parry3d v0.18.0
+    Checking bestiary-core v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-core)
+    Checking bevy_color v0.15.4
+    Checking rapier3d v0.23.1
+    Checking bevy_app v0.15.3
+    Checking bevy_core v0.15.3
+    Checking bevy_asset v0.15.3
+    Checking bevy_a11y v0.15.3
+    Checking bevy_time v0.15.3
+    Checking bevy_log v0.15.3
+    Checking bevy_hierarchy v0.15.3
+    Checking bevy_input v0.15.3
+    Checking bevy_diagnostic v0.15.3
+    Checking bevy_transform v0.15.3
+    Checking bevy_window v0.15.3
+    Checking bevy_image v0.15.3
+    Checking bevy_mesh v0.15.3
+    Checking bevy_winit v0.15.3
+    Checking bestiary-sim v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-sim)
+    Checking bevy_render v0.15.3
+    Checking bestiary-archive v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-archive)
+    Checking bestiary-world v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-world)
+    Checking bestiary-daemon v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-daemon)
+    Checking bestiary-cli v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-cli)
+    Checking bevy_core_pipeline v0.15.3
+    Checking bevy_picking v0.15.3
+    Checking bevy_egui v0.33.0
+    Checking bevy_pbr v0.15.3
+    Checking bevy_gizmos v0.15.3
+    Checking bevy_internal v0.15.3
+    Checking bevy v0.15.3
+    Checking bestiary-viewer v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-viewer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2m 45s
+./scripts/cargo test --workspace --locked
+   Compiling cfg-if v1.0.5
+   Compiling smallvec v1.16.3
+   Compiling foldhash v0.1.5
+   Compiling equivalent v1.0.3
+   Compiling arrayvec v0.7.8
+   Compiling allocator-api2 v0.2.21
+   Compiling slab v0.4.12
+   Compiling downcast-rs v1.2.1
+   Compiling log v0.4.34
+   Compiling scopeguard v1.2.0
+   Compiling serde v1.0.219
+   Compiling libc v0.2.190
+   Compiling zerocopy v0.8.63
+   Compiling crossbeam-utils v0.8.23
+   Compiling libm v0.2.11
+   Compiling thiserror v1.0.69
+   Compiling once_cell v1.21.4
+   Compiling num-traits v0.2.19
+   Compiling either v1.19.0
+   Compiling bytemuck v1.25.2
+   Compiling lock_api v0.4.14
+   Compiling memchr v2.8.3
+   Compiling profiling v1.0.18
+   Compiling blake3 v1.5.5
+   Compiling base64 v0.21.7
+   Compiling hashbrown v0.15.5
+   Compiling arrayref v0.3.9
+   Compiling constant_time_eq v0.3.1
+   Compiling byteorder v1.5.0
+   Compiling pin-project-lite v0.2.17
+   Compiling stable_deref_trait v1.2.1
+   Compiling crossbeam-epoch v0.9.21
+   Compiling matrixmultiply v0.3.11
+   Compiling rawpointer v0.2.1
+   Compiling crossbeam-deque v0.8.8
+   Compiling typenum v1.20.1
+   Compiling heapless v0.7.17
+   Compiling heapless v0.8.0
+   Compiling nix v0.29.0
+   Compiling foldhash v0.2.0
+   Compiling cobs v0.2.3
+   Compiling rayon-core v1.13.0
+   Compiling base64 v0.22.1
+   Compiling robust v1.2.0
+   Compiling safe_arch v0.7.4
+   Compiling spin v0.9.9
+   Compiling hash32 v0.2.1
+   Compiling hash32 v0.3.1
+   Compiling fastrand v2.5.0
+   Compiling crossbeam-channel v0.5.17
+   Compiling hashbrown v0.16.1
+   Compiling crossbeam-queue v0.3.14
+   Compiling wide v0.7.33
+   Compiling serde_json v1.0.140
+   Compiling ena v0.14.4
+   Compiling tracing-core v0.1.36
+   Compiling rustc-hash v2.1.3
+   Compiling itoa v1.0.18
+   Compiling ryu v1.0.23
+   Compiling getrandom v0.3.4
+   Compiling crossbeam v0.8.5
+   Compiling approx v0.5.1
+   Compiling num-integer v0.1.47
+   Compiling rstar v0.12.2
+   Compiling ordered-float v4.6.0
+   Compiling parking v2.2.1
+   Compiling ahash v0.8.12
+   Compiling const-random v0.1.18
+   Compiling futures-core v0.3.34
+   Compiling event-listener v5.4.2
+   Compiling futures-io v0.3.34
+   Compiling num-rational v0.4.2
+   Compiling tracing v0.1.44
+   Compiling typeid v1.0.3
+   Compiling libsqlite3-sys v0.31.0
+   Compiling concurrent-queue v2.5.0
+   Compiling thread_local v1.1.10
+   Compiling getrandom v0.2.17
+   Compiling rayon v1.10.0
+   Compiling event-listener-strategy v0.5.4
+   Compiling futures-lite v2.6.1
+   Compiling rand_core v0.6.4
+   Compiling hashlink v0.10.0
+   Compiling async-task v4.7.1
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling fallible-iterator v0.3.0
+   Compiling async-channel v2.5.0
+   Compiling derive_more v1.0.0
+   Compiling disqualified v1.1.0
+   Compiling bevy_ptr v0.15.3
+   Compiling fixedbitset v0.4.2
+   Compiling nonmax v0.5.5
+   Compiling regex-syntax v0.8.11
+   Compiling fixedbitset v0.5.7
+   Compiling libloading v0.8.9
+   Compiling parking_lot_core v0.9.12
+   Compiling aho-corasick v1.1.5
+   Compiling bit-vec v0.8.0
+   Compiling spade v2.15.1
+   Compiling simd-adler32 v0.3.10
+   Compiling bit-set v0.8.0
+   Compiling parking_lot v0.12.5
+   Compiling bitflags v2.9.4
+   Compiling indexmap v2.11.1
+   Compiling num-complex v0.4.6
+   Compiling bit-vec v0.7.0
+   Compiling ron v0.8.1
+   Compiling smol_str v0.2.2
+   Compiling simba v0.9.1
+   Compiling uuid v1.12.1
+   Compiling erased-serde v0.4.6
+   Compiling async-executor v1.14.0
+   Compiling petgraph v0.6.5
+   Compiling rustix v1.1.5
+   Compiling unicode-width v0.1.14
+   Compiling raw-window-handle v0.6.2
+   Compiling bevy_tasks v0.15.3
+   Compiling linux-raw-sys v0.12.1
+   Compiling adler2 v2.0.1
+   Compiling postcard v1.1.1
+   Compiling termcolor v1.4.1
+   Compiling ctrlc v3.4.5
+   Compiling crc32fast v1.5.2
+   Compiling naga v23.1.0
+   Compiling spirv v0.3.0+sdk-1.3.268.0
+   Compiling itertools v0.13.0
+   Compiling codespan-reporting v0.11.1
+   Compiling rustc-hash v1.1.0
+   Compiling typewit v1.15.2
+   Compiling unicode-xid v0.2.6
+   Compiling hexf-parse v0.2.1
+   Compiling ash v0.38.0+1.3.281
+   Compiling khronos-egl v6.0.0
+   Compiling miniz_oxide v0.9.1
+   Compiling wgpu-types v23.0.0
+   Compiling const_panic v0.2.17
+   Compiling gpu-alloc-types v0.3.1
+   Compiling regex-automata v0.4.18
+   Compiling gpu-descriptor-types v0.2.0
+   Compiling atomic-waker v1.1.2
+   Compiling piper v0.2.5
+   Compiling wgpu-hal v23.0.1
+   Compiling gpu-descriptor v0.3.2
+   Compiling flate2 v1.1.10
+   Compiling ppv-lite86 v0.2.21
+   Compiling gpu-alloc v0.6.2
+   Compiling hashbrown v0.14.5
+   Compiling rand_chacha v0.3.1
+   Compiling miniz_oxide v0.8.9
+   Compiling rand v0.8.5
+   Compiling fdeflate v0.3.7
+   Compiling pxfm v0.1.30
+   Compiling glow v0.14.2
+   Compiling renderdoc-sys v1.1.0
+   Compiling static_assertions v1.1.0
+   Compiling bevy_utils v0.15.3
+   Compiling png v0.18.1
+   Compiling wgpu-core v23.0.1
+   Compiling glam v0.29.3
+   Compiling rand_distr v0.4.3
+   Compiling blocking v1.7.0
+   Compiling async-lock v3.4.2
+   Compiling event-listener v2.5.3
+   Compiling byteorder-lite v0.1.0
+   Compiling async-fs v2.2.0
+   Compiling nalgebra v0.33.2
+   Compiling async-broadcast v0.5.1
+   Compiling wgpu v23.0.1
+   Compiling twox-hash v1.6.3
+   Compiling stackfuture v0.3.1
+   Compiling atomicow v1.2.0
+   Compiling accesskit v0.17.1
+   Compiling bitflags v1.3.2
+   Compiling interprocess v2.2.3
+   Compiling fs2 v0.4.3
+   Compiling ktx2 v0.3.0
+   Compiling ruzstd v0.7.3
+   Compiling const_soft_float v0.1.4
+   Compiling tinyvec v1.13.3
+   Compiling constgebra v0.1.4
+   Compiling lazy_static v1.5.1
+   Compiling moxcms v0.7.11
+   Compiling bit-vec v0.6.3
+   Compiling regex v1.13.1
+   Compiling bit-set v0.5.3
+   Compiling unicode-ident v1.0.27
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling data-encoding v2.11.1
+   Compiling rustix v0.38.44
+   Compiling offset-allocator v0.2.0
+   Compiling as-raw-xcb-connection v1.0.1
+   Compiling linux-raw-sys v0.4.15
+   Compiling x11rb-protocol v0.13.2
+   Compiling x11-dl v2.21.0
+   Compiling dlib v0.5.3
+   Compiling percent-encoding v2.3.2
+   Compiling xkeysym v0.2.1
+   Compiling gethostname v1.1.0
+   Compiling polling v3.11.0
+   Compiling xkbcommon-dl v0.4.2
+   Compiling winit v0.30.13
+   Compiling matchers v0.2.0
+   Compiling bevy_reflect v0.15.3
+   Compiling encase v0.10.0
+   Compiling bevy_mikktspace v0.15.3
+   Compiling hexasphere v15.1.0
+   Compiling sharded-slab v0.1.7
+   Compiling tracing-log v0.2.0
+   Compiling image v0.25.9
+   Compiling cursor-icon v1.2.0
+   Compiling nu-ansi-term v0.50.3
+   Compiling dpi v0.1.2
+   Compiling radsort v0.1.1
+   Compiling ttf-parser v0.25.1
+   Compiling emath v0.31.1
+   Compiling ab_glyph_rasterizer v0.1.10
+   Compiling naga_oil v0.16.0
+   Compiling tracing-subscriber v0.3.23
+   Compiling ecolor v0.31.1
+   Compiling half v2.7.1
+   Compiling clap_lex v1.1.1
+   Compiling epaint_default_fonts v0.31.1
+   Compiling anstyle v1.0.14
+   Compiling calloop v0.13.0
+   Compiling ciborium-io v0.2.2
+   Compiling plotters-backend v0.3.7
+   Compiling nohash-hasher v0.2.0
+   Compiling getrandom v0.4.3
+   Compiling clap_builder v4.6.7
+   Compiling ciborium-ll v0.2.2
+   Compiling plotters-svg v0.3.7
+   Compiling owned_ttf_parser v0.25.1
+   Compiling ab_glyph v0.2.32
+   Compiling itertools v0.10.5
+   Compiling cast v0.3.0
+   Compiling epaint v0.31.1
+   Compiling same-file v1.0.6
+   Compiling walkdir v2.5.0
+   Compiling criterion-plot v0.5.0
+   Compiling clap v4.6.7
+   Compiling egui v0.31.1
+   Compiling plotters v0.3.7
+   Compiling bevy_ecs v0.15.4
+   Compiling bevy_math v0.15.3
+   Compiling ciborium v0.2.2
+   Compiling parry3d v0.18.0
+   Compiling bestiary-core v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-core)
+   Compiling tinytemplate v1.2.1
+   Compiling is-terminal v0.4.17
+   Compiling oorandom v11.1.5
+   Compiling anes v0.1.6
+   Compiling criterion v0.5.1
+   Compiling tempfile v3.27.0
+   Compiling x11rb v0.13.2
+   Compiling wait-timeout v0.2.1
+   Compiling quick-error v1.2.3
+   Compiling fnv v1.0.7
+   Compiling rusty-fork v0.3.1
+   Compiling rand_xorshift v0.3.0
+   Compiling bevy_color v0.15.4
+   Compiling rapier3d v0.23.1
+   Compiling bevy_app v0.15.3
+   Compiling bevy_core v0.15.3
+   Compiling bevy_hierarchy v0.15.3
+   Compiling bevy_asset v0.15.3
+   Compiling bestiary-sim v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-sim)
+   Compiling bevy_input v0.15.3
+   Compiling bevy_a11y v0.15.3
+   Compiling bevy_transform v0.15.3
+   Compiling bevy_time v0.15.3
+   Compiling bevy_image v0.15.3
+   Compiling bevy_window v0.15.3
+   Compiling bevy_mesh v0.15.3
+   Compiling bevy_diagnostic v0.15.3
+   Compiling bevy_render v0.15.3
+   Compiling bevy_log v0.15.3
+   Compiling accesskit_winit v0.23.1
+   Compiling bevy_winit v0.15.3
+   Compiling arboard v3.6.1
+   Compiling unarray v0.1.4
+   Compiling proptest v1.6.0
+   Compiling bevy_core_pipeline v0.15.3
+   Compiling bevy_picking v0.15.3
+   Compiling rusqlite v0.33.0
+   Compiling bevy_egui v0.33.0
+   Compiling bestiary-archive v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-world)
+   Compiling bestiary-daemon v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-daemon)
+   Compiling bevy_pbr v0.15.3
+   Compiling bestiary-cli v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-cli)
+   Compiling bevy_gizmos v0.15.3
+   Compiling bevy_internal v0.15.3
+   Compiling bevy v0.15.3
+   Compiling bestiary-viewer v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-viewer)
+    Finished `test` profile [optimized + debuginfo] target(s) in 8m 55s
+     Running unittests src/lib.rs (target/debug/deps/bestiary_archive-2e88538d9540ea76)
+
+running 6 tests
+test tests::species_minimum_duration_parent_split_and_extinction ... ok
+test store::tests::legacy_snapshot_schema_is_rejected_without_modifying_the_file ... ok
+test store::tests::stale_physics_traits_allow_recorded_read_only_view_but_never_resume ... ok
+test grid::tests::archive_schema_and_boundaries ... ok
+test store::tests::current_schema_opens_and_unknown_versions_are_rejected ... ok
+test grid::tests::sparse_elites_exclude_exploits_and_recombine_exactly ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.96s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary-f84dabe614c9b8d2)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/commands.rs (target/debug/deps/commands-4ea75d0ce1907003)
+
+running 2 tests
+bestiary daemon: /tmp/bestiary-968b7230666e0e8639c1.sock
+test world_status_reports_live_pause_state ... ok
+test fresh_world_status_genome_combine_replay_and_phylogeny_commands ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 5.09s
+
+     Running tests/replay_export.rs (target/debug/deps/replay_export-8d8f7779d8f5e0c5)
+
+running 3 tests
+test replay_png_export_requires_recorded_anatomy_and_a_fresh_directory ... ok
+test replay_export_rejects_false_completion_without_sequential_png_files ... ok
+test replay_export_delegates_exact_genome_trial_and_paths_without_a_shell ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.96s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_core-e398741c862e579f)
+
+running 15 tests
+test brain::tests::recurrent_plasticity_is_repeatable_bounded_and_uses_old_values ... ok
+test genome::tests::reflection_carries_neurons_and_spanning_muscles ... ok
+test genome::tests::recursive_cycles_stop_cleanly_at_bounds_and_terminal_edges_attach ... ok
+test genome::starter::tests::founder_configuration_rejects_invalid_geometry_and_neural_weights ... ok
+test genome::starter::tests::coordinated_walking_genes_inherit_two_tripods_and_actuated_knees ... ok
+test genome::zoo::tests::authored_serpent_has_deep_recursion_and_no_limb_branches ... ok
+test genome::zoo::tests::radial_drifter_has_sixfold_support_geometry ... ok
+test genome::zoo::tests::authored_zoo_has_inheritable_feeding_and_mating_preferences ... ok
+test tests::canonical_digest_detects_state_changes ... ok
+test tests::seeded_tuple_streams_are_repeatable_and_separated ... ok
+test genome::tests::share_and_configuration_negative_cases ... ok
+test brain::tests::invalid_neural_genes_are_rejected ... ok
+test genome::zoo::tests::zoo_behavior_schema_rejects_unknown_invalid_and_missing_genes ... ok
+test genome::tests::crossover_always_valid_and_distance_symmetric ... ok
+test genome::tests::mutation_sequences_are_valid_bounded_and_axes_spanned ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.24s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_daemon-eef48454f1c0899d)
+
+running 2 tests
+test tests::ipc_codec_roundtrip_and_invalid_lengths ... ok
+test tests::unsaved_replay_is_read_only_and_uses_recorded_trial_index ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.34s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary_daemon-20a631638771a3bd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/attachment.rs (target/debug/deps/attachment-86f94d8cc48aa56d)
+
+running 1 test
+bestiary daemon: /tmp/bestiary-f0426c0a63f36ebed9ed.sock
+bestiary daemon: /tmp/bestiary-f0426c0a63f36ebed9ed.sock
+test viewer_attach_detach_does_not_perturb_state_hash ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.27s
+
+     Running tests/release.rs (target/debug/deps/release-bfbb95f5a57fb71f)
+
+running 1 test
+bestiary daemon: /tmp/bestiary-9b08c83e6f661750ca6e.sock
+bestiary daemon: /tmp/bestiary-9b08c83e6f661750ca6e.sock
+test paused_release_persists_discovery_events_without_advancing_tick_or_creating_resources ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.85s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_sim-1a9ac6da0d8d3119)
+
+running 24 tests
+test config::tests::config_schema_rejects_unknown_missing_and_invalid_fields ... ok
+test genome::tests::shared_spawn_lift_matches_physical_initial_poses ... ok
+test combine::tests::fft_recovers_dominant_gait_frequency ... ok
+test locomotion::tests::gait_measurement_rejects_invalid_durations ... ok
+test muscle::tests::passive_spring_energy_and_isometric_cost_are_accounted ... ok
+test muscle::tests::muscle_is_contraction_only_and_respects_length_tension_and_area ... ok
+test physics::tests::free_energy_audit_flags_unbudgeted_energy_and_accepts_work ... ok
+test combine::tests::root_clearance_accounts_for_shape_rotation_and_ground_plane ... ok
+test combine::tests::combine_configuration_and_cache_invalidation ... ok
+test genome::tests::proprioception_uses_joint_rest_frames_and_constraint_velocity_axes ... ok
+test replay::tests::replay_reproduces_recorded_trajectory_and_rejects_corruption ... ok
+test combine::tests::root_on_raised_terrain_fails_clearance_despite_height_above_base_plane ... ok
+test physics::tests::proper_foot_contact_excludes_self_contact_and_measures_surface_velocity ... ok
+test physics::tests::proper_foot_contact_reports_support_force_independent_of_substeps ... ok
+test physics::tests::deterministic_identical_physics_trials ... ok
+test genome::tests::expanded_body_instantiates_with_no_joint_motors_and_repeats ... ok
+test combine::tests::stand_duration_uses_stand_seconds_independently_of_trial_duration ... ok
+test combine::tests::sprint_excludes_initial_settling_and_passive_collapse ... ok
+test physics::tests::hand_built_body_walks_under_muscle_actuation ... ok
+test locomotion::tests::coordinated_walking_has_proper_foot_contact_and_is_muscle_driven ... ok
+test combine::tests::stand_gate_keeps_root_surface_off_ground_for_two_seconds ... ok
+test combine::tests::deliberate_solver_exploit_is_flagged ... ok
+test combine::tests::cache_hit_equals_recompute_and_parallel_equals_serial ... ok
+test combine::tests::preset_zoo_traits_are_stable_across_runs ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 39.30s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary_viewer-3ca340789e0958b5)
+
+running 47 tests
+test anatomy::tests::short_muscles_stay_slender_and_preserve_actual_attachments ... ok
+test anatomy::tests::muscle_activation_changes_reflected_pigment_without_emissive_glow ... ok
+test anatomy::tests::viewer_config_rejects_invalid_and_unknown_fields ... ok
+test anatomy::tests::muscle_attachments_and_volume_follow_recorded_pose_without_invented_motion ... ok
+test anatomy::tests::procedural_anatomy_has_finite_normals_and_valid_topology ... ok
+test anatomy::tests::bone_frame_preserves_each_genome_axis ... ok
+test anatomy::tests::viewer_distant_proxy_lod_preserves_unit_bounds_with_bounded_geometry ... ok
+test anatomy::tests::anatomy_pigments_use_linear_vertex_colors_and_cohesive_muted_palette ... ok
+test data::tests::formatting_and_chart_binning_handle_empty_and_nonfinite_data ... ok
+test designer::tests::designer_genesis_guarantee_survives_removal_and_all_joint_types ... ok
+test designer::tests::designer_builds_bones_joints_muscles_recursion_reflection_sensors_life_history ... ok
+test designer::tests::designer_muscles_connect_reachable_bones_within_span_and_reject_invalid_endpoints ... ok
+test designer_handles::tests::designer_drag_attachment_points_stays_on_box_and_capsule_surfaces ... ok
+test designer::tests::designer_removing_joint_preserves_remaining_muscle_route_targets ... ok
+test designer_handles::tests::designer_surface_picking_respects_rotated_reflected_body_coordinates ... ok
+test designer::tests::designer_live_validity_shows_mass_metabolic_cost_and_bound_violations ... ok
+test playback::tests::clip_first_frame_and_async_completion_require_prepared_recorded_poses ... ok
+test designer_handles::tests::designer_drag_edits_each_joint_and_muscle_endpoint_without_touching_other_genes ... ok
+test playback::tests::clip_metadata_describes_the_exact_fixed_time_frame_sequence ... ok
+test export::tests::export_entry_rejects_missing_values_and_invalid_genome_hashes ... ok
+test playback::tests::entire_recorded_range_includes_final_pose_without_looping ... ok
+test playback::tests::replay_scrub_and_clip_export_use_recorded_time_independent_of_render_rate ... ok
+test designer_handles::tests::designer_surface_picking_handles_capsule_caps_inside_rays_and_misses ... ok
+test scene::tests::clip_locks_native_window_dimensions_and_restores_original_setting ... ok
+test scene::tests::planted_foot_and_muscle_attachment_remain_fixed_as_torso_advances ... ok
+test playback::tests::invalid_clip_time_ranges_do_not_start_exports ... ok
+test scene::tests::field_overlays_preserve_underwater_values_and_biomass_uses_nutrients ... ok
+test scene::tests::designer_rest_pose_uses_expanded_bones_and_physical_spawn_height ... ok
+test playback::tests::paused_and_saved_worlds_do_not_sprint_against_stationary_terrain ... ok
+test scene::tests::predation_overlay_uses_recent_actual_attacker_and_victim_ids ... ok
+test data::tests::phylogeny_population_uses_historical_samples_not_current_species_assignments ... ok
+test scene::tests::retina_viewport_stays_inside_render_target_after_panel_resize ... ok
+test ui_designer::tests::attachment_points_keep_the_selected_face_at_edges_and_corners ... ok
+test designer::tests::designer_save_load_share_each_of_eight_presets_round_trips_exactly ... ok
+test scene::tests::anatomy_covers_zoo_joints_muscles_and_terminal_foot_contact_without_changing_genomes ... ok
+test scene::tests::strike_playback_uses_the_recorded_dynamic_target_after_body_parts ... ok
+test scene::tests::offline_camera_movement_selects_new_near_bodies_with_stable_ties ... ok
+test ui::tests::world_clip_preparation_advances_only_its_fixed_time_pose_clock ... ok
+test data::tests::inspector_initial_body_matches_living_creature_not_first_historical_genome ... ok
+test ui::tests::manual_highlight_jump_opens_recorded_subject_and_never_invents_a_global_subject ... ok
+test data::tests::live_snapshot_excludes_samples_and_events_from_a_newer_database_save ... ok
+test ui::tests::clip_readiness_waits_for_scene_recordings_and_labels_missing_static_bodies ... ok
+test designer::tests::designer_combine_from_editor_rejects_stale_results_and_invalidate_after_edits ... ok
+test data::tests::historical_first_predation_and_guided_hunt_keep_the_recorded_attacker ... ok
+test ui::tests::designer_measured_sprint_exports_its_draft_genome_and_rejects_edit_mode ... ok
+test data::tests::director_follows_event_genome_and_retains_extinct_archive_subjects ... ok
+test data::tests::designer_builds_combines_and_releases_into_a_running_world ... ok
+
+test result: ok. 47 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 9.49s
+
+     Running tests/render.rs (target/debug/deps/render-e08561c64ad96759)
+
+running 2 tests
+test designer_native_editor_renders_draft_anatomy_and_attachment_handles_without_mutating_world ... ignored, requires a graphics adapter; run scripts/check-viewer-render
+test headless_render_smoke_and_viewer_attach_detach_preserve_state_hash ... ignored, requires a graphics adapter and native display; run scripts/check-viewer-render
+
+test result: ok. 0 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/replay_export.rs (target/debug/deps/replay_export-18d66e11bf06f960)
+
+running 3 tests
+test cli_recorded_file_png_export_uses_world_anatomy_and_preserves_the_world ... ignored, requires GPU and sibling bestiary CLI; build CLI, then cargo test -p bestiary-viewer --test replay_export -- --ignored --nocapture
+test cli_recorded_replay_png_export_contains_motion_and_preserves_the_world ... ignored, requires GPU and sibling bestiary CLI; build CLI, then cargo test -p bestiary-viewer --test replay_export -- --ignored --nocapture
+test export_rejects_mismatched_id_genome_and_conflicting_render_modes_before_gpu_startup ... ok
+
+test result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.55s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_world-616ea2d1178d74bc)
+
+running 5 tests
+test milestones::tests::guidance_requires_a_changed_action_not_presence_of_a_pheromone_trail ... ok
+test milestones::tests::first_flyer_adjacent_gait_requires_two_complete_recorded_airborne_cycles ... ok
+test milestones::tests::pheromone_counterfactual_keeps_recurrence_plasticity_and_other_inputs_identical ... ok
+test milestones::tests::airborne_evidence_uses_oriented_physical_boxes_and_capsules ... ok
+test milestones::tests::first_airborne_gait_is_persisted_once_and_rejected_after_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.88s
+
+     Running tests/ecology.rs (target/debug/deps/ecology-c66c114baf6d7943)
+
+running 11 tests
+test ecology_config_negative_cases ... ok
+test inherited_predator_and_scavenger_networks_express_distinct_feeding_actions ... ok
+test predation_injury_and_scavenging_preserve_resources ... ok
+test pheromones_diffuse_decay_and_infections_and_geography_repeat ... ok
+test depleted_carcass_does_not_block_edible_carcass_and_conserves_resources ... ok
+test toxin_damage_depends_on_food_ingested_and_is_not_healed_in_the_same_tick ... ok
+test nearest_neighbors_match_distance_oracle_and_wrap_at_world_edge ... ok
+test inherited_predator_brain_hunts_using_measured_body_traits ... ok
+test herbivore_resistance_series_excludes_other_diet_tiers ... ok
+test toxic_plants_impose_survival_pressure_resisted_by_immune_investment ... ok
+test species_similarity_sensor_recognizes_mutant_kin_and_distinguishes_unrelated_genomes ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 10.59s
+
+     Running tests/evolution.rs (target/debug/deps/evolution-2f9bb84db6b05288)
+
+running 3 tests
+test stagnation_guard_five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... ignored, five-seed million-tick evolutionary acceptance; make evolution-longrun
+test acceptance::five_seed_partitions_cover_each_required_seed_exactly_once ... ok
+test acceptance::acceptance_seed_partition_rejects_out_of_range - should panic ... ok
+
+test result: ok. 2 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/longrun.rs (target/debug/deps/longrun-a3d8a96a0307f93d)
+
+running 6 tests
+test acceptance::acceptance_seed_partition_rejects_out_of_range - should panic ... ok
+test acceptance::five_seed_partitions_cover_each_required_seed_exactly_once ... ok
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ignored, one-million-tick acceptance run; invoked by make longrun
+test world_config_rejects_invalid_ranges ... ok
+test death_and_decay_preserve_both_resources ... ok
+test conservation_determinism_and_snapshot_resume ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 2.33s
+
+     Running tests/milestones.rs (target/debug/deps/milestones-1de8671cb0f7e3a9)
+
+running 2 tests
+test pheromone_hunt_evidence_expires_and_cannot_credit_a_different_victim ... ok
+test first_pheromone_guided_hunt_requires_causal_decision_and_real_damaging_predation ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 15.95s
+
+     Running tests/reproduction.rs (target/debug/deps/reproduction-c6d8e9582845686e)
+
+running 9 tests
+test open_endedness_smoke_three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation ... ignored, million-tick diversification acceptance; run with --release --ignored
+test reproduction_config_rejects_invalid_values ... ok
+test sexual_births_and_sqlite_resume_conserve_resources ... ok
+test optional_archive_reseeding_is_off_by_default_and_conserves_resources ... ok
+test eligible_mates_obey_radius_across_toroidal_world_boundary ... ok
+test eligible_mates_choose_distance_then_entity_id_with_deterministic_ties ... ok
+test senescence_cannot_be_cancelled_by_healing ... ok
+test disconnected_terrestrial_mates_cannot_reproduce ... ok
+test eligible_compatible_mate_is_not_blocked_by_nearer_incompatible_neighbor ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 5.02s
+
+     Running tests/trophic.rs (target/debug/deps/trophic-5220c77935871307)
+
+running 3 tests
+test herbivore_only_toxic_plants_show_arms_race_in_trait_time_series ... ignored, herbivore/plant evolutionary time series; make ecology-longrun
+test trophic_levels_all_persist_for_one_million_ticks_on_three_of_five_seeds ... ignored, million-tick trophic acceptance; make ecology-longrun
+test trophic_acceptance_fixture_has_physical_founders_and_conserved_resources ... ok
+
+test result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 6.78s
+
+     Running tests/zoo.rs (target/debug/deps/zoo-b300fbbee56d91c1)
+
+running 8 tests
+test radial_drifter_round_trips_combines_and_survives_first_generation ... ok
+test burrower_round_trips_combines_and_survives_first_generation ... ok
+test scavenger_round_trips_combines_and_survives_first_generation ... ok
+test sprinter_round_trips_combines_and_survives_first_generation ... ok
+test serpent_round_trips_combines_and_survives_first_generation ... ok
+test swimmer_round_trips_combines_and_survives_first_generation ... ok
+test ambush_predator_round_trips_combines_and_survives_first_generation ... ok
+test grazer_round_trips_combines_and_survives_first_generation ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 30.51s
+
+   Doc-tests bestiary_archive
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_daemon
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_sim
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_world
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+./scripts/cargo build --workspace --release --locked
+   Compiling proc-macro2 v1.0.107
+   Compiling quote v1.0.47
+   Compiling unicode-ident v1.0.27
+   Compiling serde v1.0.219
+   Compiling cfg-if v1.0.5
+   Compiling libc v0.2.190
+   Compiling zerocopy v0.8.63
+   Compiling smallvec v1.16.3
+   Compiling crossbeam-utils v0.8.23
+   Compiling once_cell v1.21.4
+   Compiling autocfg v1.5.1
+   Compiling foldhash v0.1.5
+   Compiling libm v0.2.11
+   Compiling pin-project-lite v0.2.17
+   Compiling equivalent v1.0.3
+   Compiling allocator-api2 v0.2.21
+   Compiling arrayvec v0.7.8
+   Compiling slab v0.4.12
+   Compiling hashbrown v0.15.5
+   Compiling crunchy v0.2.4
+   Compiling winnow v0.7.15
+   Compiling toml_datetime v0.6.11
+   Compiling tiny-keccak v2.0.2
+   Compiling downcast-rs v1.2.1
+   Compiling log v0.4.34
+   Compiling tracing-core v0.1.36
+   Compiling getrandom v0.3.4
+   Compiling cfg_aliases v0.2.2
+   Compiling version_check v0.9.5
+   Compiling parking v2.2.1
+   Compiling thiserror v1.0.69
+   Compiling scopeguard v1.2.0
+   Compiling futures-core v0.3.34
+   Compiling event-listener v5.4.2
+   Compiling lock_api v0.4.14
+   Compiling fastrand v2.5.0
+   Compiling num-traits v0.2.19
+   Compiling futures-io v0.3.34
+   Compiling typeid v1.0.3
+   Compiling nix v0.29.0
+   Compiling ahash v0.8.12
+   Compiling thread_local v1.1.10
+   Compiling event-listener-strategy v0.5.4
+   Compiling unicode-xid v0.2.6
+   Compiling shlex v2.0.1
+   Compiling either v1.19.0
+   Compiling async-task v4.7.1
+   Compiling find-msvc-tools v0.1.14
+   Compiling bevy_ptr v0.15.3
+   Compiling indexmap v2.11.1
+   Compiling disqualified v1.1.0
+   Compiling cfg_aliases v0.1.1
+   Compiling futures-lite v2.6.1
+   Compiling concurrent-queue v2.5.0
+   Compiling fixedbitset v0.4.2
+   Compiling cc v1.8.0
+   Compiling nonmax v0.5.5
+   Compiling fixedbitset v0.5.7
+   Compiling crossbeam-channel v0.5.17
+   Compiling libloading v0.8.9
+   Compiling memchr v2.8.3
+   Compiling async-channel v2.5.0
+   Compiling parking_lot_core v0.9.12
+   Compiling arrayref v0.3.9
+   Compiling syn v2.0.119
+   Compiling syn v3.0.9
+   Compiling constant_time_eq v0.3.1
+   Compiling base64 v0.21.7
+   Compiling pkg-config v0.3.34
+   Compiling simd-adler32 v0.3.10
+   Compiling naga v23.1.0
+   Compiling termcolor v1.4.1
+   Compiling bit-vec v0.8.0
+   Compiling unicode-width v0.1.14
+   Compiling getrandom v0.2.17
+   Compiling adler2 v2.0.1
+   Compiling crc32fast v1.5.2
+   Compiling uuid v1.12.1
+   Compiling raw-window-handle v0.6.2
+   Compiling const-random-macro v0.1.16
+   Compiling itertools v0.13.0
+   Compiling khronos-egl v6.0.0
+   Compiling bit-set v0.8.0
+   Compiling typewit v1.15.2
+   Compiling hexf-parse v0.2.1
+   Compiling ash v0.38.0+1.3.281
+   Compiling codespan-reporting v0.11.1
+   Compiling rustc-hash v1.1.0
+   Compiling aho-corasick v1.1.5
+   Compiling miniz_oxide v0.9.1
+   Compiling wgpu-hal v23.0.1
+   Compiling byteorder v1.5.0
+   Compiling regex-syntax v0.8.11
+   Compiling const-random v0.1.18
+   Compiling approx v0.5.1
+   Compiling atomic-waker v1.1.2
+   Compiling async-executor v1.14.0
+   Compiling piper v0.2.5
+   Compiling const_panic v0.2.17
+   Compiling miniz_oxide v0.8.9
+   Compiling fdeflate v0.3.7
+   Compiling wgpu-core v23.0.1
+   Compiling static_assertions v1.1.0
+   Compiling renderdoc-sys v1.1.0
+   Compiling pxfm v0.1.30
+   Compiling toml_edit v0.22.27
+   Compiling flate2 v1.1.10
+   Compiling bevy_tasks v0.15.3
+   Compiling litrs v1.0.1
+   Compiling glow v0.14.2
+   Compiling rand_core v0.6.4
+   Compiling blocking v1.7.0
+   Compiling wgpu v23.0.1
+   Compiling async-lock v3.4.2
+   Compiling rustix v1.1.5
+   Compiling parking_lot v0.12.5
+   Compiling event-listener v2.5.3
+   Compiling document-features v0.2.12
+   Compiling stable_deref_trait v1.2.1
+   Compiling byteorder-lite v0.1.0
+   Compiling paste v1.0.15
+   Compiling crossbeam-epoch v0.9.21
+   Compiling async-broadcast v0.5.1
+   Compiling stackfuture v0.3.1
+   Compiling twox-hash v1.6.3
+   Compiling blake3 v1.5.5
+   Compiling matrixmultiply v0.3.11
+   Compiling bytemuck_derive v1.12.1
+   Compiling linux-raw-sys v0.12.1
+   Compiling bitflags v1.3.2
+   Compiling atomicow v1.2.0
+   Compiling regex-automata v0.4.18
+   Compiling ppv-lite86 v0.2.21
+   Compiling crossbeam-deque v0.8.8
+   Compiling async-fs v2.2.0
+   Compiling accesskit v0.17.1
+   Compiling semver v1.0.28
+   Compiling ruzstd v0.7.3
+   Compiling ktx2 v0.3.0
+   Compiling rustc_version v0.4.1
+   Compiling num-integer v0.1.47
+   Compiling bevy_macro_utils v0.15.3
+   Compiling encase_derive_impl v0.10.0
+   Compiling heapless v0.8.0
+   Compiling const_soft_float v0.1.4
+   Compiling rawpointer v0.2.1
+   Compiling heapless v0.7.17
+   Compiling num-rational v0.4.2
+   Compiling hash32 v0.3.1
+   Compiling typenum v1.20.1
+   Compiling tinyvec v1.13.3
+   Compiling foldhash v0.2.0
+   Compiling bit-vec v0.6.3
+   Compiling hashbrown v0.16.1
+   Compiling constgebra v0.1.4
+   Compiling hash32 v0.2.1
+   Compiling spin v0.9.9
+   Compiling rustix v0.38.44
+   Compiling bit-set v0.5.3
+   Compiling vcpkg v0.2.15
+   Compiling const-fnv1a-hash v1.1.0
+   Compiling data-encoding v2.11.1
+   Compiling rayon-core v1.13.0
+   Compiling robust v1.2.0
+   Compiling rstar v0.12.2
+   Compiling ordered-float v4.6.0
+   Compiling x11-dl v2.21.0
+   Compiling offset-allocator v0.2.0
+   Compiling crossbeam-queue v0.3.14
+   Compiling bytemuck v1.25.2
+   Compiling ena v0.14.4
+   Compiling cobs v0.2.3
+   Compiling rustc-hash v2.1.3
+   Compiling as-raw-xcb-connection v1.0.1
+   Compiling linux-raw-sys v0.4.15
+   Compiling x11rb-protocol v0.13.2
+   Compiling crossbeam v0.8.5
+   Compiling dlib v0.5.3
+   Compiling winit v0.30.13
+   Compiling percent-encoding v2.3.2
+   Compiling serde_json v1.0.140
+   Compiling base64 v0.22.1
+   Compiling safe_arch v0.7.4
+   Compiling lazy_static v1.5.1
+   Compiling spade v2.15.1
+   Compiling xkeysym v0.2.1
+   Compiling sharded-slab v0.1.7
+   Compiling moxcms v0.7.11
+   Compiling libsqlite3-sys v0.31.0
+   Compiling serde_derive v1.0.219
+   Compiling tracing-attributes v0.1.31
+   Compiling thiserror-impl v1.0.69
+   Compiling bevy_utils_proc_macros v0.15.3
+   Compiling derive_more-impl v1.0.0
+   Compiling bevy_reflect_derive v0.15.3
+   Compiling assert_type_match v0.1.1
+   Compiling profiling-procmacros v1.0.18
+   Compiling bevy_ecs_macros v0.15.3
+   Compiling bevy_derive v0.15.3
+   Compiling encase_derive v0.10.0
+   Compiling profiling v1.0.18
+   Compiling bevy_asset_macros v0.15.3
+   Compiling wide v0.7.33
+   Compiling nalgebra-macros v0.2.2
+   Compiling bevy_render_macros v0.15.3
+   Compiling num-derive v0.4.2
+   Compiling bevy_encase_derive v0.15.3
+   Compiling rayon v1.10.0
+   Compiling hashlink v0.10.0
+   Compiling tracing-log v0.2.0
+   Compiling tracing v0.1.44
+   Compiling nu-ansi-term v0.50.3
+   Compiling dpi v0.1.2
+   Compiling ryu v1.0.23
+   Compiling fallible-streaming-iterator v0.1.9
+   Compiling cursor-icon v1.2.0
+   Compiling regex v1.13.1
+   Compiling matchers v0.2.0
+   Compiling fallible-iterator v0.3.0
+   Compiling itoa v1.0.18
+   Compiling tracing-subscriber v0.3.23
+   Compiling ttf-parser v0.25.1
+   Compiling radsort v0.1.1
+   Compiling emath v0.31.1
+   Compiling ab_glyph_rasterizer v0.1.10
+   Compiling doctest-file v1.1.1
+   Compiling ecolor v0.31.1
+   Compiling bevy_gizmos_macros v0.15.3
+   Compiling fs2 v0.4.3
+   Compiling epaint_default_fonts v0.31.1
+   Compiling nohash-hasher v0.2.0
+   Compiling interprocess v2.2.3
+   Compiling derive_more v1.0.0
+   Compiling owned_ttf_parser v0.25.1
+   Compiling ab_glyph v0.2.32
+   Compiling epaint v0.31.1
+   Compiling bitflags v2.9.4
+   Compiling rand_chacha v0.3.1
+   Compiling smol_str v0.2.2
+   Compiling hashbrown v0.14.5
+   Compiling erased-serde v0.4.6
+   Compiling num-complex v0.4.6
+   Compiling bit-vec v0.7.0
+   Compiling ron v0.8.1
+   Compiling spirv v0.3.0+sdk-1.3.268.0
+   Compiling gpu-descriptor-types v0.2.0
+   Compiling rand v0.8.5
+   Compiling gpu-alloc-types v0.3.1
+   Compiling wgpu-types v23.0.0
+   Compiling gpu-descriptor v0.3.2
+   Compiling gpu-alloc v0.6.2
+   Compiling bevy_utils v0.15.3
+   Compiling png v0.18.1
+   Compiling simba v0.9.1
+   Compiling postcard v1.1.1
+   Compiling xkbcommon-dl v0.4.2
+   Compiling petgraph v0.6.5
+   Compiling egui v0.31.1
+   Compiling glam v0.29.3
+   Compiling rand_distr v0.4.3
+   Compiling ctrlc v3.4.5
+   Compiling image v0.25.9
+   Compiling nalgebra v0.33.2
+   Compiling bevy_reflect v0.15.3
+   Compiling encase v0.10.0
+   Compiling hexasphere v15.1.0
+   Compiling bevy_mikktspace v0.15.3
+   Compiling gethostname v1.1.0
+   Compiling polling v3.11.0
+   Compiling x11rb v0.13.2
+   Compiling calloop v0.13.0
+   Compiling arboard v3.6.1
+   Compiling naga_oil v0.16.0
+   Compiling accesskit_winit v0.23.1
+   Compiling bevy_ecs v0.15.4
+   Compiling bevy_math v0.15.3
+   Compiling bevy_color v0.15.4
+   Compiling parry3d v0.18.0
+   Compiling bestiary-core v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-core)
+   Compiling bevy_app v0.15.3
+   Compiling bevy_core v0.15.3
+   Compiling bevy_asset v0.15.3
+   Compiling bevy_a11y v0.15.3
+   Compiling bevy_time v0.15.3
+   Compiling bevy_log v0.15.3
+   Compiling bevy_hierarchy v0.15.3
+   Compiling bevy_input v0.15.3
+   Compiling bevy_diagnostic v0.15.3
+   Compiling rapier3d v0.23.1
+   Compiling bevy_transform v0.15.3
+   Compiling bevy_window v0.15.3
+   Compiling bevy_image v0.15.3
+   Compiling bevy_mesh v0.15.3
+   Compiling bevy_winit v0.15.3
+   Compiling bevy_render v0.15.3
+   Compiling bestiary-sim v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-sim)
+   Compiling bevy_core_pipeline v0.15.3
+   Compiling bevy_picking v0.15.3
+   Compiling bevy_egui v0.33.0
+   Compiling bevy_pbr v0.15.3
+   Compiling rusqlite v0.33.0
+   Compiling bevy_gizmos v0.15.3
+   Compiling bestiary-archive v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-world)
+   Compiling bestiary-daemon v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-daemon)
+   Compiling bevy_internal v0.15.3
+   Compiling bevy v0.15.3
+   Compiling bestiary-cli v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-cli)
+   Compiling bestiary-viewer v0.1.0 (/tmp/claude-1000/-home-neelayranjan-Documents-rlBestiary/1158a41c-7817-41eb-ad85-af8660771367/scratchpad/fresh/crates/bestiary-viewer)
+    Finished `release` profile [optimized] target(s) in 14m 11s
+
+real	28m30.312s
+user	135m44.134s
+sys	9m0.473s
+EXIT 0
+commit 1f1e11e64689ddbc87095afa67a0a6fa2dc6158a
