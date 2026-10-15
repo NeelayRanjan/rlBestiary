@@ -64,6 +64,7 @@ pub fn panel(
             for (tab, label) in [
                 (Tab::World, "World"),
                 (Tab::Inspector, "Creature inspector"),
+                (Tab::Designer, "Creature designer"),
                 (Tab::Archive, "Body-plan archive"),
                 (Tab::Phylogeny, "Phylogeny"),
                 (Tab::Charts, "History"),
@@ -76,6 +77,10 @@ pub fn panel(
                         view.radius = 5.0;
                         let hash = view.genome;
                         select_genome(&mut view, hash, &feed);
+                    }
+                    if tab == Tab::Designer {
+                        view.radius = 5.0;
+                        view.mode = CameraMode::Free;
                     }
                     if tab == Tab::World {
                         view.radius =
@@ -417,6 +422,7 @@ pub fn panel(
                     });
                 });
         }
+        Tab::Designer => crate::ui_designer::panel(ctx, &mut view, &feed),
         Tab::Archive => {
             egui::CentralPanel::default().show(ctx, |ui| archive(ui, &mut view, &feed));
         }
@@ -482,8 +488,9 @@ impl ClipReadiness {
 }
 fn clip_readiness(view: &View) -> ClipReadiness {
     let required: Vec<_> = match view.tab {
-        Tab::Inspector if view.live_preview => return ClipReadiness::LivePreview,
-        Tab::Inspector => vec![(view.genome, view.trial)],
+        Tab::Inspector | Tab::Designer if view.live_preview => return ClipReadiness::LivePreview,
+        Tab::Designer if !view.designer.preview => return ClipReadiness::NoRecording,
+        Tab::Inspector | Tab::Designer => vec![(view.body_hash(), view.trial)],
         Tab::World => {
             let world = &view.snapshot.world;
             // Follow mode updates the camera after this UI, so use the same
@@ -530,7 +537,7 @@ const ACTIONS: [&str; 13] = [
     "Move X", "Move Z", "Effort", "Forage", "Pursue", "Flee", "Attack", "Mate", "Rest", "Emit 0",
     "Emit 1", "Emit 2", "Emit 3",
 ];
-const TRAITS: [&str; 18] = [
+pub(crate) const TRAITS: [&str; 18] = [
     "Sprint m/s",
     "Acceleration",
     "Energy J/m",
@@ -1123,6 +1130,7 @@ mod tests {
     fn view(world: World) -> View {
         let (selected, genome) = data::initial_selection(&world).unwrap();
         View {
+            designer: designer::Designer::new(world.genomes[&genome].genome.clone(), &world.config),
             snapshot: Arc::new(Snapshot {
                 revision: world.state_hash(),
                 world,
@@ -1306,6 +1314,46 @@ mod tests {
         assert_eq!(clip_readiness(&view), ClipReadiness::LivePreview);
     }
 
+    #[test]
+    fn designer_measured_sprint_exports_its_draft_genome_and_rejects_edit_mode() {
+        let mut view = view(two_genome_world());
+        view.tab = Tab::Designer;
+        view.designer.genome.bones[0].color = [0.23, 0.45, 0.67];
+        let config = view.snapshot.world.config.clone();
+        view.designer.changed(&config);
+        let hash = view.designer.hash;
+        assert_ne!(hash, view.genome);
+        view.replays.insert(
+            (hash, TrialKind::Sprint),
+            Replay {
+                kind: TrialKind::Sprint,
+                dt: 1.0 / 240.0,
+                frames: vec![vec![Pose {
+                    translation: [0.0, 1.0, 0.0],
+                    rotation: Quat::IDENTITY.to_array(),
+                }]],
+            },
+        );
+        assert_eq!(clip_readiness(&view), ClipReadiness::NoRecording);
+        view.designer.preview = true;
+        assert_eq!(
+            clip_readiness(&view),
+            ClipReadiness::Ready { static_bodies: 0 }
+        );
+        let directory =
+            std::env::temp_dir().join(format!("bestiary-designer-clip-{}", std::process::id()));
+        export::start(
+            &mut view,
+            directory.clone(),
+            playback::ClipSchedule::new(0.0, 0.1, 30).unwrap(),
+            false,
+        )
+        .unwrap();
+        let metadata: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(directory.join("clip.json")).unwrap()).unwrap();
+        assert_eq!(metadata["genome"], bestiary_core::hex(&hash));
+        std::fs::remove_dir_all(directory).unwrap();
+    }
     #[test]
     fn world_clip_preparation_advances_only_its_fixed_time_pose_clock() {
         let world = two_genome_world();

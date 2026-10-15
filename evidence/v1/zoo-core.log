@@ -1,0 +1,12 @@
+   Compiling bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+    Finished `test` profile [optimized + debuginfo] target(s) in 4.40s
+     Running unittests src/lib.rs (target/debug/deps/bestiary_core-0da6b8a28f7945f2)
+
+running 4 tests
+test genome::zoo::tests::radial_drifter_has_sixfold_support_geometry ... ok
+test genome::zoo::tests::authored_serpent_has_deep_recursion_and_no_limb_branches ... ok
+test genome::zoo::tests::authored_zoo_has_inheritable_feeding_and_mating_preferences ... ok
+test genome::zoo::tests::zoo_behavior_schema_rejects_unknown_invalid_and_missing_genes ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 11 filtered out; finished in 0.00s
+

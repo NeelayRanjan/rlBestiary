@@ -1,0 +1,13 @@
+    Checking rand_chacha v0.3.1
+    Checking parry3d v0.18.0
+    Checking once_cell v1.21.4
+    Checking tempfile v3.27.0
+    Checking rand v0.8.5
+    Checking rusty-fork v0.3.1
+    Checking bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+    Checking proptest v1.6.0
+    Checking rapier3d v0.23.1
+    Checking bestiary-sim v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-sim)
+    Checking bestiary-archive v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-archive)
+    Checking bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.70s

@@ -108,7 +108,7 @@ pub fn start(
     })?;
     let mut metadata = schedule.metadata(
         view.snapshot.world.tick,
-        &bestiary_core::hex(&view.genome),
+        &bestiary_core::hex(&view.body_hash()),
         &format!("{:?}", view.trial),
     );
     metadata["complete"] = false.into();

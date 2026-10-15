@@ -1,0 +1,184 @@
+./scripts/longrun evolution
+    Blocking waiting for file lock on build directory
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 15.73s
+  Executable tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+Five seeds, one million ticks each; logs: /Users/diane/Documents/ChatGPT/neelay-bestiary/var/acceptance/evolution.3lNKyh
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 11.60s
+     Running tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing has been running for over 60 seconds
+seed=0 tick=100000 population=45 coverage=0.0156
+seed=0 tick=200000 population=27 coverage=0.0312
+seed=0 tick=300000 population=38 coverage=0.0312
+seed=0 tick=400000 population=62 coverage=0.0312
+seed=0 tick=500000 population=69 coverage=0.0312
+seed=0 tick=600000 population=34 coverage=0.0312
+seed=0 tick=700000 population=36 coverage=0.0312
+seed=0 tick=800000 population=48 coverage=0.0312
+seed=0 tick=900000 population=38 coverage=0.0312
+seed=0 tick=1000000 population=47 coverage=0.0312
+seed=0 tail coverage 0.03125 -> 0.03125, trait variance 15.692452 -> 0.19718292
+seed=0 first_collapse=None
+
+thread 'five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing' panicked at crates/bestiary-world/tests/evolution.rs:63:5:
+stagnation acceptance failed for seeds [0]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... FAILED
+
+failures:
+
+failures:
+    five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 1710.39s
+
+error: test failed, to rerun pass `-p bestiary-world --test evolution`
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 11.62s
+     Running tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing has been running for over 60 seconds
+seed=1 tick=100000 population=53 coverage=0.0234
+seed=1 tick=200000 population=41 coverage=0.0234
+seed=1 tick=300000 population=32 coverage=0.0234
+seed=1 tick=400000 population=46 coverage=0.0234
+seed=1 tick=500000 population=53 coverage=0.0234
+seed=1 tick=600000 population=39 coverage=0.0234
+seed=1 tick=700000 population=18 coverage=0.0234
+seed=1 tick=800000 population=38 coverage=0.0234
+seed=1 tick=900000 population=38 coverage=0.0234
+seed=1 tick=1000000 population=21 coverage=0.0234
+seed=1 tail coverage 0.0234375 -> 0.0234375, trait variance 0.14543149 -> 0.13350789
+seed=1 first_collapse=None
+
+thread 'five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing' panicked at crates/bestiary-world/tests/evolution.rs:63:5:
+stagnation acceptance failed for seeds [1]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... FAILED
+
+failures:
+
+failures:
+    five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 1595.42s
+
+error: test failed, to rerun pass `-p bestiary-world --test evolution`
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 11.64s
+     Running tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing has been running for over 60 seconds
+seed=2 tick=100000 population=29 coverage=0.0234
+seed=2 tick=200000 population=41 coverage=0.0234
+seed=2 tick=300000 population=32 coverage=0.0234
+seed=2 tick=400000 population=14 coverage=0.0234
+seed=2 tick=500000 population=27 coverage=0.0312
+seed=2 tick=600000 population=63 coverage=0.0312
+seed=2 tick=700000 population=25 coverage=0.0312
+seed=2 tick=800000 population=42 coverage=0.0312
+seed=2 tick=900000 population=35 coverage=0.0312
+seed=2 tick=1000000 population=79 coverage=0.0312
+seed=2 tail coverage 0.03125 -> 0.03125, trait variance 0.70355654 -> 0.26705572
+seed=2 first_collapse=None
+
+thread 'five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing' panicked at crates/bestiary-world/tests/evolution.rs:63:5:
+stagnation acceptance failed for seeds [2]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... FAILED
+
+failures:
+
+failures:
+    five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 2033.31s
+
+error: test failed, to rerun pass `-p bestiary-world --test evolution`
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 11.58s
+     Running tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing has been running for over 60 seconds
+seed=3 tick=100000 population=31 coverage=0.0234
+seed=3 tick=200000 population=43 coverage=0.0234
+seed=3 tick=300000 population=39 coverage=0.0234
+seed=3 tick=400000 population=47 coverage=0.0234
+seed=3 tick=500000 population=66 coverage=0.0234
+seed=3 tick=600000 population=80 coverage=0.0234
+seed=3 tick=700000 population=61 coverage=0.0234
+seed=3 tick=800000 population=52 coverage=0.0234
+seed=3 tick=900000 population=37 coverage=0.0234
+seed=3 tick=1000000 population=40 coverage=0.0234
+seed=3 tail coverage 0.0234375 -> 0.0234375, trait variance 0.16650136 -> 0.25556427
+seed=3 first_collapse=None
+
+thread 'five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing' panicked at crates/bestiary-world/tests/evolution.rs:63:5:
+stagnation acceptance failed for seeds [3]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... FAILED
+
+failures:
+
+failures:
+    five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 2284.12s
+
+error: test failed, to rerun pass `-p bestiary-world --test evolution`
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 11.56s
+     Running tests/evolution.rs (target/release/deps/evolution-0d1c50e7a4d68dba)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing has been running for over 60 seconds
+seed=4 tick=100000 population=88 coverage=0.0234
+seed=4 tick=200000 population=38 coverage=0.0234
+seed=4 tick=300000 population=111 coverage=0.0234
+seed=4 tick=400000 population=30 coverage=0.0312
+seed=4 tick=500000 population=62 coverage=0.0312
+seed=4 tick=600000 population=128 coverage=0.0312
+seed=4 tick=700000 population=68 coverage=0.0312
+seed=4 tick=800000 population=126 coverage=0.0312
+seed=4 tick=900000 population=75 coverage=0.0312
+seed=4 tick=1000000 population=70 coverage=0.0312
+seed=4 tail coverage 0.03125 -> 0.03125, trait variance 0.54703766 -> 0.071431585
+seed=4 first_collapse=None
+
+thread 'five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing' panicked at crates/bestiary-world/tests/evolution.rs:63:5:
+stagnation acceptance failed for seeds [4]
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... FAILED
+
+failures:
+
+failures:
+    five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 2 filtered out; finished in 1556.42s
+
+error: test failed, to rerun pass `-p bestiary-world --test evolution`
+make: *** [evolution-longrun] Error 1

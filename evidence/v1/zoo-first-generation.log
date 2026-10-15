@@ -1,0 +1,27 @@
+   Compiling bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+   Compiling bestiary-sim v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-sim)
+   Compiling bestiary-archive v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 19.48s
+     Running tests/zoo.rs (target/release/deps/zoo-f71edb942a30c390)
+
+running 8 tests
+preset="radial drifter" tick=7000 released=2 direct_births=2 mature_child=Some((40, 2000)) population=41 deaths=1 conserved=true
+test radial_drifter_round_trips_combines_and_survives_first_generation ... ok
+preset="burrower" tick=7000 released=2 direct_births=1 mature_child=Some((40, 2000)) population=35 deaths=6 conserved=true
+test burrower_round_trips_combines_and_survives_first_generation ... ok
+preset="ambush predator" tick=7000 released=2 direct_births=2 mature_child=Some((26, 2000)) population=32 deaths=2 conserved=true
+test ambush_predator_round_trips_combines_and_survives_first_generation ... ok
+preset="scavenger" tick=7000 released=2 direct_births=4 mature_child=Some((30, 2000)) population=34 deaths=0 conserved=true
+test scavenger_round_trips_combines_and_survives_first_generation ... ok
+preset="serpent" tick=12000 released=2 direct_births=4 mature_child=Some((58, 2000)) population=27 deaths=35 conserved=true
+test serpent_round_trips_combines_and_survives_first_generation ... ok
+preset="grazer" tick=12000 released=2 direct_births=6 mature_child=Some((46, 2000)) population=52 deaths=2 conserved=true
+test grazer_round_trips_combines_and_survives_first_generation ... ok
+preset="sprinter" tick=12000 released=2 direct_births=2 mature_child=Some((46, 2000)) population=39 deaths=11 conserved=true
+test sprinter_round_trips_combines_and_survives_first_generation ... ok
+preset="swimmer" tick=12000 released=2 direct_births=4 mature_child=Some((58, 2000)) population=32 deaths=30 conserved=true
+test swimmer_round_trips_combines_and_survives_first_generation ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 22.83s
+

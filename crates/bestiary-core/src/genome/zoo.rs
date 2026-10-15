@@ -1,6 +1,43 @@
 use super::*;
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ZooBehavior {
+    maturity: u64,
+    senescence: u64,
+    clutch_size: u8,
+    offspring_fraction: f32,
+    burrower_clutch_size: u8,
+    burrower_offspring_fraction: f32,
+    predator_offspring_fraction: f32,
+    forager: Brain,
+    predator: Brain,
+    scavenger: Brain,
+}
+impl ZooBehavior {
+    fn parse(source: &str) -> Result<Self, String> {
+        let genes: Self = ron::from_str(source).map_err(|error| error.to_string())?;
+        if genes.maturity == 0
+            || genes.senescence <= genes.maturity
+            || !(1..=16).contains(&genes.clutch_size)
+            || !(0.01..=0.5).contains(&genes.offspring_fraction)
+            || !(1..=16).contains(&genes.burrower_clutch_size)
+            || !(0.01..=0.5).contains(&genes.burrower_offspring_fraction)
+            || !(0.01..=0.5).contains(&genes.predator_offspring_fraction)
+            || [&genes.forager, &genes.predator, &genes.scavenger]
+                .into_iter()
+                .any(|brain| !brain.valid() || brain.neurons.len() != 13)
+        {
+            return Err("invalid zoo lifecycle or world behavior genes".into());
+        }
+        Ok(genes)
+    }
+}
+
 /// Hand-authored genomes; niches are labels, not scripted behavior or fitness bonuses.
 pub fn zoo(limits: &Limits) -> Vec<(&'static str, Genome)> {
+    let behavior = ZooBehavior::parse(include_str!("../../../../config/zoo.ron"))
+        .expect("valid embedded zoo behavior");
     let grazer = Genome::starter(limits);
     let mut sprinter = grazer.clone();
     for b in sprinter.bones.iter_mut().skip(1) {
@@ -125,7 +162,23 @@ pub fn zoo(limits: &Limits) -> Vec<(&'static str, Genome)> {
         ("serpent", serpent),
         ("radial drifter", drifter),
     ];
-    for (_, g) in &mut result {
+    for (name, g) in &mut result {
+        g.ethology = match *name {
+            "ambush predator" => behavior.predator.clone(),
+            "scavenger" => behavior.scavenger.clone(),
+            _ => behavior.forager.clone(),
+        };
+        g.life.maturity = behavior.maturity;
+        g.life.senescence = behavior.senescence;
+        g.life.clutch_size = behavior.clutch_size;
+        g.life.offspring_fraction = behavior.offspring_fraction;
+        if *name == "ambush predator" {
+            g.life.offspring_fraction = behavior.predator_offspring_fraction;
+        }
+        if *name == "burrower" {
+            g.life.clutch_size = behavior.burrower_clutch_size;
+            g.life.offspring_fraction = behavior.burrower_offspring_fraction;
+        }
         g.repair(limits);
     }
     result
@@ -169,6 +222,80 @@ mod tests {
         ron::from_str::<Config>(include_str!("../../../../config/world.ron"))
             .unwrap()
             .genome
+    }
+
+    #[test]
+    fn zoo_behavior_schema_rejects_unknown_invalid_and_missing_genes() {
+        let source = include_str!("../../../../config/zoo.ron");
+        assert!(ZooBehavior::parse(source).is_ok());
+        for changed in [
+            source.replace("maturity: 2000", "maturity: 0"),
+            source.replace("senescence: 20000", "senescence: 2000"),
+            source.replace("clutch_size: 2", "clutch_size: 0"),
+            source.replace("clutch_size: 2", "clutch_size: 17"),
+            source.replace("offspring_fraction: 0.15", "offspring_fraction: 0.0"),
+            source.replace("offspring_fraction: 0.15", "offspring_fraction: 0.6"),
+            source.replace("burrower_clutch_size: 1", "burrower_clutch_size: 0"),
+            source.replace(
+                "burrower_offspring_fraction: 0.5",
+                "burrower_offspring_fraction: 1.0",
+            ),
+            source.replace(
+                "predator_offspring_fraction: 0.3",
+                "predator_offspring_fraction: -0.1",
+            ),
+            source.replace("frequency: 0.001", "frequency: -1.0"),
+            source.replace("weight: 1.0", "weight: 17.0"),
+            source.replace("maturity: 2000", "unknown: 2000"),
+        ] {
+            assert!(ZooBehavior::parse(&changed).is_err());
+        }
+    }
+
+    #[test]
+    fn authored_zoo_has_inheritable_feeding_and_mating_preferences() {
+        for (name, genome) in zoo(&limits()) {
+            assert_eq!(genome.ethology.neurons.len(), 13, "{name}");
+            let mut sensors = vec![0.0; 20];
+            sensors[0] = 0.9;
+            sensors[2] = 1.0;
+            sensors[3] = 1.0;
+            sensors[4] = 1.0;
+            sensors[11] = 1.0;
+            let mut brain = genome.ethology.state();
+            genome.ethology.step(&mut brain, &sensors, &[], &[], 0.0);
+            assert!(brain.values[3] > brain.values[8], "{name}: feeding");
+            assert!(brain.values[7] > brain.values[8], "{name}: mating");
+            assert!(
+                brain.values[4] > brain.values[3],
+                "{name}: approach a compatible mate while fed"
+            );
+            assert!(
+                brain.values[6] < brain.values[3],
+                "{name}: avoid kin attack"
+            );
+            sensors[3] = 0.15;
+            genome.ethology.step(&mut brain, &sensors, &[], &[], 10.0);
+            assert!(
+                brain.values[4] < brain.values[3],
+                "{name}: juveniles seek food instead of mates"
+            );
+            sensors[3] = 1.0;
+            sensors[0] = 0.1;
+            sensors[11] = 0.0;
+            genome.ethology.step(&mut brain, &sensors, &[], &[], 10.0);
+            assert!(
+                brain.values[4] < brain.values[3],
+                "{name}: no pursuit of unlike neighbors"
+            );
+            if name == "ambush predator" {
+                assert!(
+                    brain.values[6] > brain.values[3],
+                    "hungry predator attacks unlike neighbors"
+                );
+            }
+            genome.validate(&limits()).unwrap();
+        }
     }
 
     #[test]

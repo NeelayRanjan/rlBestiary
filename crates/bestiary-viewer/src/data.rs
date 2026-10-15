@@ -90,6 +90,12 @@ pub enum Job {
     Refresh,
     Command(Request),
     Replay(ReplayKey),
+    Combine {
+        generation: u64,
+        genome: Box<bestiary_core::genome::Genome>,
+        config: Box<bestiary_sim::config::Config>,
+    },
+    Release(Request),
 }
 pub enum Message {
     Snapshot(Arc<Snapshot>),
@@ -97,6 +103,8 @@ pub enum Message {
     ReplayMissing(ReplayKey),
     Error(String),
     CommandDone,
+    Combined(u64, Result<bestiary_sim::combine::Evaluation, String>),
+    Released(Result<(), String>),
 }
 #[derive(Resource)]
 pub struct Feed {
@@ -110,6 +118,20 @@ impl Feed {
         std::thread::spawn(move || {
             while let Ok(job) = jobs.recv() {
                 let result = match job {
+                    Job::Combine {
+                        generation,
+                        genome,
+                        config,
+                    } => Ok(Message::Combined(
+                        generation,
+                        bestiary_sim::combine::evaluate(&genome, &config),
+                    )),
+                    Job::Release(command) => Ok(Message::Released(match request(&path, command) {
+                        Ok(Response::Ok) => Ok(()),
+                        Ok(Response::Error(error)) => Err(error),
+                        Ok(_) => Err("Unexpected release response".into()),
+                        Err(error) => Err(error.to_string()),
+                    })),
                     Job::Refresh => read(&path).map(|s| Message::Snapshot(Arc::new(s))),
                     Job::Command(command) => match request(&path, command) {
                         Ok(Response::Error(e)) => Err(e),
@@ -273,6 +295,124 @@ pub fn notable(event: &EcologyEvent) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn designer_builds_combines_and_releases_into_a_running_world() {
+        use std::time::{Duration, Instant};
+        let directory =
+            std::env::temp_dir().join(format!("bestiary-designer-ipc-{}", std::process::id()));
+        std::fs::create_dir_all(&directory).unwrap();
+        let path = directory.join("world.db");
+        let mut config = bestiary_sim::config::Config::bundled();
+        config.world.grid = 8;
+        let world = World::new(42, config.clone(), 0).unwrap();
+        Store::create(&path).unwrap().save(&world).unwrap();
+        let daemon_path = path.clone();
+        let daemon =
+            std::thread::spawn(move || bestiary_daemon::run(&daemon_path, None, 100, Some(1.0)));
+        struct StopDaemon(
+            PathBuf,
+            Option<std::thread::JoinHandle<bestiary_daemon::Result<()>>>,
+        );
+        impl Drop for StopDaemon {
+            fn drop(&mut self) {
+                let _ = request(&self.0, Request::Stop);
+                if let Some(thread) = self.1.take() {
+                    let _ = thread.join();
+                }
+            }
+        }
+        let mut cleanup = StopDaemon(path.clone(), Some(daemon));
+        let deadline = Instant::now() + Duration::from_secs(30);
+        loop {
+            if matches!(request(&path, Request::Pause(true)), Ok(Response::Ok)) {
+                break;
+            }
+            assert!(
+                !cleanup.1.as_ref().unwrap().is_finished(),
+                "daemon failed to start"
+            );
+            assert!(Instant::now() < deadline, "daemon start timed out");
+            std::thread::sleep(Duration::from_millis(10));
+        }
+        let before = read(&path).unwrap();
+        assert!(before.live && before.paused);
+        let mut designer = crate::designer::Designer::new(
+            world.genomes.values().next().unwrap().genome.clone(),
+            &config,
+        );
+        designer.genome.bones[0].density *= 1.01;
+        designer.changed(&config);
+        assert!(designer.report(&config).valid());
+        let feed = Feed::new(path.clone());
+        feed.tx
+            .send(Job::Combine {
+                generation: designer.generation,
+                genome: Box::new(designer.genome.clone()),
+                config: Box::new(config.clone()),
+            })
+            .unwrap();
+        let Message::Combined(generation, evaluation) = feed
+            .rx
+            .lock()
+            .unwrap()
+            .recv_timeout(Duration::from_secs(30))
+            .unwrap()
+        else {
+            panic!("expected measured combine result");
+        };
+        assert!(designer.accept_evaluation(generation, evaluation));
+        let measured = designer.evaluation.as_ref().unwrap();
+        assert!(measured.viability > 0.0 && !measured.exploit_suspect);
+        assert!(measured
+            .trials
+            .iter()
+            .any(|trial| trial.kind == TrialKind::Sprint
+                && trial
+                    .replay
+                    .as_ref()
+                    .is_some_and(|replay| !replay.frames.is_empty())));
+        assert_eq!(
+            read(&path).unwrap().revision,
+            before.revision,
+            "editor combine does not alter world"
+        );
+        feed.tx
+            .send(Job::Release(Request::Release {
+                genome: designer.genome.clone(),
+                count: 4,
+                position: [10.0, 12.0],
+            }))
+            .unwrap();
+        let Message::Released(released) = feed
+            .rx
+            .lock()
+            .unwrap()
+            .recv_timeout(Duration::from_secs(30))
+            .unwrap()
+        else {
+            panic!("expected release response");
+        };
+        released.unwrap();
+        let after = read(&path).unwrap();
+        assert_eq!(after.world.tick, before.world.tick);
+        assert_eq!(after.world.agents.len(), 4);
+        assert!(after
+            .world
+            .agents
+            .iter()
+            .all(|agent| agent.genome == designer.hash && agent.position == [10.0, 12.0]));
+        assert_eq!(after.world.genomes[&designer.hash].traits, measured.traits);
+        assert_eq!(after.world.totals(), before.world.totals());
+        assert!(after.world.conserved());
+        assert!(matches!(
+            request(&path, Request::Stop).unwrap(),
+            Response::Ok
+        ));
+        cleanup.1.take().unwrap().join().unwrap().unwrap();
+        drop(feed);
+        drop(cleanup);
+        std::fs::remove_dir_all(directory).unwrap();
+    }
     #[test]
     fn live_snapshot_excludes_samples_and_events_from_a_newer_database_save() {
         let mut world = World::new(42, bestiary_sim::config::Config::bundled(), 1).unwrap();

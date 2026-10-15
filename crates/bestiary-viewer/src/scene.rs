@@ -367,7 +367,7 @@ pub fn rebuild(
     }
     let snapshot = view.snapshot.clone();
     let world = &snapshot.world;
-    if view.tab == Tab::Inspector {
+    if view.tab.is_body() {
         let floor = palette.material(appearance.ground_color, &mut materials);
         commands.spawn((
             Mesh3d(palette.cube.clone()),
@@ -375,16 +375,16 @@ pub fn rebuild(
             Transform::from_xyz(0.0, -0.1, 0.0).with_scale(Vec3::new(200.0, 0.2, 200.0)),
             Visual,
         ));
-        if let Some(g) = world.genomes.get(&view.genome) {
-            if let Ok(body) = g.genome.expand(&world.config.genome) {
+        if let Some(genome) = view.body_genome() {
+            if let Ok(body) = genome.expand(&world.config.genome) {
                 draw_body(
                     &mut commands,
                     &mut palette,
                     &mut materials,
                     &mut meshes,
-                    view.genome,
+                    view.body_hash(),
                     &body,
-                    &g.genome,
+                    genome,
                     Vec3::ZERO,
                     true,
                     None,
@@ -541,14 +541,7 @@ pub fn animate(
 ) {
     for (part, mut transform) in &mut parts {
         let frames = if part.inspector {
-            if view.live_preview {
-                Some(inspector.poses.as_slice())
-            } else {
-                view.replays
-                    .get(&(view.genome, view.trial))
-                    .and_then(|r| r.frames.get(view.replay_frame))
-                    .map(Vec::as_slice)
-            }
+            inspector_poses(&view, &inspector)
         } else {
             view.replays
                 .get(&(part.hash, TrialKind::Sprint))
@@ -576,8 +569,8 @@ pub fn animate(
         transform.rotation = Quat::from_array(pose.rotation) * part.local_rotation;
     }
     for (target, mut transform, mut visible) in &mut targets {
-        let replay = (!view.live_preview)
-            .then(|| view.replays.get(&(view.genome, view.trial)))
+        let replay = (!view.live_preview && body_preview_enabled(&view))
+            .then(|| view.replays.get(&(view.body_hash(), view.trial)))
             .flatten();
         if let Some(pose) = replay
             .and_then(|replay| strike_target_pose(replay, view.replay_frame, target.body_parts))
@@ -609,12 +602,32 @@ fn displayed_point(
             Vec3::new(root[0], 0.0, root[2])
         }
 }
+pub(super) fn body_rest_poses(body: &Body) -> Vec<Pose> {
+    let lift = bestiary_sim::genome::spawn_lift(body);
+    body.parts
+        .iter()
+        .map(|part| {
+            let mut translation: [f32; 3] = part.pose.translation.vector.into();
+            translation[1] += lift;
+            Pose {
+                translation,
+                rotation: part.pose.rotation.coords.into(),
+            }
+        })
+        .collect()
+}
+fn body_preview_enabled(view: &View) -> bool {
+    view.tab != Tab::Designer || view.designer.preview
+}
 fn inspector_poses<'a>(view: &'a View, inspector: &'a Inspector) -> Option<&'a [Pose]> {
+    if !body_preview_enabled(view) {
+        return None;
+    }
     if view.live_preview {
         Some(inspector.poses.as_slice())
     } else {
         view.replays
-            .get(&(view.genome, view.trial))
+            .get(&(view.body_hash(), view.trial))
             .and_then(|r| r.frames.get(view.replay_frame))
             .map(Vec::as_slice)
     }
@@ -628,9 +641,9 @@ pub fn contact_ground(
     mut lights: Query<&mut DirectionalLight>,
 ) {
     for mut light in &mut lights {
-        light.shadows_enabled = view.tab == Tab::Inspector && appearance.inspector_shadows;
+        light.shadows_enabled = view.tab.is_body() && appearance.inspector_shadows;
     }
-    if view.tab != Tab::Inspector {
+    if !view.tab.is_body() {
         return;
     }
     let spacing = appearance.contact_grid_spacing;
@@ -669,14 +682,7 @@ pub fn animate_tissue(
 ) {
     for (muscle, mut transform, mut visibility, mut material) in &mut muscles {
         let frames = if muscle.inspector {
-            if view.live_preview {
-                Some(inspector.poses.as_slice())
-            } else {
-                view.replays
-                    .get(&(view.genome, view.trial))
-                    .and_then(|r| r.frames.get(view.replay_frame))
-                    .map(Vec::as_slice)
-            }
+            inspector_poses(&view, &inspector)
         } else {
             view.replays
                 .get(&(muscle.hash, TrialKind::Sprint))
@@ -711,7 +717,7 @@ pub fn animate_tissue(
             *visibility = Visibility::Hidden;
         }
         // Replay files contain poses, not activation: never fabricate a brain signal.
-        let activation = if muscle.inspector && view.live_preview {
+        let activation = if muscle.inspector && view.live_preview && body_preview_enabled(&view) {
             inspector
                 .creature
                 .as_ref()
@@ -755,7 +761,7 @@ pub fn camera(
             view.radius = (view.radius * (-scroll * 0.1).exp()).clamp(2.0, 5000.0);
         }
     }
-    if view.tab == Tab::Inspector {
+    if view.tab.is_body() {
         view.target = inspector_poses(&view, &inspector)
             .and_then(|p| p.first())
             .map(|p| Vec3::from_array(p.translation))
@@ -826,7 +832,7 @@ pub fn viewport(
     } else {
         UVec2::new(2880, 1920)
     };
-    if !matches!(view.tab, Tab::World | Tab::Inspector) {
+    if view.tab != Tab::World && !view.tab.is_body() {
         return;
     }
     let (position, size) = viewport_bounds(view.canvas_rect, view.canvas_scale, maximum);
@@ -854,22 +860,21 @@ pub fn joints_and_muscles(
     appearance: Res<anatomy::Appearance>,
     mut gizmos: Gizmos,
 ) {
-    if view.tab != Tab::Inspector || view.anatomy {
+    if !view.tab.is_body() || view.anatomy {
         return;
     }
-    let Some(creature) = &inspector.creature else {
+    let Some(genome) = view.body_genome() else {
         return;
     };
-    let poses = if view.live_preview {
-        inspector.poses.as_slice()
-    } else if let Some(poses) = view
-        .replays
-        .get(&(view.genome, view.trial))
-        .and_then(|r| r.frames.get(view.replay_frame))
-    {
-        poses.as_slice()
-    } else {
+    let Ok(body) = genome.expand(&view.snapshot.world.config.genome) else {
         return;
+    };
+    let rest_poses;
+    let poses = if let Some(poses) = inspector_poses(&view, &inspector) {
+        poses
+    } else {
+        rest_poses = body_rest_poses(&body);
+        &rest_poses
     };
     if poses.is_empty() {
         return;
@@ -881,17 +886,19 @@ pub fn joints_and_muscles(
                 + Quat::from_array(pose.rotation) * Vec3::from_array(local),
         )
     };
-    for muscle in &creature.body.muscles {
+    for muscle in &body.muscles {
         let Some(a) = point(muscle.origin_part, muscle.origin) else {
             continue;
         };
         let Some(b) = point(muscle.insertion_part, muscle.insertion) else {
             continue;
         };
-        let activation = if view.live_preview {
-            creature.brains[muscle.origin_part]
-                .values
-                .get(muscle.output)
+        let activation = if view.live_preview && body_preview_enabled(&view) {
+            inspector
+                .creature
+                .as_ref()
+                .and_then(|creature| creature.brains.get(muscle.origin_part))
+                .and_then(|brain| brain.values.get(muscle.output))
                 .copied()
                 .unwrap_or(0.0)
                 .clamp(0.0, 1.0)
@@ -900,7 +907,7 @@ pub fn joints_and_muscles(
         };
         gizmos.line(a, b, appearance.muscle_tint(activation));
     }
-    for (i, p) in creature.body.parts.iter().enumerate().skip(1) {
+    for (i, p) in body.parts.iter().enumerate().skip(1) {
         if let Some(edge) = &p.incoming {
             let local = bestiary_core::genome::attachment_point(
                 p.size,
@@ -953,6 +960,24 @@ fn viewport_bounds(rect: [f32; 4], scale: f32, maximum: UVec2) -> (UVec2, UVec2)
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn designer_rest_pose_uses_expanded_bones_and_physical_spawn_height() {
+        let config = bestiary_sim::config::Config::bundled();
+        for (name, genome) in bestiary_core::genome::zoo(&config.genome) {
+            let body = genome.expand(&config.genome).unwrap();
+            let poses = body_rest_poses(&body);
+            let lift = bestiary_sim::genome::spawn_lift(&body);
+            assert_eq!(poses.len(), body.parts.len(), "{name}");
+            for (part, pose) in body.parts.iter().zip(&poses) {
+                let expected = part.pose.translation.vector;
+                assert_eq!(
+                    pose.translation,
+                    [expected.x, expected.y + lift, expected.z]
+                );
+                assert_eq!(pose.rotation, <[f32; 4]>::from(part.pose.rotation.coords));
+            }
+        }
+    }
     #[test]
     fn planted_foot_and_muscle_attachment_remain_fixed_as_torso_advances() {
         let foot = Pose {

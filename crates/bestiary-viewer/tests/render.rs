@@ -86,7 +86,7 @@ fn render(
     expected_tick: u64,
     panel: &str,
     headless: bool,
-) {
+) -> serde_json::Value {
     let log_path = output.with_extension("log");
     let log = std::fs::File::create(&log_path).unwrap();
     let mut command = Command::new(env!("CARGO_BIN_EXE_bestiary-viewer"));
@@ -166,7 +166,7 @@ fn render(
     .unwrap();
     assert_eq!(report["live"], expected_live);
     assert_eq!(report["panel"], panel);
-    if panel == "Inspector" {
+    if matches!(panel, "Inspector" | "Designer") {
         assert_eq!(report["anatomy"], true);
         assert!(
             report["muscle_meshes"].as_u64().unwrap() > 0,
@@ -175,6 +175,34 @@ fn render(
     }
     assert_eq!(report["tick"], expected_tick);
     assert!(report["frames"].as_u64().unwrap() >= 1);
+    if panel == "Designer" {
+        let matching_pixels = |expected: [u8; 3]| {
+            (image.height() / 6..image.height() * 5 / 6)
+                .flat_map(|y| (image.width() / 5..image.width() * 7 / 10).map(move |x| (x, y)))
+                .filter(|(x, y)| {
+                    image
+                        .get_pixel(*x, *y)
+                        .0
+                        .into_iter()
+                        .zip(expected)
+                        .all(|(actual, expected)| actual.abs_diff(expected) <= 8)
+                })
+                .count()
+        };
+        assert!(
+            matching_pixels([255, 215, 0]) > 8,
+            "designer omitted its gold joint attachment handle"
+        );
+        assert!(
+            matching_pixels([173, 216, 230]) > 8,
+            "designer omitted its blue child-joint attachment handle"
+        );
+        assert!(
+            report["visible_body_parts"].as_u64().unwrap() > 0,
+            "designer body was not inside the camera frustum"
+        );
+    }
+    report
 }
 
 fn live_snapshot(path: &Path) -> World {
@@ -221,6 +249,7 @@ fn headless_render_smoke_and_viewer_attach_detach_preserve_state_hash() {
     for panel in [
         "World",
         "Inspector",
+        "Designer",
         "Archive",
         "Phylogeny",
         "Charts",
@@ -253,4 +282,37 @@ fn headless_render_smoke_and_viewer_attach_detach_preserve_state_hash() {
     daemon.stop();
     let saved: World = Store::open(&path, true).unwrap().load().unwrap();
     assert_eq!(before.state_hash(), saved.state_hash());
+}
+
+/// Render real draft geometry and projected endpoint controls through the normal
+/// Bevy/egui frame path. Editing has no write access to the saved world snapshot.
+#[test]
+#[ignore = "requires a graphics adapter; run scripts/check-viewer-render"]
+fn designer_native_editor_renders_draft_anatomy_and_attachment_handles_without_mutating_world() {
+    let directory = TemporaryDirectory(
+        std::env::temp_dir().join(format!("bestiary-designer-render-{}", std::process::id())),
+    );
+    std::fs::create_dir(&directory.0).unwrap();
+    let path = directory.0.join("world.db");
+    let mut config = Config::bundled();
+    config.world.grid = 8;
+    let world = World::new(29, config, 4).unwrap();
+    Store::create(&path).unwrap().save(&world).unwrap();
+    let genome = &world.genomes[&world.agents[0].genome].genome;
+    let expected_parts = genome.expand(&world.config.genome).unwrap().parts.len();
+    let before_bytes = std::fs::read(&path).unwrap();
+    let before_hash = world.state_hash();
+    let report = render(
+        &path,
+        &directory.0.join("designer.png"),
+        false,
+        0,
+        "Designer",
+        true,
+    );
+    assert_eq!(report["body_hash"], serde_json::json!(genome.hash()));
+    assert_eq!(report["body_parts"], expected_parts);
+    assert_eq!(before_bytes, std::fs::read(&path).unwrap());
+    let after: World = Store::open(&path, true).unwrap().load().unwrap();
+    assert_eq!(before_hash, after.state_hash());
 }

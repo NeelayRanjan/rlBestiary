@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M9 — Designer and zoo; M7 runs continue in parallel, and their numeric results will be revisited after implementation at the user’s request.
+Current task: M10 — shipping, coverage and final current-binary validation; M5/M7 numeric failures remain unticked and prohibit tagging.
 
 ## MVP checkpoint (scope changed at the user's request)
 - [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
@@ -96,8 +96,8 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [x] Sparse MAP-Elites grid over all seven specified descriptors and deterministic elite selection.
 - [x] Coverage definition, persistence, export and optional reseeding (off by default).
 - [x] Every archived genome reproduces recorded traits; exploit exclusion.
-- [ ] >=15% reachable-cell coverage, greater body size in parts, >=3 live species at demo seed.
-- [ ] Five-seed end-of-run trait variance and coverage growth tests.
+- [ ] >=15% reachable-cell coverage, greater body size in parts, >=3 live species at demo seed. Fresh seed 42 at 1M: 5 species, 15-part species founder versus 13-part original founders, but only 5/128 cells (3.90625%); evidence/v1/demo-million-ticks.log.
+- [ ] Five-seed end-of-run trait variance and coverage growth tests. All five completed 1M without collapse; all five coverage curves plateaued in the final quarter (0/5 pass); evidence/v1/evolution-million-ticks.log.
 - [x] Pass make check and commit M7 mechanics; long-run acceptance remains explicitly open.
 
 ## M8 Viewer
@@ -125,13 +125,13 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [x] Pass make check and commit M8 as the user-requested MVP checkpoint.
 
 ## M9 Designer and zoo
-- [ ] 3D bone/joint/muscle/recursion/reflection/sensor/life-history editing.
-- [ ] Live mass/parts/metabolic-cost/bounds validity panel; muscle activation visualization.
-- [ ] Combine, traits and replay from editor; founding-population release at chosen location.
-- [ ] Save/load/share-string round-trip.
-- [ ] Eight presets: grazer, sprinter, ambush predator, scavenger, burrower, swimmer, serpent, radial drifter.
-- [ ] Every preset round-trips, combines and survives first generation.
-- [ ] Pass make check and commit M9.
+- [x] 3D bone/joint/muscle/recursion/reflection/sensor/life-history editing.
+- [x] Live mass/parts/metabolic-cost/bounds validity panel; muscle activation visualization.
+- [x] Combine, traits and replay from editor; founding-population release at chosen location.
+- [x] Save/load/share-string round-trip.
+- [x] Eight presets: grazer, sprinter, ambush predator, scavenger, burrower, swimmer, serpent, radial drifter.
+- [x] Every preset round-trips, combines and survives first generation.
+- [x] Pass make check and commit M9.
 
 ## M10 Ship
 - [ ] RUNBOOK: three-platform builds, daemon/viewer, days-long runs, phylogeny/archive, designer, clips, config, determinism caveat.

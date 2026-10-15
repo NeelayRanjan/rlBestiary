@@ -1,10 +1,13 @@
 mod anatomy;
 mod benchmark;
 mod data;
+mod designer;
+mod designer_handles;
 mod export;
 mod playback;
 mod scene;
 mod ui;
+mod ui_designer;
 use bestiary_sim::{
     combine::{Replay, TrialKind},
     genome::Creature,
@@ -29,10 +32,16 @@ use std::{
 enum Tab {
     World,
     Inspector,
+    Designer,
     Archive,
     Phylogeny,
     Charts,
     Highlights,
+}
+impl Tab {
+    fn is_body(self) -> bool {
+        matches!(self, Self::Inspector | Self::Designer)
+    }
 }
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 enum Overlay {
@@ -52,6 +61,7 @@ enum CameraMode {
 #[derive(Resource)]
 struct View {
     snapshot: Arc<Snapshot>,
+    designer: designer::Designer,
     tab: Tab,
     overlay: Overlay,
     selected: Option<u64>,
@@ -91,6 +101,26 @@ struct View {
     benchmark_visible: [usize; 2],
     canvas_rect: [f32; 4],
     canvas_scale: f32,
+}
+impl View {
+    fn body_genome(&self) -> Option<&bestiary_core::genome::Genome> {
+        if self.tab == Tab::Designer {
+            Some(&self.designer.genome)
+        } else {
+            self.snapshot
+                .world
+                .genomes
+                .get(&self.genome)
+                .map(|g| &g.genome)
+        }
+    }
+    fn body_hash(&self) -> [u8; 32] {
+        if self.tab == Tab::Designer {
+            self.designer.hash
+        } else {
+            self.genome
+        }
+    }
 }
 struct Clip {
     dir: PathBuf,
@@ -143,6 +173,7 @@ fn run() -> Result<(), String> {
     {
         None | Some("world") => Tab::World,
         Some("inspector") => Tab::Inspector,
+        Some("designer") => Tab::Designer,
         Some("archive") => Tab::Archive,
         Some("phylogeny") => Tab::Phylogeny,
         Some("charts") => Tab::Charts,
@@ -169,7 +200,12 @@ fn run() -> Result<(), String> {
         .next()
         .copied()
         .unwrap_or([0; 7]);
+    let designer = designer::Designer::new(
+        snapshot.world.genomes[&genome].genome.clone(),
+        &snapshot.world.config,
+    );
     let mut view = View {
+        designer,
         selected,
         snapshot,
         genome,
@@ -177,7 +213,7 @@ fn run() -> Result<(), String> {
         overlay: Overlay::Biomass,
         mode: CameraMode::Free,
         target: Vec3::new(extent * 0.5, 0.0, extent * 0.5),
-        radius: if tab == Tab::Inspector {
+        radius: if tab.is_body() {
             5.0
         } else if benchmark {
             extent * 1.7
@@ -273,6 +309,7 @@ fn run() -> Result<(), String> {
         (
             poll,
             ui::panel.run_if(not(resource_exists::<export::CameraOnly>)),
+            designer_handles::draw,
             prepare_clip_frame,
             simulate_inspector,
             scene::camera,
@@ -406,6 +443,32 @@ fn poll(mut view: ResMut<View>, feed: Res<Feed>, time: Res<Time>) {
                 view.pending_refresh = false;
             }
             Message::CommandDone => {}
+            Message::Combined(generation, result) => {
+                if view.designer.accept_evaluation(generation, result) {
+                    if let Some(evaluation) = view.designer.evaluation.clone() {
+                        for trial in evaluation.trials {
+                            if let Some(replay) = trial.replay {
+                                view.replays
+                                    .insert((evaluation.genome_hash, replay.kind), replay);
+                            }
+                        }
+                        view.designer.preview = true;
+                        view.live_preview = false;
+                        view.playing = true;
+                        view.trial = TrialKind::Sprint;
+                        view.play_time = 0.0;
+                        view.replay_frame = 0;
+                        view.dirty = true;
+                    }
+                }
+            }
+            Message::Released(result) => {
+                view.designer.status = match result {
+                    Ok(()) => "Founding population released into the running world.".into(),
+                    Err(error) => format!("Release failed: {error}"),
+                };
+                let _ = feed.tx.send(Job::Refresh);
+            }
         }
     }
     view.timer.tick(time.delta());
@@ -425,7 +488,7 @@ fn poll(mut view: ResMut<View>, feed: Res<Feed>, time: Res<Time>) {
     if view.playing && view.clip.is_none() {
         view.play_time += time.delta_secs();
     }
-    if let Some(replay) = view.replays.get(&(view.genome, view.trial)) {
+    if let Some(replay) = view.replays.get(&(view.body_hash(), view.trial)) {
         if view.playing && view.clip.is_none() {
             view.replay_frame =
                 playback::frame_index(view.play_time, replay.dt, replay.frames.len());
@@ -446,7 +509,7 @@ fn prepare_clip_frame(mut view: ResMut<View>) {
     if view.tab == Tab::World {
         view.world_play_time = frame.seconds;
     }
-    if let Some(replay) = view.replays.get(&(view.genome, view.trial)) {
+    if let Some(replay) = view.replays.get(&(view.body_hash(), view.trial)) {
         view.replay_frame = if clamp {
             playback::clamped_frame_index(frame.seconds, replay.dt, replay.frames.len())
         } else {
@@ -455,20 +518,21 @@ fn prepare_clip_frame(mut view: ResMut<View>) {
     }
 }
 fn simulate_inspector(view: Res<View>, time: Res<Time>, mut inspector: NonSendMut<Inspector>) {
-    if view.tab != Tab::Inspector {
+    if !view.tab.is_body() {
         return;
     }
-    if inspector.hash != Some(view.genome) {
+    if inspector.hash != Some(view.body_hash()) {
         inspector.creature = view
-            .snapshot
-            .world
-            .genomes
-            .get(&view.genome)
-            .and_then(|g| Creature::new(g.genome.clone(), &view.snapshot.world.config).ok());
-        inspector.hash = Some(view.genome);
+            .body_genome()
+            .and_then(|genome| Creature::new(genome.clone(), &view.snapshot.world.config).ok());
+        inspector.hash = Some(view.body_hash());
         inspector.accumulator = 0.0;
     }
-    if view.playing && view.live_preview && view.clip.is_none() {
+    if view.playing
+        && view.live_preview
+        && view.clip.is_none()
+        && (view.tab != Tab::Designer || view.designer.preview)
+    {
         inspector.accumulator += time.delta_secs().min(0.05);
         while inspector.accumulator >= 1.0 / 240.0 {
             if let Some(creature) = &mut inspector.creature {
@@ -532,7 +596,7 @@ fn capture(
     if view.frame == 90 {
         if let Some(path) = view.smoke.take() {
             let completion = completion.clone();
-            let report = serde_json::json!({"live":view.snapshot.live,"panel":format!("{:?}",view.tab),"tick":view.snapshot.world.tick,"frames":view.frame,"anatomy":view.anatomy,"muscle_meshes":muscles.iter().count()});
+            let report = serde_json::json!({"live":view.snapshot.live,"panel":format!("{:?}",view.tab),"tick":view.snapshot.world.tick,"frames":view.frame,"anatomy":view.anatomy,"muscle_meshes":muscles.iter().count(),"body_hash":view.body_hash(),"body_parts":bodies.iter().map(|(part, _)| part.index).collect::<BTreeSet<_>>().len(),"visible_body_parts":bodies.iter().filter(|(_, visible)|visible.get()).map(|(part, _)|part.index).collect::<BTreeSet<_>>().len()});
             commands.spawn(screenshot()).observe(
                 move |event: Trigger<ScreenshotCaptured>, mut exit: EventWriter<AppExit>| {
                     let result = event

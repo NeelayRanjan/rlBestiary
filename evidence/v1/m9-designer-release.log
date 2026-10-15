@@ -1,0 +1,23 @@
+    Blocking waiting for file lock on build directory
+   Compiling bestiary-viewer v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-viewer)
+    Finished `test` profile [optimized + debuginfo] target(s) in 10.59s
+     Running unittests src/main.rs (target/debug/deps/bestiary_viewer-6078f3e3acb5ee87)
+
+running 1 test
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-c60eb5f5d77c85d16b45.sock
+test data::tests::designer_builds_combines_and_releases_into_a_running_world ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 43 filtered out; finished in 6.73s
+
+     Running tests/render.rs (target/debug/deps/render-98d6d0d552324c1f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 2 filtered out; finished in 0.00s
+
+     Running tests/replay_export.rs (target/debug/deps/replay_export-b6a8c43b3b09ff82)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.00s
+

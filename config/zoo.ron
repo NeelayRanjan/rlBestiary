@@ -1,0 +1,85 @@
+// Zoo-only inheritable world behavior and finite lifecycle, embedded in each preset.
+// Existing saved genomes remain self-contained. These settings do not change
+// Genome::starter or World::new, nor grant abilities beyond measured traits.
+(
+    // World ticks: maturity before the default 5,000-tick mating epoch;
+    // senescence gives founders several natural opportunities to reproduce.
+    maturity: 2000,
+    senescence: 20000,
+    // Offspring per successful sexual birth; normal resource transfers apply.
+    clutch_size: 2,
+    // Adult-mass fraction transferred to each juvenile.
+    offspring_fraction: 0.15,
+    // The slow burrower invests in one larger juvenile. Reducing sibling demand
+    // and fixed organ cost per unit reserve helps it leave a depleted birth patch.
+    burrower_clutch_size: 1,
+    burrower_offspring_fraction: 0.5,
+    // Flesh-biased offspring receive a larger reserve while learning no new
+    // behavior in-life; their inherited feeding network pays all ordinary costs.
+    predator_offspring_fraction: 0.3,
+    // Output order: movement X/Z, effort, forage, pursue, flee, attack, mate,
+    // rest, and four pheromone channels. Sensor 0 is reserve fraction, sensor 4
+    // is local plants, sensor 11 is nearest-neighbor genetic similarity.
+    // Positive foraging/mating preferences are inherited neurons, not engine rules.
+    // Pursuit favors compatible neighbors only with surplus energy and adult
+    // growth (sensor 3). Founders approach mates; hungry animals and juveniles
+    // explore food patches instead of staying in a depleted family group.
+    // The ambush predator attacks hungry/unlike neighbors encountered nearby;
+    // pursuit remains mate-oriented, keeping its role distinct from an active hunter.
+    // Effort rises when the local plant patch is depleted, conserving measured
+    // locomotion costs while fed. Flesh efficiency remains in each preset's diet.
+    forager: (
+        frequency: 0.001, phase: 0.0,
+        neurons: [
+            (bias: 0.0, activation: Tanh, inputs: [(input: Oscillator, weight: 1.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 0.3, activation: Tanh, inputs: [(input: Local(0), weight: 0.4, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(4), weight: -4.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 4.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: -2.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -28.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 12.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(11), weight: 8.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(3), weight: 16.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 5.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+        ],
+    ),
+    predator: (
+        frequency: 0.001, phase: 0.0,
+        neurons: [
+            (bias: 0.0, activation: Tanh, inputs: [(input: Oscillator, weight: 1.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 0.3, activation: Tanh, inputs: [(input: Local(0), weight: 0.4, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(4), weight: -4.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 0.0, activation: Sigmoid, inputs: []),
+            (bias: -28.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 12.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(11), weight: 8.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(3), weight: 16.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 6.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: -12.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(11), weight: -8.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 5.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+        ],
+    ),
+    scavenger: (
+        frequency: 0.001, phase: 0.0,
+        neurons: [
+            (bias: 0.0, activation: Tanh, inputs: [(input: Oscillator, weight: 1.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 0.3, activation: Tanh, inputs: [(input: Local(0), weight: 0.4, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(4), weight: -4.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: 4.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: -2.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -28.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 12.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(11), weight: 8.0, learning_rate: 0.0, decay: 0.0), (input: Sensor(3), weight: 16.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -2.0, activation: Sigmoid, inputs: [(input: Sensor(0), weight: 5.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+            (bias: -4.0, activation: Sigmoid, inputs: [(input: Sensor(2), weight: 0.0, learning_rate: 0.0, decay: 0.0)]),
+        ],
+    ),
+)

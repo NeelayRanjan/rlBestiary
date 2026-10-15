@@ -1,0 +1,15 @@
+   Compiling bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+   Compiling bestiary-sim v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-sim)
+   Compiling bestiary-archive v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+   Compiling bestiary-daemon v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-daemon)
+   Compiling bestiary-viewer v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-viewer)
+    Finished `test` profile [optimized + debuginfo] target(s) in 7.21s
+     Running tests/render.rs (target/debug/deps/render-98d6d0d552324c1f)
+
+running 1 test
+rendered 2880x1920 frame with 1080 sampled colors
+test designer_native_editor_renders_draft_anatomy_and_attachment_handles_without_mutating_world ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 8.29s
+
