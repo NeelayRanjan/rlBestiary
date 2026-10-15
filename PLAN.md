@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M5 — predation, scavenging, pathogens, pheromones, geographic change and ecological scenarios.
+Current task: M6 — reproduction, species, persistence and daemon; M5 long-run trophic acceptance remains open.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -60,12 +60,12 @@ Current task: M5 — predation, scavenging, pathogens, pheromones, geographic ch
 - [x] Pass make check and commit M4.
 
 ## M5 Ecology
-- [ ] Strike/mass/armor/speed-based predation, injuries and scavenging.
-- [ ] Evolving pathogens, immunity/resistance and transmission.
-- [ ] Four pheromone channels, emission cost, diffusion/decay and sensing.
-- [ ] Slow uplift, sea-level change, habitat fragmentation and shocks.
-- [ ] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series.
-- [ ] Pass make check and commit M5.
+- [x] Strike/mass/armor/speed-based predation, injuries and scavenging.
+- [x] Evolving pathogens, immunity/resistance and transmission.
+- [x] Four pheromone channels, emission cost, diffusion/decay and sensing.
+- [x] Slow uplift, sea-level change, habitat fragmentation and shocks.
+- [x] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series.
+- [x] Pass make check and commit M5.
 
 ## M6 Reproduction, persistence and daemon
 - [ ] Sexual reproduction, compatibility, mate preference, gestation, clutch and offspring size.

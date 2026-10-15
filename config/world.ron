@@ -1,4 +1,33 @@
 (
+    ecology: (
+        // Damage coefficient for measured strike impulse relative to defender bulk.
+        attack_scale: 20.0,
+        // Millijoules paid per attempted strike.
+        attack_cost: 10000,
+        // Fraction of damage retained as a persistent mobility injury.
+        injury_fraction: 0.2,
+        // Terrain refuge fraction that reduces attack success.
+        refuge_fraction: 0.3,
+        // Number of evolving pathogen strains and selection epoch.
+        pathogen_count: 4,
+        pathogen_epoch: 1000,
+        // Per-encounter transmission, per-tick damage, and antigen drift.
+        transmission: 0.002,
+        virulence: 0.001,
+        antigen_drift: 0.01,
+        // Four-channel diffusion and decay coefficients per tick.
+        pheromone_diffusion: 0.15,
+        pheromone_decay: 0.05,
+        // Millijoules per unit pheromone emission.
+        pheromone_cost: 1000,
+        // Geographic update interval and incremental uplift amplitude.
+        tectonic_epoch: 1000,
+        uplift: 0.001,
+        // Sea-level oscillation amplitude over a long geographic cycle.
+        sea_amplitude: 0.15,
+        // Probability of a cold/drought/disease shock per geographic epoch.
+        shock_probability: 0.002,
+    ),
     world: (
         // Square terrain cell count along each axis.
         grid: 32,

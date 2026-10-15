@@ -75,3 +75,52 @@ impl WorldConfig {
         Ok(())
     }
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct EcologyConfig {
+    pub attack_scale: f32,
+    pub attack_cost: i64,
+    pub injury_fraction: f32,
+    pub refuge_fraction: f32,
+    pub pathogen_count: usize,
+    pub pathogen_epoch: u64,
+    pub transmission: f32,
+    pub virulence: f32,
+    pub antigen_drift: f32,
+    pub pheromone_diffusion: f32,
+    pub pheromone_decay: f32,
+    pub pheromone_cost: i64,
+    pub tectonic_epoch: u64,
+    pub uplift: f32,
+    pub sea_amplitude: f32,
+    pub shock_probability: f32,
+}
+impl EcologyConfig {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.pathogen_count > 32
+            || self.pathogen_epoch == 0
+            || self.tectonic_epoch == 0
+            || self.attack_cost < 0
+            || self.pheromone_cost < 0
+            || [self.attack_scale, self.uplift, self.sea_amplitude]
+                .iter()
+                .any(|x| !x.is_finite() || *x < 0.0)
+            || [
+                self.injury_fraction,
+                self.refuge_fraction,
+                self.transmission,
+                self.virulence,
+                self.antigen_drift,
+                self.pheromone_diffusion,
+                self.pheromone_decay,
+                self.shock_probability,
+            ]
+            .iter()
+            .any(|x| !x.is_finite() || !(0.0..=1.0).contains(x))
+        {
+            return Err("invalid ecology configuration".into());
+        }
+        Ok(())
+    }
+}

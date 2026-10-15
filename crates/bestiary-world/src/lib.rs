@@ -1,4 +1,5 @@
 //! Fixed-tick trait ecology. Rendering and asynchronous execution are forbidden here.
+mod ecology;
 use bestiary_core::{
     brain::{Activation, Brain, BrainState, Connection, Input, Neuron},
     genome::Genome,
@@ -7,6 +8,7 @@ use bestiary_sim::{
     combine::{evaluate, Traits},
     config::Config,
 };
+pub use ecology::*;
 use rand::Rng;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -39,6 +41,7 @@ pub struct LineageGenome {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Agent {
+    pub infection: Option<usize>,
     pub id: u64,
     pub genome: [u8; 32],
     pub position: [f32; 2],
@@ -62,6 +65,9 @@ pub struct Carcass {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct World {
+    pub pathogens: Vec<Pathogen>,
+    pub sea_level: f32,
+    pub ecological_events: Vec<EcologyEvent>,
     pub seed: u64,
     pub tick: u64,
     pub config: Config,
@@ -82,7 +88,9 @@ pub trait WorldRules {
 pub struct NaturalRules;
 impl WorldRules for NaturalRules {
     fn step(&self, world: &mut World) {
+        world.ecological_events.clear();
         world.natural_step();
+        world.ecology_step();
     }
 }
 
@@ -135,6 +143,7 @@ impl World {
         genome: Genome,
     ) -> Result<Self, String> {
         config.world.validate()?;
+        config.ecology.validate()?;
         if population > config.world.population_limit {
             return Err("initial population exceeds configured bound".into());
         }
@@ -182,6 +191,7 @@ impl World {
             let mut rng = bestiary_core::rng(seed, 0x42495254, id as u64, 0);
             let cell = land[rng.gen_range(0..land.len())];
             agents.push(Agent {
+                infection: None,
                 id: id as u64,
                 genome: hash,
                 position: [
@@ -212,7 +222,17 @@ impl World {
                 parents: vec![],
             },
         );
+        let pathogens = (0..config.ecology.pathogen_count)
+            .map(|i| Pathogen {
+                transmission: config.ecology.transmission,
+                virulence: config.ecology.virulence,
+                antigen: [i as f32 / config.ecology.pathogen_count.max(1) as f32; 4],
+            })
+            .collect();
         let mut w = Self {
+            pathogens,
+            sea_level: config.world.water_level,
+            ecological_events: vec![],
             seed,
             tick: 0,
             config,
@@ -307,8 +327,9 @@ impl World {
                 }
             }
         }
+        let neighbors = self.neighbors();
         let extent = cfg.grid as f32 * cfg.cell_metres;
-        for agent in &mut self.agents {
+        for (agent_index, agent) in self.agents.iter_mut().enumerate() {
             if agent.health <= 0.0 {
                 continue;
             }
@@ -319,21 +340,40 @@ impl World {
             let reserve = (traits.mass * agent.growth * cfg.reserve_per_kg as f32) as i64;
             if self.tick % cfg.decision_interval == agent.id % cfg.decision_interval {
                 let cell = &self.cells[cell_id];
-                let inputs = [
+                let neighbor = &neighbors[agent_index];
+                let x = cell_id % cfg.grid;
+                let z = cell_id / cfg.grid;
+                let left = &self.cells[z * cfg.grid + (x + cfg.grid - 1) % cfg.grid];
+                let right = &self.cells[z * cfg.grid + (x + 1) % cfg.grid];
+                let above = &self.cells[((z + cfg.grid - 1) % cfg.grid) * cfg.grid + x];
+                let below = &self.cells[((z + 1) % cfg.grid) * cfg.grid + x];
+                let gx: Vec<_> = (0..4)
+                    .map(|i| (right.pheromones[i] - left.pheromones[i]) / (2.0 * cfg.cell_metres))
+                    .collect();
+                let gz: Vec<_> = (0..4)
+                    .map(|i| (below.pheromones[i] - above.pheromones[i]) / (2.0 * cfg.cell_metres))
+                    .collect();
+                let mut inputs = vec![
                     agent.energy as f32 / reserve.max(1) as f32,
                     agent.age as f32 / genes.life.senescence as f32,
                     agent.health,
                     agent.growth,
                     cell.plant.energy as f32 / cfg.plant_energy.max(1) as f32,
-                    0.0,
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0,
-                    1.0,
-                    0.0,
+                    gx[0],
+                    gx[1],
+                    gx[2],
+                    gx[3],
+                    neighbor
+                        .as_ref()
+                        .map_or(1.0, |n| n.distance / cfg.cell_metres),
+                    neighbor
+                        .as_ref()
+                        .map_or(1.0, |n| n.mass / traits.mass.max(0.001)),
+                    neighbor
+                        .as_ref()
+                        .map_or(0.0, |n| if n.genome == agent.genome { 1.0 } else { 0.0 }),
                     cell.temperature + cfg.season_amplitude * seasonal,
-                    if cell.height < cfg.water_level {
+                    if cell.height < self.sea_level {
                         1.0
                     } else {
                         0.0
@@ -341,6 +381,7 @@ impl World {
                     (self.tick % 240) as f32 / 240.0,
                     seasonal,
                 ];
+                inputs.extend(gz);
                 genes
                     .ethology
                     .step(&mut agent.brain, &inputs, &[], &[], self.tick as f32);
@@ -348,9 +389,17 @@ impl World {
             }
             let output = |i: usize| agent.outputs.get(i).copied().unwrap_or(0.0);
             let effort = output(2).clamp(0.0, 1.0);
-            let dir = [output(0), output(1)];
+            let mut dir = [output(0), output(1)];
+            if let Some(neighbor) = &neighbors[agent_index] {
+                if output(4) > output(3) {
+                    dir = neighbor.direction;
+                }
+                if output(5) > output(4).max(output(3)) {
+                    dir = neighbor.direction.map(|x| -x);
+                }
+            }
             let norm = libm::sqrtf(dir[0] * dir[0] + dir[1] * dir[1]).max(1.0);
-            let speed = if self.cells[cell_id].height < cfg.water_level {
+            let speed = if self.cells[cell_id].height < self.sea_level {
                 traits.swim_speed
             } else {
                 traits.speed
