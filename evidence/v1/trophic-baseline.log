@@ -1,0 +1,11 @@
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 4.96s
+     Running `target/release/examples/trophic config/trophic.ron 0 10000`
+founder=0a7b0032ec9eb5e21c1a1870610ee2459357c4943f046c2b8cf44b760c211598 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=6a535e65a693b4c5be59a4937e4cff1ed8da735a9388d643647dc234090988f3 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+founder=7963749c73706ba8211b47d457fe0c450da85abf01b320db0a11f520f01795bb parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+tick=1000 diet_live=[293, 0, 8] diet_births=[344, 0, 2] lineage_live=[293, 8, 0] lineage_births=[344, 2, 0] species=0 predation=1225 coverage=0.015625 toxicity=0.019342277 resistance=0.100000255 conserved=true
+tick=2000 diet_live=[509, 0, 3] diet_births=[641, 0, 4] lineage_live=[509, 3, 0] lineage_births=[641, 4, 0] species=4 predation=1958 coverage=0.015625 toxicity=0.02060784 resistance=0.0999996 conserved=true
+tick=3000 diet_live=[376, 0, 0] diet_births=[1116, 0, 4] lineage_live=[376, 0, 0] lineage_births=[1116, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.018565957 resistance=0.099999994 conserved=true
+tick=4000 diet_live=[512, 0, 0] diet_births=[1662, 0, 4] lineage_live=[512, 0, 0] lineage_births=[1662, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.010277053 resistance=0.09999959 conserved=true
+tick=5000 diet_live=[512, 0, 0] diet_births=[1998, 0, 4] lineage_live=[512, 0, 0] lineage_births=[1998, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.014385047 resistance=0.09999959 conserved=true

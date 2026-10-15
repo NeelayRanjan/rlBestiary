@@ -11,19 +11,19 @@
     ),
     reproduction: (
         // Deterministic mating/evaluation epoch in world ticks.
-        epoch: 100,
+        epoch: 500,
         // Mate distance in metres; the genetic threshold also normalizes the species-similarity sensor.
         mate_radius: 128.0,
         compatibility_threshold: 0.04,
         // Fraction of parent's energy reserve required before mating.
-        energy_fraction: 0.65,
+        energy_fraction: 0.4,
         // Fraction of reproductive energy dissipated during gestation.
         gestation_loss: 0.1,
         // Probability of proposing mutations on an offspring genome copy.
-        mutation_probability: 0.1,
+        mutation_probability: 0.01,
         // Default founder life-history genes in world ticks.
         founder_maturity: 100,
-        founder_senescence: 5000,
+        founder_senescence: 10000,
         // Species clustering epoch and registration persistence requirements.
         species_epoch: 1000,
         species_min_population: 2,
@@ -33,7 +33,7 @@
         // Health lost per full bite at toxicity one and zero immune investment; applied after healing.
         toxin_damage: 0.05,
         // Damage coefficient for measured strike impulse relative to defender bulk.
-        attack_scale: 10.0,
+        attack_scale: 20.0,
         // Millijoules paid per attempted strike.
         attack_cost: 10000,
         // Fraction of damage retained as a persistent mobility injury.
@@ -65,14 +65,14 @@
         grid: 8,
         // Width of one terrain cell in metres.
         cell_metres: 32.0,
-        // Sixty fixed ticks per simulated hour gives feeding decisions time to respond before reserves empty.
-        seconds_per_tick: 60.0,
+        // Ten-second fixed ecological tick reduces travel and posture costs between meals.
+        seconds_per_tick: 10.0,
         // Recurrent decisions are refreshed on deterministic staggered ticks.
         decision_interval: 1,
         // One seasonal cycle in world ticks.
         season_ticks: 3600,
         // Plant reproduction/selection interval.
-        plant_epoch: 100,
+        plant_epoch: 500,
         // Maximum energy supplied by sunlight per cell/tick, in millijoules.
         solar_per_cell: 10000000,
         // Soil nutrient inventory per cell, in microkilograms.
@@ -94,7 +94,7 @@
         // Maximum fraction of adult mass grown per tick.
         growth_per_tick: 0.005,
         // Fraction of carcass resources returned to soil/heat each tick.
-        decay_fraction: 0.01,
+        decay_fraction: 0.001,
         // Health loss per fully unpaid metabolic tick and recovery per fed tick.
         starvation_damage: 0.02,
         healing: 0.01,
@@ -105,7 +105,7 @@
         // Seasonal variation in temperature and solar availability.
         season_amplitude: 0.3,
         // Explicit finite carrying bound; births beyond it are not admitted.
-        population_limit: 512,
+        population_limit: 128,
         // Fixed integer resource resolution.
         energy_units_per_joule: 1000.0,
         nutrient_units_per_kg: 1000000.0,

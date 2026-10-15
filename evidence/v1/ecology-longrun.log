@@ -1,0 +1,101 @@
+./scripts/cargo test --release -p bestiary-world --test trophic --locked -- --ignored --nocapture --test-threads=1
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 8.76s
+     Running tests/trophic.rs (target/release/deps/trophic-3fe564603f309b5f)
+
+running 2 tests
+test herbivore_only_toxic_plants_show_arms_race_in_trait_time_series ... arms_race tick=100000 population=64 toxicity=0.019411532 resistance=0.09999994
+arms_race tick=200000 population=64 toxicity=0.02249971 resistance=0.09999994
+arms_race tick=300000 population=64 toxicity=0.013621534 resistance=0.09999994
+arms_race tick=400000 population=48 toxicity=0.016741477 resistance=0.09999996
+arms_race tick=500000 population=64 toxicity=0.01830998 resistance=0.09999994
+arms_race tick=600000 population=20 toxicity=0.007689395 resistance=0.10000001
+arms_race tick=700000 population=60 toxicity=0.0057411045 resistance=0.09999994
+arms_race tick=800000 population=0 toxicity=0.02254644 resistance=0
+arms_race tick=900000 population=0 toxicity=0.024509868 resistance=0
+arms_race tick=1000000 population=0 toxicity=0.020048019 resistance=0
+
+thread 'herbivore_only_toxic_plants_show_arms_race_in_trait_time_series' panicked at crates/bestiary-world/tests/trophic.rs:102:5:
+herbivores persist
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+FAILED
+test trophic_levels_all_persist_for_one_million_ticks_on_three_of_five_seeds ... founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+seed=0 tick=100000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=200000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=300000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=400000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=500000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=600000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=700000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=800000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=900000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+seed=0 tick=1000000 population=0 births=112 deaths=156 first_missing=Some(2425) predation=724 conserved=true
+founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+seed=1 tick=100000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=200000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=300000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=400000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=500000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=600000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=700000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=800000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=900000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+seed=1 tick=1000000 population=0 births=120 deaths=164 first_missing=Some(2581) predation=885 conserved=true
+founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+seed=2 tick=100000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=200000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=300000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=400000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=500000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=600000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=700000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=800000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=900000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+seed=2 tick=1000000 population=0 births=138 deaths=182 first_missing=Some(2698) predation=794 conserved=true
+founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+seed=3 tick=100000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=200000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=300000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=400000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=500000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=600000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=700000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=800000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=900000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+seed=3 tick=1000000 population=0 births=114 deaths=158 first_missing=Some(2604) predation=686 conserved=true
+founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+seed=4 tick=100000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=200000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=300000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=400000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=500000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=600000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=700000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=800000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=900000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+seed=4 tick=1000000 population=0 births=114 deaths=158 first_missing=Some(2754) predation=771 conserved=true
+
+thread 'trophic_levels_all_persist_for_one_million_ticks_on_three_of_five_seeds' panicked at crates/bestiary-world/tests/trophic.rs:70:5:
+trophic persistence: 0/5 seeds, requires >=3
+FAILED
+
+failures:
+
+failures:
+    herbivore_only_toxic_plants_show_arms_race_in_trait_time_series
+    trophic_levels_all_persist_for_one_million_ticks_on_three_of_five_seeds
+
+test result: FAILED. 0 passed; 2 failed; 0 ignored; 0 measured; 1 filtered out; finished in 153.36s
+
+error: test failed, to rerun pass `-p bestiary-world --test trophic`
+make: *** [ecology-longrun] Error 101

@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: MVP checkpoint complete and ready to push (simulation + viewer + zoo + PNG replay export). Full v1 research/designer acceptance remains deferred.
+Current task: M7 — run fresh demo coverage and five-seed stagnation acceptance; M5 numeric failures remain open.
 
 ## MVP checkpoint (scope changed at the user's request)
 - [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
@@ -10,7 +10,7 @@ Current task: MVP checkpoint complete and ready to push (simulation + viewer + z
 - [x] Record current throughput gates after the final movement changes: combine 0.755 s, world 12,767 ticks/minute, viewer 116.47 fps.
 - [x] Complete final checks and make a local, pushable MVP commit; no full v1 tag.
 
-The M5/M7 long-run acceptance, M9 designer/first-generation survival and M10 full release checklist below remain deferred, not passed. Do not resume them automatically as part of this MVP checkpoint.
+The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5/M7 acceptance, M9 and M10 in that order; the full SPEC Completion checklist is binding. Numeric failures remain unticked and prohibit tagging.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -65,7 +65,7 @@ The M5/M7 long-run acceptance, M9 designer/first-generation survival and M10 ful
 - [x] Trait-based movement and recurrent ethology choices; growth, senescence and death.
 - [x] Deterministic collections, subsystem/entity/tick RNG, libm, canonical full-state hash.
 - [x] World rule trait for phase-two extension; document two-brain compromise.
-- [x] Conservation for 1M ticks, five-seed population stability, hashes at 1k/100k/1M.
+- [ ] Revalidate conservation for 1M ticks, five-seed stability and hashes at 1k/100k/1M with actual births and deaths on the current binary.
 - [x] World throughput >=5,000 creatures at 10,000 ticks/minute on one core.
 - [x] Pass make check and commit M4.
 
@@ -74,7 +74,8 @@ The M5/M7 long-run acceptance, M9 designer/first-generation survival and M10 ful
 - [x] Evolving pathogens, immunity/resistance and transmission.
 - [x] Four pheromone channels, emission cost, diffusion/decay and sensing.
 - [x] Slow uplift, sea-level change, habitat fragmentation and shocks.
-- [ ] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series.
+- [ ] Trophic persistence on three of five seeds over 1M ticks; plant/herbivore arms-race series. Fresh full runs failed (0/5; herbivore collapse by 800k), evidence/v1/ecology-longrun.log.
+- [x] Add named acceptance tests and run four tuning candidates; preserve failed gates under the user’s numeric-failure exception.
 - [x] Pass make check and commit M5.
 
 ## M6 Reproduction, persistence and daemon

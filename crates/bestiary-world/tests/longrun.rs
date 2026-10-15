@@ -36,29 +36,49 @@ fn conservation_determinism_and_snapshot_resume() {
 #[ignore = "one-million-tick acceptance run; invoked by make longrun"]
 fn five_seeds_one_million_ticks_conservation_stability_and_determinism() {
     for seed in 0..5 {
-        let mut config = Config::bundled();
-        config.world.grid = 8;
-        config.reproduction.epoch = 2_000_000;
-        let g = founder(&config);
-        let mut a = World::with_founder(seed, config, 8, g).unwrap();
-        let mut b = a.clone();
+        let config = Config::parse(include_str!("../../../config/validation.ron")).unwrap();
+        let mut a = World::new(seed, config.clone(), 24).unwrap();
+        let mut b = World::new(seed, config, 24).unwrap();
         for tick in 1..=1_000_000 {
             a.step();
             b.step();
+            assert!(a.conserved() && b.conserved(), "seed={seed}, tick={tick}");
+            assert!(!a.agents.is_empty(), "collapse seed={seed}, tick={tick}");
+            assert!(a.agents.len() <= a.config.world.population_limit);
             if tick % 1000 == 0 {
-                assert!(a.conserved(), "seed={seed}, tick={tick}");
-                assert!(!a.agents.is_empty(), "collapse seed={seed}, tick={tick}");
-                assert!(a.agents.len() <= 8);
+                for w in [&mut a, &mut b] {
+                    for g in w.genomes.values_mut() {
+                        g.replays.clear();
+                    }
+                }
             }
             if [1000, 100_000, 1_000_000].contains(&tick) {
-                assert_eq!(a.state_hash(), b.state_hash());
+                assert_eq!(
+                    a.state_hash(),
+                    b.state_hash(),
+                    "determinism seed={seed} tick={tick}"
+                );
+                println!(
+                    "seed={seed} tick={tick} hash={} population={} conserved=true",
+                    bestiary_core::hex(&a.state_hash()),
+                    a.agents.len()
+                );
             }
         }
-        println!(
-            "seed={seed} ticks={} population={} exact_conservation=true",
-            a.tick,
-            a.agents.len()
+        let births = a.history.values().filter(|h| !h.parents.is_empty()).count();
+        let deaths = a.history.values().filter(|h| h.died.is_some()).count();
+        assert!(
+            births > 0 && deaths > 0,
+            "real births and deaths seed={seed}"
         );
+        assert!(
+            a.history
+                .values()
+                .filter(|h| h.born == 0)
+                .all(|h| h.died.is_some()),
+            "founders must turn over seed={seed}"
+        );
+        println!("seed={seed} ticks={} population={} births={births} deaths={deaths} exact_conservation=true", a.tick, a.agents.len());
     }
 }
 #[test]

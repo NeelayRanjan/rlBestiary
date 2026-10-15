@@ -1,0 +1,16 @@
+    Finished `release` profile [optimized] target(s) in 0.24s
+     Running `target/release/examples/trophic config/trophic.ron 0 10000`
+founder=27a68bbc91437e2cf484e5acf39778aab721b9d47098fe866e0be754a4c5a975 parts=13 viability=0.16118297 speed=0.5114668 strike=0.020354448 standing=10.967003 plant_efficiency=0
+founder=8fb319f3b27ab10d7bd05f5c0d4ada7ea75de00841a884c7c015a65034c60628 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0.8
+founder=af73663a5a0dd6f1fb3705cfbb2722094207fd3f6db9c63a1cd238b350c335d9 parts=13 viability=0.1939748 speed=0.5704825 strike=0.019438554 standing=8.977124 plant_efficiency=0
+tick=1000 diet_live=[49, 0, 25] diet_births=[40, 0, 14] lineage_live=[49, 20, 5] lineage_births=[40, 12, 2] species=0 predation=222 coverage=0.0078125 toxicity=0.020297991 resistance=0.09999996 conserved=true
+tick=2000 diet_live=[16, 0, 53] diet_births=[52, 0, 46] lineage_live=[16, 52, 1] lineage_births=[52, 44, 2] species=2 predation=528 coverage=0.0078125 toxicity=0.019649057 resistance=0.10000002 conserved=true
+tick=3000 diet_live=[0, 0, 54] diet_births=[52, 0, 60] lineage_live=[0, 54, 0] lineage_births=[52, 58, 2] species=1 predation=724 coverage=0.0078125 toxicity=0.018947806 resistance=0 conserved=true
+tick=4000 diet_live=[0, 0, 11] diet_births=[52, 0, 60] lineage_live=[0, 11, 0] lineage_births=[52, 58, 2] species=1 predation=724 coverage=0.0078125 toxicity=0.020876275 resistance=0 conserved=true
+tick=5000 diet_live=[0, 0, 1] diet_births=[52, 0, 60] lineage_live=[0, 1, 0] lineage_births=[52, 58, 2] species=1 predation=724 coverage=0.0078125 toxicity=0.021758908 resistance=0 conserved=true
+tick=6000 diet_live=[0, 0, 0] diet_births=[52, 0, 60] lineage_live=[0, 0, 0] lineage_births=[52, 58, 2] species=0 predation=724 coverage=0.0078125 toxicity=0.021026975 resistance=0 conserved=true
+tick=7000 diet_live=[0, 0, 0] diet_births=[52, 0, 60] lineage_live=[0, 0, 0] lineage_births=[52, 58, 2] species=0 predation=724 coverage=0.0078125 toxicity=0.020903507 resistance=0 conserved=true
+tick=8000 diet_live=[0, 0, 0] diet_births=[52, 0, 60] lineage_live=[0, 0, 0] lineage_births=[52, 58, 2] species=0 predation=724 coverage=0.0078125 toxicity=0.021225346 resistance=0 conserved=true
+tick=9000 diet_live=[0, 0, 0] diet_births=[52, 0, 60] lineage_live=[0, 0, 0] lineage_births=[52, 58, 2] species=0 predation=724 coverage=0.0078125 toxicity=0.021315264 resistance=0 conserved=true
+tick=10000 diet_live=[0, 0, 0] diet_births=[52, 0, 60] lineage_live=[0, 0, 0] lineage_births=[52, 58, 2] species=0 predation=724 coverage=0.0078125 toxicity=0.020940581 resistance=0 conserved=true
+first_missing_carnivore=Some(6000)

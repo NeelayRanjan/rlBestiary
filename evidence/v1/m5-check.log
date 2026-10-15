@@ -1,0 +1,286 @@
+./scripts/cargo fmt --all -- --check
+./scripts/cargo clippy --workspace --all-targets --locked -- -D warnings
+    Checking bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.13s
+./scripts/cargo test --workspace --locked
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `test` profile [optimized + debuginfo] target(s) in 0.98s
+     Running unittests src/lib.rs (target/debug/deps/bestiary_archive-3e3c3b9ba03d0f10)
+
+running 6 tests
+test grid::tests::archive_schema_and_boundaries ... ok
+test tests::species_minimum_duration_parent_split_and_extinction ... ok
+test store::tests::legacy_snapshot_schema_is_rejected_without_modifying_the_file ... ok
+test store::tests::current_schema_opens_and_unknown_versions_are_rejected ... ok
+test store::tests::stale_physics_traits_allow_recorded_read_only_view_but_never_resume ... ok
+test grid::tests::sparse_elites_exclude_exploits_and_recombine_exactly ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.77s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary-ab9b79e9afa6c4fd)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/commands.rs (target/debug/deps/commands-d6a8b35d0ac95355)
+
+running 2 tests
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-285e3e5d7f429f79df3e.sock
+test world_status_reports_live_pause_state ... ok
+test fresh_world_status_genome_combine_replay_and_phylogeny_commands ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.22s
+
+     Running tests/replay_export.rs (target/debug/deps/replay_export-f0f7888c17b42d82)
+
+running 3 tests
+test replay_png_export_requires_recorded_anatomy_and_a_fresh_directory ... ok
+test replay_export_rejects_false_completion_without_sequential_png_files ... ok
+test replay_export_delegates_exact_genome_trial_and_paths_without_a_shell ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.36s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_core-403b9566885d019b)
+
+running 13 tests
+test brain::tests::invalid_neural_genes_are_rejected ... ok
+test tests::canonical_digest_detects_state_changes ... ok
+test genome::starter::tests::founder_configuration_rejects_invalid_geometry_and_neural_weights ... ok
+test genome::tests::reflection_carries_neurons_and_spanning_muscles ... ok
+test tests::seeded_tuple_streams_are_repeatable_and_separated ... ok
+test genome::tests::share_and_configuration_negative_cases ... ok
+test genome::starter::tests::coordinated_walking_genes_inherit_two_tripods_and_actuated_knees ... ok
+test genome::tests::recursive_cycles_stop_cleanly_at_bounds_and_terminal_edges_attach ... ok
+test brain::tests::recurrent_plasticity_is_repeatable_bounded_and_uses_old_values ... ok
+test genome::zoo::tests::radial_drifter_has_sixfold_support_geometry ... ok
+test genome::zoo::tests::authored_serpent_has_deep_recursion_and_no_limb_branches ... ok
+test genome::tests::crossover_always_valid_and_distance_symmetric ... ok
+test genome::tests::mutation_sequences_are_valid_bounded_and_axes_spanned ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_daemon-f6034a16e94649bc)
+
+running 2 tests
+test tests::ipc_codec_roundtrip_and_invalid_lengths ... ok
+test tests::unsaved_replay_is_read_only_and_uses_recorded_trial_index ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.36s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary_daemon-f765d21a73d2e278)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/attachment.rs (target/debug/deps/attachment-75ef674cdca395ba)
+
+running 1 test
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-c6e884afed4e769a8126.sock
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-c6e884afed4e769a8126.sock
+test viewer_attach_detach_does_not_perturb_state_hash ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.48s
+
+     Running tests/release.rs (target/debug/deps/release-121e4d1e14ba7ab6)
+
+running 1 test
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-23797166939c06b466bf.sock
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-23797166939c06b466bf.sock
+test paused_release_persists_discovery_events_without_advancing_tick_or_creating_resources ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.91s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_sim-c77aeeb1286ba9dd)
+
+running 24 tests
+test combine::tests::fft_recovers_dominant_gait_frequency ... ok
+test config::tests::config_schema_rejects_unknown_missing_and_invalid_fields ... ok
+test combine::tests::combine_configuration_and_cache_invalidation ... ok
+test combine::tests::root_clearance_accounts_for_shape_rotation_and_ground_plane ... ok
+test genome::tests::shared_spawn_lift_matches_physical_initial_poses ... ok
+test locomotion::tests::gait_measurement_rejects_invalid_durations ... ok
+test muscle::tests::muscle_is_contraction_only_and_respects_length_tension_and_area ... ok
+test muscle::tests::passive_spring_energy_and_isometric_cost_are_accounted ... ok
+test genome::tests::proprioception_uses_joint_rest_frames_and_constraint_velocity_axes ... ok
+test physics::tests::free_energy_audit_flags_unbudgeted_energy_and_accepts_work ... ok
+test combine::tests::root_on_raised_terrain_fails_clearance_despite_height_above_base_plane ... ok
+test genome::tests::expanded_body_instantiates_with_no_joint_motors_and_repeats ... ok
+test physics::tests::proper_foot_contact_excludes_self_contact_and_measures_surface_velocity ... ok
+test replay::tests::replay_reproduces_recorded_trajectory_and_rejects_corruption ... ok
+test physics::tests::proper_foot_contact_reports_support_force_independent_of_substeps ... ok
+test physics::tests::deterministic_identical_physics_trials ... ok
+test combine::tests::stand_duration_uses_stand_seconds_independently_of_trial_duration ... ok
+test combine::tests::sprint_excludes_initial_settling_and_passive_collapse ... ok
+test physics::tests::hand_built_body_walks_under_muscle_actuation ... ok
+test locomotion::tests::coordinated_walking_has_proper_foot_contact_and_is_muscle_driven ... ok
+test combine::tests::stand_gate_keeps_root_surface_off_ground_for_two_seconds ... ok
+test combine::tests::deliberate_solver_exploit_is_flagged ... ok
+test combine::tests::cache_hit_equals_recompute_and_parallel_equals_serial ... ok
+test combine::tests::preset_zoo_traits_are_stable_across_runs ... ok
+
+test result: ok. 24 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 21.26s
+
+     Running unittests src/main.rs (target/debug/deps/bestiary_viewer-cdf3813e8dfa59c8)
+
+running 31 tests
+test anatomy::tests::bone_frame_preserves_each_genome_axis ... ok
+test data::tests::phylogeny_population_uses_historical_samples_not_current_species_assignments ... ok
+test data::tests::formatting_and_chart_binning_handle_empty_and_nonfinite_data ... ok
+test export::tests::export_entry_rejects_missing_values_and_invalid_genome_hashes ... ok
+test anatomy::tests::muscle_attachments_and_volume_follow_recorded_pose_without_invented_motion ... ok
+test anatomy::tests::short_muscles_stay_slender_and_preserve_actual_attachments ... ok
+test playback::tests::clip_first_frame_and_async_completion_require_prepared_recorded_poses ... ok
+test anatomy::tests::viewer_config_rejects_invalid_and_unknown_fields ... ok
+test anatomy::tests::muscle_activation_changes_reflected_pigment_without_emissive_glow ... ok
+test playback::tests::clip_metadata_describes_the_exact_fixed_time_frame_sequence ... ok
+test anatomy::tests::anatomy_pigments_use_linear_vertex_colors_and_cohesive_muted_palette ... ok
+test playback::tests::invalid_clip_time_ranges_do_not_start_exports ... ok
+test playback::tests::paused_and_saved_worlds_do_not_sprint_against_stationary_terrain ... ok
+test playback::tests::entire_recorded_range_includes_final_pose_without_looping ... ok
+test playback::tests::replay_scrub_and_clip_export_use_recorded_time_independent_of_render_rate ... ok
+test scene::tests::clip_locks_native_window_dimensions_and_restores_original_setting ... ok
+test scene::tests::field_overlays_preserve_underwater_values_and_biomass_uses_nutrients ... ok
+test anatomy::tests::procedural_anatomy_has_finite_normals_and_valid_topology ... ok
+test scene::tests::planted_foot_and_muscle_attachment_remain_fixed_as_torso_advances ... ok
+test scene::tests::predation_overlay_uses_recent_actual_attacker_and_victim_ids ... ok
+test scene::tests::retina_viewport_stays_inside_render_target_after_panel_resize ... ok
+test scene::tests::anatomy_covers_zoo_joints_muscles_and_terminal_foot_contact_without_changing_genomes ... ok
+test scene::tests::strike_playback_uses_the_recorded_dynamic_target_after_body_parts ... ok
+test data::tests::live_snapshot_excludes_samples_and_events_from_a_newer_database_save ... ok
+test ui::tests::world_clip_preparation_advances_only_its_fixed_time_pose_clock ... ok
+test ui::tests::clip_readiness_waits_for_scene_recordings_and_labels_missing_static_bodies ... ok
+test data::tests::inspector_initial_body_matches_living_creature_not_first_historical_genome ... ok
+test scene::tests::offline_camera_movement_selects_new_near_bodies_with_stable_ties ... ok
+test ui::tests::manual_highlight_jump_opens_recorded_subject_and_never_invents_a_global_subject ... ok
+test data::tests::historical_first_predation_and_guided_hunt_keep_the_recorded_attacker ... ok
+test data::tests::director_follows_event_genome_and_retains_extinct_archive_subjects ... ok
+
+test result: ok. 31 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.92s
+
+     Running tests/render.rs (target/debug/deps/render-236ac0e32bb65c56)
+
+running 1 test
+test headless_render_smoke_and_viewer_attach_detach_preserve_state_hash ... ignored, requires a graphics adapter and native display; run scripts/check-viewer-render
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/replay_export.rs (target/debug/deps/replay_export-779892dffbb7e1f9)
+
+running 3 tests
+test cli_recorded_file_png_export_uses_world_anatomy_and_preserves_the_world ... ignored, requires GPU and sibling bestiary CLI; build CLI, then cargo test -p bestiary-viewer --test replay_export -- --ignored --nocapture
+test cli_recorded_replay_png_export_contains_motion_and_preserves_the_world ... ignored, requires GPU and sibling bestiary CLI; build CLI, then cargo test -p bestiary-viewer --test replay_export -- --ignored --nocapture
+test export_rejects_mismatched_id_genome_and_conflicting_render_modes_before_gpu_startup ... ok
+
+test result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 2.03s
+
+     Running unittests src/lib.rs (target/debug/deps/bestiary_world-7a2810428b1c6b35)
+
+running 5 tests
+test milestones::tests::guidance_requires_a_changed_action_not_presence_of_a_pheromone_trail ... ok
+test milestones::tests::pheromone_counterfactual_keeps_recurrence_plasticity_and_other_inputs_identical ... ok
+test milestones::tests::airborne_evidence_uses_oriented_physical_boxes_and_capsules ... ok
+test milestones::tests::first_flyer_adjacent_gait_requires_two_complete_recorded_airborne_cycles ... ok
+test milestones::tests::first_airborne_gait_is_persisted_once_and_rejected_after_restart ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.15s
+
+     Running tests/ecology.rs (target/debug/deps/ecology-cd0dfdb8880b02ec)
+
+running 11 tests
+test inherited_predator_and_scavenger_networks_express_distinct_feeding_actions ... ok
+test ecology_config_negative_cases ... ok
+test nearest_neighbors_match_distance_oracle_and_wrap_at_world_edge ... ok
+test pheromones_diffuse_decay_and_infections_and_geography_repeat ... ok
+test depleted_carcass_does_not_block_edible_carcass_and_conserves_resources ... ok
+test predation_injury_and_scavenging_preserve_resources ... ok
+test toxin_damage_depends_on_food_ingested_and_is_not_healed_in_the_same_tick ... ok
+test herbivore_resistance_series_excludes_other_diet_tiers ... ok
+test inherited_predator_brain_hunts_using_measured_body_traits ... ok
+test toxic_plants_impose_survival_pressure_resisted_by_immune_investment ... ok
+test species_similarity_sensor_recognizes_mutant_kin_and_distinguishes_unrelated_genomes ... ok
+
+test result: ok. 11 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 12.81s
+
+     Running tests/evolution.rs (target/debug/deps/evolution-9146d9c4bf9eda7c)
+
+running 1 test
+test five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing ... ignored, five-seed million-tick evolutionary acceptance; invoked by make longrun
+
+test result: ok. 0 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/longrun.rs (target/debug/deps/longrun-af6f15127fa20bc1)
+
+running 4 tests
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ignored, one-million-tick acceptance run; invoked by make longrun
+test world_config_rejects_invalid_ranges ... ok
+test conservation_determinism_and_snapshot_resume ... ok
+test death_and_decay_preserve_both_resources ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 3.20s
+
+     Running tests/milestones.rs (target/debug/deps/milestones-dbdf68718acce654)
+
+running 2 tests
+test pheromone_hunt_evidence_expires_and_cannot_credit_a_different_victim ... ok
+test first_pheromone_guided_hunt_requires_causal_decision_and_real_damaging_predation ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 13.42s
+
+     Running tests/reproduction.rs (target/debug/deps/reproduction-c5e5c2a7bb97609d)
+
+running 9 tests
+test three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation ... ignored, 250k-tick diversification acceptance; run with --release --ignored
+test reproduction_config_rejects_invalid_values ... ok
+test eligible_mates_choose_distance_then_entity_id_with_deterministic_ties ... ok
+test disconnected_terrestrial_mates_cannot_reproduce ... ok
+test optional_archive_reseeding_is_off_by_default_and_conserves_resources ... ok
+test sexual_births_and_sqlite_resume_conserve_resources ... ok
+test eligible_mates_obey_radius_across_toroidal_world_boundary ... ok
+test senescence_cannot_be_cancelled_by_healing ... ok
+test eligible_compatible_mate_is_not_blocked_by_nearer_incompatible_neighbor ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 4.22s
+
+     Running tests/trophic.rs (target/debug/deps/trophic-f075216d03aa5904)
+
+running 3 tests
+test herbivore_only_toxic_plants_show_arms_race_in_trait_time_series ... ignored, herbivore/plant evolutionary time series; make ecology-longrun
+test trophic_levels_all_persist_for_one_million_ticks_on_three_of_five_seeds ... ignored, million-tick trophic acceptance; make ecology-longrun
+test trophic_acceptance_fixture_has_physical_founders_and_conserved_resources ... ok
+
+test result: ok. 1 passed; 0 failed; 2 ignored; 0 measured; 0 filtered out; finished in 3.57s
+
+   Doc-tests bestiary_archive
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_daemon
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_sim
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests bestiary_world
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+./scripts/cargo build --workspace --release --locked
+    Finished `release` profile [optimized] target(s) in 0.59s
