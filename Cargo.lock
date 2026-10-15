@@ -128,6 +128,14 @@ version = "0.1.0"
 [[package]]
 name = "bestiary-world"
 version = "0.1.0"
+dependencies = [
+ "bestiary-core",
+ "bestiary-sim",
+ "libm",
+ "postcard",
+ "rand",
+ "serde",
+]
 
 [[package]]
 name = "bit-set"

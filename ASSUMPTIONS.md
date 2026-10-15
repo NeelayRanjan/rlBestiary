@@ -24,3 +24,7 @@ The M1 performance gate is staged because the named combine trials, world and vi
 - Replay files use versioned lossless byte run-length compression, a bounded decoder and a content digest. Replaying uses recorded poses rather than cross-platform re-simulation.
 - M3 adds the eight authored zoo fixtures for deterministic evaluation tests; their designer integration and first-generation survival checks remain in M9.
 - The test profile uses optimization level 2 to keep physical property/regression suites practical; debug assertions remain enabled.
+
+- M4 resource accounting uses integer millijoules and microkilograms so transfers conserve exactly. Nutrients eaten but not retained for growth are excreted to soil; metabolic energy leaves through the dissipated-energy ledger.
+- The M4 million-tick fixture uses eight founders on an 8x8 map and a senescence age of two million ticks, because sexual reproduction is assigned to M6. This tests conservation, deterministic continuation and feeding stability before reproduction exists; it does not establish the final population-turnover acceptance result.
+- The world performance fixture disables starvation damage for its short measurement window to retain exactly 5,000 agents; feeding, metabolic accounting, brains, plants and movement still run. Ecological survival is tested separately without that override.

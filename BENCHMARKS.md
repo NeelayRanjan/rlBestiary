@@ -36,3 +36,16 @@ This supersedes M1's representative workload. World and viewer budgets remain
 unmeasured. Serial/parallel equality, cached/recomputed equality, all eight zoo
 fixture repeatability, lossless replay round-trips, a normal-genome audit and a
 deliberate overlapping-body exploit test pass.
+
+## M4 headless world — 2026-10-14
+
+`cargo bench -p bestiary-world --bench world`: 5,000 live creatures on one
+simulation thread, 122,880.7 ticks/minute (required: 10,000). Includes plants,
+brains, movement, feeding, metabolism and integer resource ledgers. Starvation
+damage is disabled only in this short throughput fixture to hold population fixed.
+
+`make longrun`: five seeds, each simulated twice for 1,000,000 ticks. Canonical
+hashes match at 1k, 100k and 1M; energy and nutrient accounting remain exact.
+Final populations from eight founders: 8, 6, 3, 8, 3. Fixture lifespan exceeds the
+run horizon because reproduction arrives in M6. This is not the final ecological
+or population-turnover acceptance result.

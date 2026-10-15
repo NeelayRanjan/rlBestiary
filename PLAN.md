@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M4 — headless world, terrain/plants, conserved resources, trait-driven agents and stability tests.
+Current task: M5 — predation, scavenging, pathogens, pheromones, geographic change and ecological scenarios.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -48,16 +48,16 @@ Current task: M4 — headless world, terrain/plants, conserved resources, trait-
 - [x] Pass make check and commit M3.
 
 ## M4 World core
-- [ ] World configuration in documented config/world.ron; negative schema tests.
-- [ ] Procedural terrain, temperature/moisture, seasons and solar input.
-- [ ] Evolving plant biomass, toughness, toxicity, dispersal and regrowth.
-- [ ] Closed nutrient/energy ledgers, feeding, carcass decay, metabolic losses.
-- [ ] Trait-based movement and recurrent ethology choices; growth, senescence and death.
-- [ ] Deterministic collections, subsystem/entity/tick RNG, libm, canonical full-state hash.
-- [ ] World rule trait for phase-two extension; document two-brain compromise.
-- [ ] Conservation for 1M ticks, five-seed population stability, hashes at 1k/100k/1M.
-- [ ] World throughput >=5,000 creatures at 10,000 ticks/minute on one core.
-- [ ] Pass make check and commit M4.
+- [x] World configuration in documented config/world.ron; negative schema tests.
+- [x] Procedural terrain, temperature/moisture, seasons and solar input.
+- [x] Evolving plant biomass, toughness, toxicity, dispersal and regrowth.
+- [x] Closed nutrient/energy ledgers, feeding, carcass decay, metabolic losses.
+- [x] Trait-based movement and recurrent ethology choices; growth, senescence and death.
+- [x] Deterministic collections, subsystem/entity/tick RNG, libm, canonical full-state hash.
+- [x] World rule trait for phase-two extension; document two-brain compromise.
+- [x] Conservation for 1M ticks, five-seed population stability, hashes at 1k/100k/1M.
+- [x] World throughput >=5,000 creatures at 10,000 ticks/minute on one core.
+- [x] Pass make check and commit M4.
 
 ## M5 Ecology
 - [ ] Strike/mass/armor/speed-based predation, injuries and scavenging.

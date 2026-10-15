@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
+    pub world: bestiary_core::settings::WorldConfig,
     pub combine: CombineConfig,
     pub genome: bestiary_core::genome::Limits,
     pub physics: PhysicsConfig,
@@ -33,6 +34,7 @@ impl Config {
         value.physics.validate()?;
         value.genome.validate()?;
         value.combine.validate()?;
+        value.world.validate()?;
         Ok(value)
     }
     pub fn bundled() -> Self {

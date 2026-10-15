@@ -1,4 +1,52 @@
 (
+    world: (
+        // Square terrain cell count along each axis.
+        grid: 32,
+        // Width of one terrain cell in metres.
+        cell_metres: 32.0,
+        // Ten fixed ticks per simulated hour.
+        seconds_per_tick: 360.0,
+        // Recurrent decisions are refreshed on deterministic staggered ticks.
+        decision_interval: 10,
+        // One seasonal cycle in world ticks.
+        season_ticks: 3600,
+        // Plant reproduction/selection interval.
+        plant_epoch: 100,
+        // Maximum energy supplied by sunlight per cell/tick, in millijoules.
+        solar_per_cell: 10000000,
+        // Soil nutrient inventory per cell, in microkilograms.
+        soil_per_cell: 2000000,
+        // Initial plant energy and nutrient inventories per cell.
+        plant_energy: 2000000000,
+        plant_nutrients: 2000000,
+        // Initial individual energy reserve, in millijoules.
+        initial_energy: 200000000,
+        // Maximum energy reserve per kilogram of grown body mass.
+        reserve_per_kg: 500000000,
+        // Maximum energy removed in one foraging action.
+        bite_energy: 50000000,
+        // Basal metabolic watts per kilogram, additional to measured posture.
+        basal_per_kg: 0.2,
+        // Additional watts per sensor and neuron.
+        sensor_cost: 0.002,
+        brain_cost: 0.001,
+        // Maximum fraction of adult mass grown per tick.
+        growth_per_tick: 0.005,
+        // Fraction of carcass resources returned to soil/heat each tick.
+        decay_fraction: 0.01,
+        // Health loss per fully unpaid metabolic tick and recovery per fed tick.
+        starvation_damage: 0.02,
+        healing: 0.01,
+        // Terrain threshold separating land from water.
+        water_level: -0.4,
+        // Seasonal variation in temperature and solar availability.
+        season_amplitude: 0.3,
+        // Explicit finite carrying bound; births beyond it are not admitted.
+        population_limit: 10000,
+        // Fixed integer resource resolution.
+        energy_units_per_joule: 1000.0,
+        nutrient_units_per_kg: 1000000.0,
+    ),
     combine: (
         // Duration of each deterministic physical trial in seconds.
         trial_seconds: 2.0,

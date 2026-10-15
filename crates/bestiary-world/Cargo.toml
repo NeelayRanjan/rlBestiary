@@ -4,3 +4,15 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+
+[dependencies]
+bestiary-core = { path = "../bestiary-core" }
+bestiary-sim = { path = "../bestiary-sim" }
+serde.workspace = true
+postcard.workspace = true
+rand.workspace = true
+libm.workspace = true
+
+[[bench]]
+name = "world"
+harness = false
