@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M3 — nine deterministic combine trials, trait cache, replay recording and exploit tests.
+Current task: M4 — headless world, terrain/plants, conserved resources, trait-driven agents and stability tests.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -38,14 +38,14 @@ Current task: M3 — nine deterministic combine trials, trait cache, replay reco
 - [x] Pass make check and commit M2.
 
 ## M3 Combine harness
-- [ ] Stand with two-second gate and isometric cost; sprint and acceleration/cost.
-- [ ] Turn, rough terrain, slope, swimming, strike, carry, reach/bulk/gait-frequency trials.
-- [ ] Extract trait vector, viability, work and isometric costs.
-- [ ] Cache by content hash; deterministic seeded trials; serial/parallel exact equivalence.
-- [ ] Compressed sprint/strike replays, playback and trajectory tests.
-- [ ] Free-energy exploit flagged, logged, and excluded; normal body accepted.
-- [ ] Stable preset measurements; public harness API for future comparative arena.
-- [ ] Pass make check and commit M3.
+- [x] Stand with two-second gate and isometric cost; sprint and acceleration/cost.
+- [x] Turn, rough terrain, slope, swimming, strike, carry, reach/bulk/gait-frequency trials.
+- [x] Extract trait vector, viability, work and isometric costs.
+- [x] Cache by content hash; deterministic seeded trials; serial/parallel exact equivalence.
+- [x] Compressed sprint/strike replays, playback and trajectory tests.
+- [x] Free-energy exploit flagged, logged, and excluded; normal body accepted.
+- [x] Stable preset measurements; public harness API for future comparative arena.
+- [x] Pass make check and commit M3.
 
 ## M4 World core
 - [ ] World configuration in documented config/world.ron; negative schema tests.

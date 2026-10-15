@@ -2,7 +2,7 @@
 use crate::{config::Config, physics::Arena};
 use bestiary_core::{
     brain::BrainState,
-    genome::{local_point, Body, Genome, Sensor, Shape},
+    genome::{attachment_point, local_point, Body, Genome, Sensor, Shape},
 };
 use rapier3d::prelude::*;
 
@@ -68,13 +68,15 @@ impl Creature {
                 );
             }
             let frame1 = Isometry::from_parts(
-                Translation::from(local_point(pp.size, e.attachment, pp.reflected).coords),
+                Translation::from(
+                    attachment_point(pp.size, e.attachment, pp.reflected, pp.shape).coords,
+                ),
                 pp.pose.rotation.inverse() * p.pose.rotation,
             );
             let frame2 = Isometry::translation(
-                local_point(p.size, e.child_attachment, p.reflected).x,
-                local_point(p.size, e.child_attachment, p.reflected).y,
-                local_point(p.size, e.child_attachment, p.reflected).z,
+                attachment_point(p.size, e.child_attachment, p.reflected, p.shape).x,
+                attachment_point(p.size, e.child_attachment, p.reflected, p.shape).y,
+                attachment_point(p.size, e.child_attachment, p.reflected, p.shape).z,
             );
             let mut joint = GenericJointBuilder::new(locked)
                 .local_frame1(frame1)

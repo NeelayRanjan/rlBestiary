@@ -17,3 +17,10 @@ The M1 performance gate is staged because the named combine trials, world and vi
 - Expansion uses branch-local recursion counts and deterministic depth-first order; a bound truncates that branch without invalidating the remaining body. Routes clipped by expansion bounds are omitted and missing leverage is repaired deterministically.
 - Compatibility includes normalized part/joint-count, species-marker and measured-trait distances, with an identity-separation term for otherwise neutral alleles.
 - Mutation records include no-op proposals (for example removal at a minimum bound); downstream evaluation records the actual child hash.
+
+- M3 uses two internal physics substeps per fixed tick. The original one-substep fixture passed, but the genome-driven normal creature produced numerical energy false positives in the full harness. Two substeps resolved those without widening the energy tolerances; the deliberate overlapping-body exploit still triggers detection.
+- Mass properties are recomputed before the first audited step, so attaching a carry load changes initial potential energy rather than appearing as unexplained generated energy.
+- Fluid buoyancy and drag contribute explicitly measured external work to the mechanical ledger. Strike impulse excludes contacts between the target and the floor.
+- Replay files use versioned lossless byte run-length compression, a bounded decoder and a content digest. Replaying uses recorded poses rather than cross-platform re-simulation.
+- M3 adds the eight authored zoo fixtures for deterministic evaluation tests; their designer integration and first-generation survival checks remain in M9.
+- The test profile uses optimization level 2 to keep physical property/regression suites practical; debug assertions remain enabled.

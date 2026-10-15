@@ -372,5 +372,8 @@ impl Genome {
     }
 }
 
+mod zoo;
+pub use zoo::*;
+
 #[cfg(test)]
 mod tests;

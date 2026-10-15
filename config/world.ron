@@ -1,4 +1,22 @@
 (
+    combine: (
+        // Duration of each deterministic physical trial in seconds.
+        trial_seconds: 2.0,
+        // Root must clear terrain for at least two seconds.
+        stand_seconds: 2.0,
+        // Minimum root center height above terrain in metres.
+        root_clearance: 0.05,
+        // Height of deterministic rough-ground bumps.
+        rough_height: 0.03,
+        // Sampled slope angles in radians, in increasing order.
+        slope_angles: [0.1, 0.2, 0.35],
+        // Fluid density in the simulator's SI mass convention.
+        water_density: 2.0,
+        // Linear fluid drag coefficient per immersed volume.
+        water_drag: 4.0,
+        // Added carry load as a fraction of body mass.
+        carry_fraction: 0.5,
+    ),
     genome: (
         // Absolute bound on expanded rigid parts.
         max_parts: 32,
@@ -20,7 +38,7 @@
         // Gravitational acceleration, metres per second squared.
         gravity: 9.81,
         // Substeps within each fixed 1/240-second physics tick.
-        substeps: 1,
+        substeps: 2,
         // Coulomb ground friction coefficient.
         friction: 0.9,
         // Maximum force per unit muscle cross-sectional area.

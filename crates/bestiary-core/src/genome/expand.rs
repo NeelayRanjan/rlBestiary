@@ -5,6 +5,7 @@ use rand::Rng;
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Part {
     pub gene: usize,
+    pub shape: Shape,
     pub parent: Option<usize>,
     pub incoming: Option<Edge>,
     pub children: Vec<Option<usize>>,
@@ -52,6 +53,28 @@ pub fn local_point(size: [f32; 3], normalized: [f32; 3], reflected: bool) -> Poi
         size[2] * normalized[2] * 0.5 * if reflected { -1.0 } else { 1.0 },
     )
 }
+/// Project normalized attachment coordinates onto the actual rigid shape surface.
+pub fn attachment_point(
+    size: [f32; 3],
+    normalized: [f32; 3],
+    reflected: bool,
+    shape: Shape,
+) -> Point3<f32> {
+    let p = local_point(size, normalized, reflected);
+    if shape == Shape::Box {
+        return p;
+    }
+    let radius = size[0].min(size[2]) * 0.5;
+    let half_segment = (size[1] * 0.5 - radius).max(0.0);
+    let center = Point3::new(0.0, p.y.clamp(-half_segment, half_segment), 0.0);
+    let delta = p - center;
+    let length = libm::sqrtf(delta.norm_squared());
+    if length > 1e-6 {
+        center + delta * (radius / length)
+    } else {
+        center + nalgebra::Vector3::x() * radius
+    }
+}
 struct Builder<'a> {
     genome: &'a Genome,
     limits: &'a Limits,
@@ -86,9 +109,10 @@ impl Builder<'_> {
         let pose = if let Some(p) = parent {
             let e = edge.expect("edge");
             let pp = &self.body.parts[p];
-            let joint = pp.pose * local_point(pp.size, e.attachment, pp.reflected);
+            let joint = pp.pose * attachment_point(pp.size, e.attachment, pp.reflected, pp.shape);
             let rot = pp.pose.rotation * rotation(e.orientation, reflected);
-            let offset = rot * local_point(size, e.child_attachment, reflected).coords;
+            let offset =
+                rot * attachment_point(size, e.child_attachment, reflected, b.shape).coords;
             Isometry3::from_parts(Translation3::from(joint.coords - offset), rot)
         } else {
             Isometry3::identity()
@@ -97,6 +121,7 @@ impl Builder<'_> {
         self.mass += mass;
         self.body.parts.push(Part {
             gene,
+            shape: b.shape,
             parent,
             incoming: edge.cloned(),
             children: vec![None; b.edges.len()],
@@ -155,7 +180,8 @@ impl Body {
         for child in left.into_iter().chain(right) {
             let part = &self.parts[child];
             let e = part.incoming.as_ref().expect("nonroot");
-            let joint = part.pose * local_point(part.size, e.child_attachment, part.reflected);
+            let joint = part.pose
+                * attachment_point(part.size, e.child_attachment, part.reflected, part.shape);
             let torque = part.pose.rotation.inverse() * ((start - joint).cross(&force));
             for axis in e.kind.axes() {
                 if torque[*axis].abs() > 1e-5 {
@@ -217,8 +243,12 @@ impl Genome {
                         properties: m.properties.clone(),
                         origin_part: i,
                         insertion_part: j,
-                        origin: local_point(p.size, m.origin, p.reflected).coords.into(),
-                        insertion: local_point(q.size, m.insertion, q.reflected).coords.into(),
+                        origin: attachment_point(p.size, m.origin, p.reflected, p.shape)
+                            .coords
+                            .into(),
+                        insertion: attachment_point(q.size, m.insertion, q.reflected, q.shape)
+                            .coords
+                            .into(),
                         area: m.area * p.scale * p.scale,
                         output: m.output,
                         covers: vec![],
@@ -259,8 +289,12 @@ impl Genome {
                     };
                     let p = &body.parts[parent];
                     let q = &body.parts[child];
-                    let origin = local_point(p.size, point(), p.reflected).coords.into();
-                    let insertion = local_point(q.size, point(), q.reflected).coords.into();
+                    let origin = attachment_point(p.size, point(), p.reflected, p.shape)
+                        .coords
+                        .into();
+                    let insertion = attachment_point(q.size, point(), q.reflected, q.shape)
+                        .coords
+                        .into();
                     let covers = body.coverage(parent, child, origin, insertion);
                     if covers.contains(&(child, *axis)) {
                         body.muscles.push(ExpandedMuscle {

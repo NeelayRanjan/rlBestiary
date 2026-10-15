@@ -12,6 +12,9 @@ nalgebra.workspace = true
 serde.workspace = true
 ron.workspace = true
 libm.workspace = true
+rayon.workspace = true
+rand.workspace = true
+postcard.workspace = true
 
 [dev-dependencies]
 criterion.workspace = true

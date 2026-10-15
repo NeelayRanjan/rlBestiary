@@ -46,7 +46,13 @@ pub struct Trial {
     pub min_root_height: f32,
 }
 
+pub struct Fluid {
+    pub level: f32,
+    pub density: f32,
+    pub drag: f32,
+}
 pub struct Arena {
+    pub fluid: Option<Fluid>,
     pub config: PhysicsConfig,
     pub bodies: RigidBodySet,
     pub colliders: ColliderSet,
@@ -73,6 +79,7 @@ impl Arena {
                 .restitution(0.0),
         );
         Ok(Self {
+            fluid: None,
             config,
             bodies: RigidBodySet::new(),
             colliders,
@@ -160,6 +167,25 @@ impl Arena {
         }
         energy
     }
+    pub fn interaction_impulse(
+        &self,
+        target: RigidBodyHandle,
+        creature: &[RigidBodyHandle],
+    ) -> f32 {
+        self.bodies[target]
+            .colliders()
+            .iter()
+            .flat_map(|h| self.narrow.contact_pairs_with(*h))
+            .filter(|pair| {
+                [pair.collider1, pair.collider2].iter().any(|h| {
+                    self.colliders[*h]
+                        .parent()
+                        .is_some_and(|p| creature.contains(&p))
+                })
+            })
+            .map(|pair| pair.total_impulse().norm())
+            .sum()
+    }
     pub fn contact_force(&self, handle: RigidBodyHandle) -> f32 {
         self.bodies[handle]
             .colliders()
@@ -183,12 +209,38 @@ impl Arena {
     /// Exactly one fixed tick; activations are held for every configured substep.
     pub fn step(&mut self, activations: &[f32]) {
         assert_eq!(activations.len(), self.muscles.len());
+        if self.tick == 0 {
+            for h in &self.parts {
+                self.bodies[*h].recompute_mass_properties_from_colliders(&self.colliders);
+            }
+        }
         let dt = PHYSICS_DT / self.config.substeps as f32;
         for _ in 0..self.config.substeps {
             let before = self.mechanical_energy();
             for h in &self.parts {
                 self.bodies[*h].reset_forces(false);
                 self.bodies[*h].reset_torques(false);
+            }
+            let mut environment = Vec::new();
+            if let Some(fluid) = &self.fluid {
+                for h in &self.parts {
+                    let b = &self.bodies[*h];
+                    let mut volume = 0.0;
+                    for c in b.colliders() {
+                        let collider = &self.colliders[*c];
+                        let bounds = collider.compute_aabb();
+                        let fraction = ((fluid.level - bounds.mins.y)
+                            / (bounds.maxs.y - bounds.mins.y).max(1e-6))
+                        .clamp(0.0, 1.0);
+                        volume += collider.volume() * fraction;
+                    }
+                    let force = Vector::y() * (volume * fluid.density * self.config.gravity)
+                        - b.linvel() * (fluid.drag * volume);
+                    environment.push((*h, *b.center_of_mass(), force));
+                }
+                for (h, _, force) in &environment {
+                    self.bodies[*h].add_force(*force, true);
+                }
             }
             let mut work_terms = Vec::with_capacity(self.muscles.len());
             for (m, activation) in self.muscles.iter().zip(activations) {
@@ -249,8 +301,16 @@ impl Arena {
                     f64::from(force.dot(&((next_a - a) - (next_b - b))).max(0.0))
                 })
                 .sum();
-            self.audit
-                .observe(before, self.mechanical_energy(), work, &self.config);
+            let environmental_work: f64 = environment
+                .iter()
+                .map(|(h, p, f)| f64::from(f.dot(&(self.bodies[*h].center_of_mass() - p))))
+                .sum();
+            self.audit.observe(
+                before,
+                self.mechanical_energy() - environmental_work,
+                work,
+                &self.config,
+            );
         }
         self.tick += 1;
     }
