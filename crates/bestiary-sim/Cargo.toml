@@ -4,3 +4,18 @@ version.workspace = true
 edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
+
+[dependencies]
+bestiary-core = { path = "../bestiary-core" }
+rapier3d.workspace = true
+nalgebra.workspace = true
+serde.workspace = true
+ron.workspace = true
+libm.workspace = true
+
+[dev-dependencies]
+criterion.workspace = true
+
+[[bench]]
+name = "throughput"
+harness = false

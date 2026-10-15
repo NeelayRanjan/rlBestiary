@@ -1,0 +1,32 @@
+(
+    physics: (
+        // Gravitational acceleration, metres per second squared.
+        gravity: 9.81,
+        // Substeps within each fixed 1/240-second physics tick.
+        substeps: 1,
+        // Coulomb ground friction coefficient.
+        friction: 0.9,
+        // Maximum force per unit muscle cross-sectional area.
+        force_per_area: 120.0,
+        // Relative width of the parabolic length-tension curve.
+        length_tension_width: 0.8,
+        // Minimum active length is rest length times (1 - fraction).
+        max_contraction_fraction: 0.55,
+        // Passive stretch-only spring stiffness (newtons/metre).
+        passive_stiffness: 20.0,
+        // Passive axial damping coefficient.
+        damping: 0.5,
+        // Holding energy per area, activation and simulated second.
+        isometric_cost: 0.05,
+        // Absolute numerical energy allowance per substep, joules.
+        audit_absolute_tolerance: 0.01,
+        // Relative numerical energy allowance per substep.
+        audit_relative_tolerance: 0.005,
+        // M1 fixture's controller frequency in hertz.
+        fixture_frequency: 1.5,
+        // M1 fixture's muscle cross-sectional area.
+        fixture_muscle_area: 0.1,
+        // Seconds simulated per trial in the M1 nine-workload gate.
+        benchmark_trial_seconds: 2.0,
+    ),
+)

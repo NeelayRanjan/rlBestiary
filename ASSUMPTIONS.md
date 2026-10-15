@@ -7,4 +7,8 @@
 
 ## Deviations
 
-None implemented.
+The M1 performance gate is staged because the named combine trials, world and viewer are assigned to M3, M4 and M8 by the specification. M1 gates measured representative physics throughput; the later budgets remain binding before release.
+
+- M1's throughput benchmark runs nine two-second physics workloads on the 12-part fixture, including actuation, energy accounting and complete trajectories. M3 replaces this representative workload with the nine named combine trials; final release must meet the full combine budget, world budget and renderer budget independently.
+- World and viewer budgets cannot be measured in M1 before those systems exist; their measured gates remain mandatory in M4/M8 and M10. No proxy result is reported as evidence that those budgets pass.
+- M1 uses SI units, a fixed 1/240-second tick and configurable internal substeps; physical constants and numerical audit tolerances are stored in config/world.ron.

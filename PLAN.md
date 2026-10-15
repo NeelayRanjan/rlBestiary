@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M1 — physics core, muscle-driven test body, energy audit and throughput gate.
+Current task: M2 — genome encoding, bounded expansion, brains, mutation/crossover and property tests.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -11,15 +11,15 @@ Current task: M1 — physics core, muscle-driven test body, energy audit and thr
 - [x] Pass fmt, clippy, workspace tests, release build; commit M0.
 
 ## M1 Physics core and performance gate
-- [ ] Seeded tuple RNG and fixed-step plumbing (physics 1/240 second).
-- [ ] Rapier integration, articulated rigid bodies and unmotorized joints.
-- [ ] Contractile muscles: length-tension, area, passive stiffness/damping, work and isometric cost.
-- [ ] Hand-built body walks using muscle forces alone.
-- [ ] Mechanical energy ledger includes passive spring energy; exploit audit and tests.
-- [ ] Repeat identical trials with bitwise deterministic trajectories.
-- [ ] Criterion throughput gate: 12 parts, nine trial workloads, under two core seconds; report creature seconds per second.
-- [ ] Record measured benchmark, assumptions, and any gate-preserving adjustments.
-- [ ] Pass make check and commit M1 before M2.
+- [x] Seeded tuple RNG and fixed-step plumbing (physics 1/240 second).
+- [x] Rapier integration, articulated rigid bodies and unmotorized joints.
+- [x] Contractile muscles: length-tension, area, passive stiffness/damping, work and isometric cost.
+- [x] Hand-built body walks using muscle forces alone.
+- [x] Mechanical energy ledger includes passive spring energy; exploit audit and tests.
+- [x] Repeat identical trials with bitwise deterministic trajectories.
+- [x] Criterion throughput gate: 12 parts, nine trial workloads, under two core seconds; report creature seconds per second.
+- [x] Record measured benchmark, assumptions, and any gate-preserving adjustments.
+- [x] Pass make check and commit M1 before M2.
 
 ## M2 Genome
 - [ ] Serializable morphology graph: boxes/capsules, joints, muscle endpoints, sensors, limits, colors.
