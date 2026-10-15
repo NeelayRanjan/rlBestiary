@@ -1,0 +1,7 @@
+/target/
+/.tools/
+/var/
+/worlds/
+/exports/
+/dist/
+.DS_Store

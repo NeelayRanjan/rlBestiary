@@ -1,0 +1,10 @@
+[package]
+name = "bestiary-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "bestiary"
+path = "src/main.rs"
