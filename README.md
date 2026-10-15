@@ -1,5 +1,11 @@
 # bestiary
 
+THE INSPO BTW:
+https://keiwan.itch.io/evolution
+
+
+
+
 A desktop artificial-life simulator where 3D creatures with evolvable bodies live,
 hunt, reproduce, and speciate in a persistent world. Creatures are built from
 bones, joints, and contractile muscles, arranged as a recursive graph, so mutation
