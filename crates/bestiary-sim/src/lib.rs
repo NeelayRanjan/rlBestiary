@@ -3,3 +3,5 @@ pub mod config;
 pub mod muscle;
 pub mod physics;
 pub const PHYSICS_DT: f32 = 1.0 / 240.0;
+
+pub mod genome;

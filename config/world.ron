@@ -1,4 +1,21 @@
 (
+    genome: (
+        // Absolute bound on expanded rigid parts.
+        max_parts: 32,
+        // Maximum edge depth of an expanded body.
+        max_depth: 12,
+        // Maximum expanded mass in kilograms.
+        max_mass: 100.0,
+        // Minimum full part dimension in metres.
+        min_size: 0.02,
+        // Maximum joints crossed by a muscle.
+        max_span: 2,
+        // Bounds on heritable per-copy mutation probabilities.
+        mutation_floor: 0.001,
+        mutation_ceiling: 0.5,
+        // Genesis attachment offset in normalized surface coordinates.
+        attachment_jitter: 0.2,
+    ),
     physics: (
         // Gravitational acceleration, metres per second squared.
         gravity: 9.81,

@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Clone, Debug)]
 pub struct Muscle {
+    pub properties: bestiary_core::genome::MuscleProperties,
     pub origin_body: RigidBodyHandle,
     pub insertion_body: RigidBodyHandle,
     pub origin: Point<Real>,
@@ -119,6 +120,7 @@ impl Arena {
             ((self.bodies[a].position() * origin) - (self.bodies[b].position() * insertion)).norm();
         assert!(rest > 0.0001 && area > 0.0);
         self.muscles.push(Muscle {
+            properties: Default::default(),
             origin_body: a,
             insertion_body: b,
             origin,
@@ -144,10 +146,27 @@ impl Arena {
         for m in &self.muscles {
             let (a, b) = self.endpoints(m);
             energy += f64::from(
-                muscle::force(&self.config, m.rest, (b - a).norm(), 0.0, m.area, 0.0).spring_energy,
+                muscle::force_with_properties(
+                    &self.config,
+                    &m.properties,
+                    m.rest,
+                    (b - a).norm(),
+                    0.0,
+                    m.area,
+                    0.0,
+                )
+                .spring_energy,
             );
         }
         energy
+    }
+    pub fn contact_force(&self, handle: RigidBodyHandle) -> f32 {
+        self.bodies[handle]
+            .colliders()
+            .iter()
+            .flat_map(|h| self.narrow.contact_pairs_with(*h))
+            .map(|pair| pair.total_impulse().norm() / PHYSICS_DT)
+            .sum()
     }
     pub fn poses(&self) -> Vec<Pose> {
         self.parts
@@ -180,7 +199,15 @@ impl Arena {
                 let velocity = (self.bodies[m.insertion_body].velocity_at_point(&b)
                     - self.bodies[m.origin_body].velocity_at_point(&a))
                 .dot(&direction);
-                let f = muscle::force(&self.config, m.rest, length, velocity, m.area, *activation);
+                let f = muscle::force_with_properties(
+                    &self.config,
+                    &m.properties,
+                    m.rest,
+                    length,
+                    velocity,
+                    m.area,
+                    *activation,
+                );
                 self.bodies[m.origin_body].add_force_at_point(
                     direction * (f.active + f.passive),
                     a,

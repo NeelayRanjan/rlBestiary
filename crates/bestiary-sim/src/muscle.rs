@@ -39,6 +39,25 @@ pub fn force(
     }
 }
 
+/// Heritable material properties scale the world's documented baseline constants.
+#[allow(clippy::too_many_arguments)]
+pub fn force_with_properties(
+    config: &PhysicsConfig,
+    properties: &bestiary_core::genome::MuscleProperties,
+    rest: f32,
+    length: f32,
+    velocity: f32,
+    area: f32,
+    activation: f32,
+) -> MuscleForce {
+    let mut effective = config.clone();
+    effective.max_contraction_fraction =
+        (config.max_contraction_fraction * properties.contraction_scale).min(0.95);
+    effective.passive_stiffness *= properties.stiffness_scale;
+    effective.damping *= properties.damping_scale;
+    force(&effective, rest, length, velocity, area, activation)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

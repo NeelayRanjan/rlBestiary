@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M2 — genome encoding, bounded expansion, brains, mutation/crossover and property tests.
+Current task: M3 — nine deterministic combine trials, trait cache, replay recording and exploit tests.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -22,20 +22,20 @@ Current task: M2 — genome encoding, bounded expansion, brains, mutation/crosso
 - [x] Pass make check and commit M1 before M2.
 
 ## M2 Genome
-- [ ] Serializable morphology graph: boxes/capsules, joints, muscle endpoints, sensors, limits, colors.
-- [ ] Bounded recursive/cyclic expansion: 32 parts, depth 12, mass and minimum size.
-- [ ] Reflection, subtree scale, terminal-only edges, stable muscle endpoint resolution.
-- [ ] Genesis guarantee repairs missing muscles on each actuated axis.
-- [ ] Distributed motor neurons, local/global sensors, oscillators, activations and Hebbian plasticity.
-- [ ] Ethology recurrent brain, life-history/social genes, evolvable clamped mutation rates.
-- [ ] Parameter jitter; add/remove bone/joint; change joint type/recursion; reflection; duplicate/prune subtree.
-- [ ] Add/remove muscle, move attachments, change cross-section/span; add/remove sensors and neurons.
-- [ ] Weight jitter, activation changes, plasticity toggle, life-history mutation.
-- [ ] Valid subtree crossover with inherited muscles/neurons and joint repair.
-- [ ] Symmetric compatibility distance, zero only for identical genomes.
-- [ ] Binary round-trip, base64url share strings, canonical content hashes, mutation records.
-- [ ] Proptest mutation sequences, crossover, bounds, axis coverage and mirrored limbs.
-- [ ] Pass make check and commit M2.
+- [x] Serializable morphology graph: boxes/capsules, joints, muscle endpoints, sensors, limits, colors.
+- [x] Bounded recursive/cyclic expansion: 32 parts, depth 12, mass and minimum size.
+- [x] Reflection, subtree scale, terminal-only edges, stable muscle endpoint resolution.
+- [x] Genesis guarantee repairs missing muscles on each actuated axis.
+- [x] Distributed motor neurons, local/global sensors, oscillators, activations and Hebbian plasticity.
+- [x] Ethology recurrent brain, life-history/social genes, evolvable clamped mutation rates.
+- [x] Parameter jitter; add/remove bone/joint; change joint type/recursion; reflection; duplicate/prune subtree.
+- [x] Add/remove muscle, move attachments, change cross-section/span; add/remove sensors and neurons.
+- [x] Weight jitter, activation changes, plasticity toggle, life-history mutation.
+- [x] Valid subtree crossover with inherited muscles/neurons and joint repair.
+- [x] Symmetric compatibility distance, zero only for identical genomes.
+- [x] Binary round-trip, base64url share strings, canonical content hashes, mutation records.
+- [x] Proptest mutation sequences, crossover, bounds, axis coverage and mirrored limbs.
+- [x] Pass make check and commit M2.
 
 ## M3 Combine harness
 - [ ] Stand with two-second gate and isometric cost; sprint and acceleration/cost.

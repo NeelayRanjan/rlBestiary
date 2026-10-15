@@ -44,3 +44,6 @@ mod tests {
         assert_ne!(digest(&[1u64, 2]).unwrap(), digest(&[2u64, 1]).unwrap());
     }
 }
+
+pub mod brain;
+pub mod genome;

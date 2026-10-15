@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
+    pub genome: bestiary_core::genome::Limits,
     pub physics: PhysicsConfig,
 }
 
@@ -29,6 +30,7 @@ impl Config {
     pub fn parse(source: &str) -> Result<Self, String> {
         let value: Self = ron::from_str(source).map_err(|e| e.to_string())?;
         value.physics.validate()?;
+        value.genome.validate()?;
         Ok(value)
     }
     pub fn bundled() -> Self {
