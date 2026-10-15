@@ -64,3 +64,19 @@ fn ecology_config_negative_cases() {
     c.pheromone_decay = 1.1;
     assert!(c.validate().is_err());
 }
+
+#[test]
+fn nearest_neighbors_match_distance_oracle_and_wrap_at_world_edge() {
+    let mut c = Config::bundled();
+    c.world.grid = 4;
+    let mut w = World::new(10, c, 3).unwrap();
+    w.agents[0].position = [1.0, 1.0];
+    w.agents[1].position = [127.0, 1.0];
+    w.agents[2].position = [6.0, 1.0];
+    let n = w.neighbors();
+    assert_eq!(n[0].as_ref().unwrap().index, 1);
+    assert_eq!(n[0].as_ref().unwrap().distance, 2.0);
+    assert_eq!(n[0].as_ref().unwrap().direction, [-1.0, 0.0]);
+    assert_eq!(n[1].as_ref().unwrap().index, 0);
+    assert_eq!(n[2].as_ref().unwrap().index, 0);
+}

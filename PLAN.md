@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M7 — sparse MAP-Elites archive; M5 long-run trophic acceptance remains open.
+Current task: M8 — native viewer; long-run ecology, archive coverage floor and stagnation acceptance remain open.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -82,12 +82,12 @@ Current task: M7 — sparse MAP-Elites archive; M5 long-run trophic acceptance r
 - [x] Pass make check and commit M6.
 
 ## M7 Archive
-- [ ] Sparse MAP-Elites grid over all seven specified descriptors and deterministic elite selection.
-- [ ] Coverage definition, persistence, export and optional reseeding (off by default).
-- [ ] Every archived genome reproduces recorded traits; exploit exclusion.
+- [x] Sparse MAP-Elites grid over all seven specified descriptors and deterministic elite selection.
+- [x] Coverage definition, persistence, export and optional reseeding (off by default).
+- [x] Every archived genome reproduces recorded traits; exploit exclusion.
 - [ ] >=15% reachable-cell coverage, greater body size in parts, >=3 live species at demo seed.
 - [ ] Five-seed end-of-run trait variance and coverage growth tests.
-- [ ] Pass make check and commit M7.
+- [x] Pass make check and commit M7 mechanics; long-run acceptance remains explicitly open.
 
 ## M8 Viewer
 - [ ] Native Bevy/egui dark desktop application with procedural assets only.

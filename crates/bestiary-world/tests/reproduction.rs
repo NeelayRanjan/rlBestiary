@@ -46,6 +46,10 @@ fn sexual_births_and_sqlite_resume_conserve_resources() {
     assert!(resumed.conserved());
     assert!(store.counts().unwrap()["creature"].as_u64().unwrap() > 2);
     assert_eq!(store.samples().unwrap().len(), 1);
+    assert_eq!(
+        store.counts().unwrap()["archive_cell"],
+        world.archive.cells.len()
+    );
     drop(store);
     std::fs::remove_file(path).unwrap();
 }
@@ -101,7 +105,7 @@ fn disconnected_terrestrial_mates_cannot_reproduce() {
 }
 
 #[test]
-#[ignore = "100k-tick diversification acceptance; run with --release --ignored"]
+#[ignore = "250k-tick diversification acceptance; run with --release --ignored"]
 fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
     let c = Config::parse(include_str!("../../../config/demo.ron")).unwrap();
     let mut w = World::new(42, c, 24).unwrap();
@@ -109,7 +113,7 @@ fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
         .ok()
         .map(|p| Store::create(std::path::Path::new(&p)).unwrap());
     let mut fragmented = None;
-    for _ in 0..100_000 {
+    for _ in 0..250_000 {
         w.step();
         if let Some(store) = &store {
             store.events(w.tick, &w.ecological_events).unwrap();
@@ -161,4 +165,41 @@ fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
         .any(|s| s.parent.is_some() && s.born > split));
     assert!(w.history.values().any(|h| h.died.is_some()));
     assert!(!w.mutations.is_empty());
+    let coverage = w.archive.coverage(&w.config.archive);
+    let max_parts = w
+        .archive
+        .cells
+        .values()
+        .map(|e| e.traits.parts)
+        .max()
+        .unwrap();
+    println!(
+        "archive={} coverage={coverage:.4} max_parts={max_parts}",
+        w.archive.cells.len()
+    );
+    for elite in w.archive.cells.values() {
+        let evaluation =
+            bestiary_sim::combine::evaluate(&w.genomes[&elite.genome].genome, &w.config).unwrap();
+        assert_eq!(elite.traits, evaluation.traits);
+        assert!(!evaluation.exploit_suspect);
+    }
+    assert!(max_parts > 7);
+    assert!(
+        coverage >= 0.15,
+        "coverage {coverage} is below the fixed-grid floor"
+    );
+}
+
+#[test]
+fn optional_archive_reseeding_is_off_by_default_and_conserves_resources() {
+    let mut c = Config::bundled();
+    assert_eq!(c.archive.reseed_interval, 0);
+    c.world.grid = 4;
+    c.world.population_limit = 16;
+    c.archive.reseed_interval = 1;
+    let mut w = World::new(1, c, 2).unwrap();
+    w.step();
+    assert_eq!(w.agents.len(), 4);
+    assert!(w.conserved());
+    assert_eq!(w.archive.cells.len(), 1);
 }

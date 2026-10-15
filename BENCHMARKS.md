@@ -49,3 +49,7 @@ hashes match at 1k, 100k and 1M; energy and nutrient accounting remain exact.
 Final populations from eight founders: 8, 6, 3, 8, 3. Fixture lifespan exceeds the
 run horizon because reproduction arrives in M6. This is not the final ecological
 or population-turnover acceptance result.
+
+## M7 ecology regression check
+
+`./scripts/cargo bench -p bestiary-world --bench world --locked`: 5,000 live creatures, 13,917.9 ticks/minute after replacing per-candidate square roots with squared-distance comparisons. The earlier ecology implementation measured 2,425.2 ticks/minute and failed; the corrected benchmark passes the 10,000 floor.

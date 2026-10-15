@@ -7,6 +7,7 @@ pub struct Pathogen {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum EcologyEvent {
+    ArchiveCell { cell: [u8; 7], genome: [u8; 32] },
     Fragmentation { before: usize, after: usize },
     Birth { creature: u64, parents: Vec<u64> },
     SpeciesBorn { species: u64 },
@@ -101,12 +102,13 @@ impl World {
                                     *v += extent;
                                 }
                             }
-                            let distance = libm::sqrtf(d[0] * d[0] + d[1] * d[1]);
+                            // Compare squared distances; normalize only the final winner.
+                            let distance = d[0] * d[0] + d[1] * d[1];
                             if best.as_ref().is_none_or(|n| distance < n.distance) {
                                 best = Some(Neighbor {
                                     index: *j,
                                     distance,
-                                    direction: d.map(|x| x / distance.max(1e-5)),
+                                    direction: d,
                                     mass: self.genomes[&b.genome].traits.mass * b.growth,
                                     genome: b.genome,
                                 });
@@ -114,7 +116,12 @@ impl World {
                         }
                     }
                 }
-                best
+                best.map(|mut neighbor| {
+                    neighbor.distance = libm::sqrtf(neighbor.distance);
+                    neighbor.direction =
+                        neighbor.direction.map(|x| x / neighbor.distance.max(1e-5));
+                    neighbor
+                })
             })
             .collect()
     }

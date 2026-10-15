@@ -166,3 +166,31 @@ impl ReproductionConfig {
         Ok(())
     }
 }
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct ArchiveConfig {
+    /// Sorted interior cut points for parts, limbs, mass, reach, symmetry, gait and swim speed.
+    pub thresholds: [Vec<f32>; 7],
+    pub reseed_interval: u64,
+    pub reseed_count: usize,
+}
+impl ArchiveConfig {
+    pub fn validate(&self) -> Result<(), String> {
+        if self.reseed_count == 0
+            || self.reseed_count > 1000
+            || self.thresholds.iter().any(|axis| {
+                axis.is_empty()
+                    || axis.len() > 7
+                    || axis.iter().any(|x| !x.is_finite() || *x < 0.0)
+                    || axis.windows(2).any(|p| p[0] >= p[1])
+            })
+        {
+            return Err("invalid archive configuration".into());
+        }
+        Ok(())
+    }
+    pub fn total_cells(&self) -> usize {
+        self.thresholds.iter().map(|a| a.len() + 1).product()
+    }
+}

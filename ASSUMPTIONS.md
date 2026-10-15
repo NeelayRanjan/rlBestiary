@@ -41,3 +41,8 @@ The M1 performance gate is staged because the named combine trials, world and vi
 - Senescence reduces the maximum attainable health after onset; feeding cannot heal away aging. The regression test verifies death in a fed population.
 - M6's typed event stream is consumed by SQLite and exposed over IPC; archive-cell events arrive in M7 and remaining director heuristics in M8. Geographic acceptance establishes a recorded split after fragmentation, not a causal experiment proving fragmentation was the sole cause.
 - M6 demo: seed 42, config/demo.ron, 24 founders, 100,000 ticks: 81 living creatures, 11 living species, first fragmentation at tick 11,000. The named acceptance test checks coexistence, descendant species after fragmentation, actual turnover, mutations and conservation.
+
+- M7 uses two bins per specified descriptor and all 128 Cartesian cells as the coverage denominator. This is a conservative bound that includes potentially unreachable combinations; observed discoveries do not change the denominator. Equal-viability elites use the lexicographically smaller genome hash.
+- The part-count cut is eight, keeping seven-part founders separate from larger bodies. Seed 42 at 250,000 ticks retains nine species and a 17-part elite, but fills only 13/128 cells (10.15625%); the 15% acceptance remains open.
+- Archive reseeding is disabled by default. When enabled, it chooses the least represented elite with deterministic hash tie-breaking and transfers resources from the existing world.
+- Profiling showed libm square roots dominated neighbor lookup. Squared-distance comparison followed by normalization of the winner preserves deterministic selection and restores the 5,000-creature throughput gate.

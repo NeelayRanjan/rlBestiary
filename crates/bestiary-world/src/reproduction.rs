@@ -27,6 +27,13 @@ impl World {
             return Ok(hash);
         }
         let evaluation = evaluate(&genome, &self.config)?;
+        if let Some(cell) = self
+            .archive
+            .insert(&evaluation, self.tick, &self.config.archive)
+        {
+            self.ecological_events
+                .push(EcologyEvent::ArchiveCell { cell, genome: hash });
+        }
         let replays = evaluation
             .trials
             .iter()
@@ -341,6 +348,26 @@ impl World {
                 }
             }
         }
+        if self.config.archive.reseed_interval > 0
+            && self.tick % self.config.archive.reseed_interval == 0
+        {
+            let mut counts = BTreeMap::new();
+            for a in &self.agents {
+                *counts.entry(a.genome).or_insert(0usize) += 1;
+            }
+            if let Some(elite) = self
+                .archive
+                .cells
+                .values()
+                .min_by_key(|e| (counts.get(&e.genome).copied().unwrap_or(0), e.genome))
+            {
+                let genome = self.genomes[&elite.genome].genome.clone();
+                let mut rng = bestiary_core::rng(self.seed, 0x52455345, 0, self.tick);
+                let extent = self.config.world.grid as f32 * self.config.world.cell_metres;
+                let position = [rng.gen_range(0.0..extent), rng.gen_range(0.0..extent)];
+                let _ = self.release(genome, position, self.config.archive.reseed_count);
+            }
+        }
         for agent in &self.agents {
             if let Some(h) = self.history.get_mut(&agent.id) {
                 h.species = agent.species;
@@ -399,12 +426,22 @@ impl Persistable for World {
                 sample.trait_variance[i] += (v - sample.mean_traits[i]).powi(2) / n;
             }
         }
+        sample.coverage = self.archive.coverage(&self.config.archive);
         sample.plant_toxicity = self.cells.iter().map(|c| c.plant.toxicity).sum::<f32>()
             / self.cells.len().max(1) as f32;
         sample
     }
     fn records(&self) -> Records {
-        let mut records = Records::default();
+        let archive = self
+            .archive
+            .cells
+            .iter()
+            .map(|(key, e)| (key.to_vec(), e.genome.to_vec(), e.viability))
+            .collect();
+        let mut records = Records {
+            archive,
+            ..Records::default()
+        };
         for (hash, g) in &self.genomes {
             records.genomes.push(GenomeRow {
                 hash: hash.to_vec(),
@@ -451,15 +488,7 @@ impl Persistable for World {
         records
     }
 }
-pub fn hex(bytes: &[u8]) -> String {
-    const DIGITS: &[u8; 16] = b"0123456789abcdef";
-    let mut out = String::with_capacity(bytes.len() * 2);
-    for b in bytes {
-        out.push(DIGITS[(b >> 4) as usize] as char);
-        out.push(DIGITS[(b & 15) as usize] as char);
-    }
-    out
-}
+pub use bestiary_core::hex;
 
 impl World {
     /// User releases import a genome but transfer the founding population's resources from the world.

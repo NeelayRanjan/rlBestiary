@@ -217,19 +217,33 @@ fn run(args: &[String]) -> Result<()> {
                 return Err("use archive ls WORLD.db".into());
             }
             let world = load_snapshot(Path::new(arg(args, 2)?))?;
-            let rows:Vec<_>=world.genomes.iter().filter(|(_,g)|!g.exploit).map(|(h,g)|serde_json::json!({"genome":hex(h),"viability":g.viability,"traits":g.traits})).collect();
+            let mut rows: Vec<_> = world.archive.cells.iter().collect();
+            if value(args, "--sort") == Some("viability") {
+                rows.sort_by(|a, b| b.1.viability.total_cmp(&a.1.viability).then(a.0.cmp(b.0)));
+            }
             if let Some(directory) = value(args, "--export") {
                 std::fs::create_dir_all(directory)?;
-                for (hash, g) in &world.genomes {
-                    if !g.exploit {
-                        std::fs::write(
-                            Path::new(directory).join(format!("{}.genome", hex(hash))),
-                            postcard::to_allocvec(&g.genome)?,
-                        )?;
-                    }
+                let store = Store::open(Path::new(arg(args, 2)?), true)?;
+                for (_, elite) in &rows {
+                    let genome = &world.genomes[&elite.genome].genome;
+                    std::fs::write(
+                        Path::new(directory).join(format!("{}.genome", hex(&elite.genome))),
+                        postcard::to_allocvec(genome)?,
+                    )?;
+                    std::fs::write(
+                        Path::new(directory).join(format!("{}.rpl", hex(&elite.genome))),
+                        store.replay(&elite.replay_id)?,
+                    )?;
                 }
+                std::fs::write(
+                    Path::new(directory).join("archive.json"),
+                    serde_json::to_vec_pretty(&rows)?,
+                )?;
             }
-            print_json(&rows)?;
+            print_json(
+                &serde_json::json!({"coverage":world.archive.coverage(&world.config.archive),
+                "total_cells":world.config.archive.total_cells(),"cells":rows}),
+            )?;
         }
         "replay" => {
             let id = arg(args, 1)?;

@@ -69,6 +69,7 @@ pub struct Carcass {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct World {
+    pub archive: bestiary_archive::grid::Archive,
     pub first_predation: bool,
     pub first_swimmer: bool,
     pub record_lifespan: u64,
@@ -174,9 +175,7 @@ impl World {
         population: usize,
         genome: Genome,
     ) -> Result<Self, String> {
-        config.world.validate()?;
-        config.ecology.validate()?;
-        config.reproduction.validate()?;
+        config.validate()?;
         if population > config.world.population_limit {
             return Err("initial population exceeds configured bound".into());
         }
@@ -244,6 +243,8 @@ impl World {
                 offspring: 0,
             });
         }
+        let mut archive = bestiary_archive::grid::Archive::default();
+        archive.insert(&evaluated, 0, &config.archive);
         let mut genomes = BTreeMap::new();
         genomes.insert(
             hash,
@@ -288,6 +289,7 @@ impl World {
             })
             .collect();
         let mut w = Self {
+            archive,
             first_predation: false,
             first_swimmer: false,
             record_lifespan: 0,

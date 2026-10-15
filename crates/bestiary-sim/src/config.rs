@@ -3,6 +3,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
 pub struct Config {
+    pub archive: bestiary_core::settings::ArchiveConfig,
     pub reproduction: bestiary_core::settings::ReproductionConfig,
     pub ecology: bestiary_core::settings::EcologyConfig,
     pub world: bestiary_core::settings::WorldConfig,
@@ -33,13 +34,18 @@ pub struct PhysicsConfig {
 impl Config {
     pub fn parse(source: &str) -> Result<Self, String> {
         let value: Self = ron::from_str(source).map_err(|e| e.to_string())?;
-        value.physics.validate()?;
-        value.genome.validate()?;
-        value.combine.validate()?;
-        value.world.validate()?;
-        value.ecology.validate()?;
-        value.reproduction.validate()?;
+        value.validate()?;
         Ok(value)
+    }
+    pub fn validate(&self) -> Result<(), String> {
+        self.archive.validate()?;
+        self.physics.validate()?;
+        self.genome.validate()?;
+        self.combine.validate()?;
+        self.world.validate()?;
+        self.ecology.validate()?;
+        self.reproduction.validate()?;
+        Ok(())
     }
     pub fn bundled() -> Self {
         Self::parse(include_str!("../../../config/world.ron"))

@@ -7,6 +7,7 @@ pub struct Store {
 }
 #[derive(Default)]
 pub struct Records {
+    pub archive: Vec<(Vec<u8>, Vec<u8>, f32)>,
     pub genomes: Vec<GenomeRow>,
     pub creatures: Vec<CreatureRow>,
     pub mutations: Vec<MutationRow>,
@@ -203,6 +204,12 @@ impl Store {
                     m.lifespan,
                     m.lineage_survival
                 ],
+            )?;
+        }
+        for (cell, genome, viability) in records.archive {
+            transaction.execute(
+                "INSERT OR REPLACE INTO archive_cell VALUES(?1,?2,?3)",
+                params![cell, genome, viability],
             )?;
         }
         for r in records.replays {

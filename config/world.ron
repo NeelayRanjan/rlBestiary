@@ -1,4 +1,13 @@
 (
+    archive: (
+        // Interior bin edges: parts, limbs, mass kg, reach m, symmetry, gait Hz, swim m/s.
+        // Coverage uses all 128 Cartesian cells, including combinations not yet observed.
+        thresholds: ([8.0], [2.0], [0.75], [0.6], [0.5], [1.0], [0.05]),
+        // Zero disables reseeding. Otherwise release an elite every N world ticks.
+        reseed_interval: 0,
+        // Founders per reseeding event; draws resources from the existing world.
+        reseed_count: 2,
+    ),
     reproduction: (
         // Deterministic mating/evaluation epoch in world ticks.
         epoch: 1000,

@@ -1,4 +1,5 @@
 //! Species registration and persistent records, independent of world implementation.
+pub mod grid;
 pub mod store;
 use bestiary_core::{genome::Genome, settings::ReproductionConfig};
 use serde::{Deserialize, Serialize};
