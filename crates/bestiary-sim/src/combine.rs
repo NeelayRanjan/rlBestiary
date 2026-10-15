@@ -12,6 +12,9 @@ use rayon::prelude::*;
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
+/// Full box dimensions of the strike trial's recorded target, in metres.
+pub const STRIKE_TARGET_SIZE: [f32; 3] = [0.2, 0.3, 0.6];
+
 #[derive(Clone, Copy, Debug, Serialize, Deserialize, PartialEq, Eq, PartialOrd, Ord)]
 pub enum TrialKind {
     Stand,
@@ -98,6 +101,7 @@ pub struct TrialResult {
     pub progress: f32,
     pub turn_rate: f32,
     pub reach: f32,
+    /// Minimum clearance of the root collider's surface above the ground plane.
     pub min_root_height: f32,
     pub strike_impulse: f32,
     pub gait_frequency: f32,
@@ -157,17 +161,63 @@ impl Combine {
     }
 }
 fn cache_key(g: &Genome, c: &Config) -> [u8; 32] {
-    bestiary_core::digest(&(1u32, g.hash(), c)).expect("config serializes")
+    bestiary_core::digest(&(crate::SIMULATION_REVISION, g.hash(), c)).expect("config serializes")
 }
-fn ground_height(kind: TrialKind, slope: f32, x: f32) -> f32 {
-    if kind == TrialKind::Slope {
-        x * libm::tanf(slope)
-    } else {
-        0.0
+fn locomotion(kind: TrialKind) -> bool {
+    matches!(
+        kind,
+        TrialKind::Sprint
+            | TrialKind::Turn
+            | TrialKind::Rough
+            | TrialKind::Slope
+            | TrialKind::Swim
+            | TrialKind::Carry
+    )
+}
+fn center_of_mass(creature: &Creature) -> Point<Real> {
+    let (weighted, mass) = creature
+        .arena
+        .parts
+        .iter()
+        .take(creature.body.parts.len())
+        .fold((Vector::zeros(), 0.0), |(weighted, mass), h| {
+            let body = &creature.arena.bodies[*h];
+            (
+                weighted + body.center_of_mass().coords * body.mass(),
+                mass + body.mass(),
+            )
+        });
+    Point::from(weighted / mass)
+}
+fn root_clearance(creature: &Creature, ground: ColliderHandle) -> f32 {
+    if creature.arena.touches_terrain(creature.arena.parts[0]) {
+        return 0.0;
     }
+    let ground = &creature.arena.colliders[ground];
+    let ground_top = ground
+        .shape()
+        .as_cuboid()
+        .expect("arena ground is a box")
+        .half_extents
+        .y;
+    let ground_inverse = ground.position().inverse();
+    creature.arena.bodies[creature.arena.parts[0]]
+        .colliders()
+        .iter()
+        .map(|handle| {
+            let collider = &creature.arena.colliders[*handle];
+            collider
+                .shape()
+                .compute_aabb(&(ground_inverse * collider.position()))
+                .mins
+                .y
+                - ground_top
+        })
+        .fold(f32::INFINITY, f32::min)
 }
 pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<TrialResult, String> {
     let mut creature = Creature::new(g.clone(), c)?;
+    let ground = creature.arena.colliders.iter().next().expect("ground").0;
     if kind == TrialKind::Rough {
         let hash = g.hash();
         let seed = u64::from_le_bytes(hash[..8].try_into().expect("eight bytes"));
@@ -191,7 +241,6 @@ pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<Tria
             0.0,
             libm::sinf(slope * 0.5),
         ));
-        let ground = creature.arena.colliders.iter().next().expect("ground").0;
         creature.arena.colliders[ground].set_rotation(rot);
         for h in &creature.arena.parts {
             let p = *creature.arena.bodies[*h].position();
@@ -222,17 +271,36 @@ pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<Tria
             .iter()
             .map(|p| p.pose.translation.x + p.size[0] * 0.5)
             .fold(0.0f32, f32::max);
-        Some(
-            creature
-                .arena
-                .add_box([max_x + 0.12, 0.15, 0.0], [0.1, 0.15, 0.3], 2.0),
-        )
+        Some(creature.arena.add_box(
+            [max_x + 0.12, STRIKE_TARGET_SIZE[1] * 0.5, 0.0],
+            STRIKE_TARGET_SIZE.map(|size| size * 0.5),
+            2.0,
+        ))
     } else {
         None
     };
+    for handle in &creature.arena.parts {
+        creature.arena.bodies[*handle]
+            .recompute_mass_properties_from_colliders(&creature.arena.colliders);
+    }
+    // The stand interval is also the settling interval for locomotion. Energy
+    // auditing remains active, but spawn/fall transients earn no movement traits.
+    if locomotion(kind) {
+        for _ in 0..(c.combine.stand_seconds / PHYSICS_DT).round() as usize {
+            creature.step();
+        }
+    }
+    let initial_work = creature.arena.audit.active_work;
+    let initial_isometric = creature.arena.audit.isometric_cost;
     let root = creature.arena.parts[0];
-    let start = *creature.arena.bodies[root].translation();
-    let ticks = (c.combine.trial_seconds / PHYSICS_DT).round() as usize;
+    let start = center_of_mass(&creature);
+    let seconds = if kind == TrialKind::Stand {
+        c.combine.stand_seconds
+    } else {
+        c.combine.trial_seconds
+    };
+    let ticks = (seconds / PHYSICS_DT).round() as usize;
+    let seconds = ticks as f32 * PHYSICS_DT;
     let save = matches!(kind, TrialKind::Sprint | TrialKind::Strike);
     let mut frames = if save {
         vec![creature.arena.poses()]
@@ -240,36 +308,27 @@ pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<Tria
         vec![]
     };
     let mut last = start;
-    let mut last_speed = 0.0f32;
-    let mut distance = 0.0;
-    let mut speed = 0.0f32;
-    let mut acceleration = 0.0f32;
-    let mut min_root_height = start.y;
+    let mut midpoint = start;
+    let mut min_root_height = root_clearance(&creature, ground);
     let mut turn = 0.0;
     let mut reach = 0.0f32;
     let mut impulse = 0.0f32;
     let mut heights = Vec::with_capacity(ticks);
-    for _ in 0..ticks {
+    for tick in 0..ticks {
         creature.step();
         let rb = &creature.arena.bodies[root];
-        let p = *rb.translation();
-        let d = libm::sqrtf((p.x - last.x).powi(2) + (p.z - last.z).powi(2));
-        let v = d / PHYSICS_DT;
-        speed = speed.max(v);
-        acceleration = acceleration.max((v - last_speed) / PHYSICS_DT);
-        distance += d;
+        let p = center_of_mass(&creature);
         last = p;
-        last_speed = v;
-        min_root_height = min_root_height.min(p.y - ground_height(kind, slope, p.x));
-        turn += rb.angvel().y.abs() * PHYSICS_DT;
+        if tick + 1 == ticks / 2 {
+            midpoint = p;
+        }
+        min_root_height = min_root_height.min(root_clearance(&creature, ground));
+        turn += rb.angvel().y * PHYSICS_DT;
         heights.push(p.y);
-        for (i, part) in creature.body.parts.iter().enumerate() {
-            reach = reach.max(
-                creature.arena.bodies[creature.arena.parts[i]]
-                    .translation()
-                    .y
-                    + part.size[1] * 0.5,
-            );
+        for handle in creature.arena.parts.iter().take(creature.body.parts.len()) {
+            for collider in creature.arena.bodies[*handle].colliders() {
+                reach = reach.max(creature.arena.colliders[*collider].compute_aabb().maxs.y);
+            }
         }
         if let Some(h) = target {
             impulse = impulse.max(
@@ -287,19 +346,33 @@ pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<Tria
     } else {
         0.0
     };
+    let supported =
+        !locomotion(kind) || kind == TrialKind::Swim || min_root_height >= c.combine.root_clearance;
+    let distance = if supported {
+        libm::sqrtf((last.x - start.x).powi(2) + (last.z - start.z).powi(2))
+    } else {
+        0.0
+    };
+    let half = (ticks / 2) as f32 * PHYSICS_DT;
+    let v1 = (midpoint - start) / half;
+    let v2 = (last - midpoint) / (seconds - half);
+    let acceleration = libm::sqrtf((v2.x - v1.x).powi(2) + (v2.z - v1.z).powi(2)) / (seconds * 0.5);
+    let mut energy = creature.arena.audit;
+    energy.active_work -= initial_work;
+    energy.isometric_cost -= initial_isometric;
     Ok(TrialResult {
         kind,
         skipped: false,
-        speed,
-        acceleration,
+        speed: distance / seconds,
+        acceleration: if supported { acceleration } else { 0.0 },
         distance,
-        progress: last.x - start.x,
-        turn_rate: turn / c.combine.trial_seconds,
+        progress: if supported { last.x - start.x } else { 0.0 },
+        turn_rate: if supported { turn.abs() / seconds } else { 0.0 },
         reach,
         min_root_height,
         strike_impulse: impulse,
         gait_frequency,
-        energy: creature.arena.audit,
+        energy,
         replay: if save {
             Some(Replay {
                 kind,
@@ -325,12 +398,20 @@ pub fn evaluate(g: &Genome, c: &Config) -> Result<Evaluation, String> {
             .map(|p| g.bones[p.gene].volume() * p.scale.powi(3))
             .sum(),
         parts: body.parts.len(),
-        limbs: body
+        limbs: if body
             .parts
             .iter()
-            .skip(1)
-            .filter(|p| p.children.iter().all(Option::is_none))
-            .count(),
+            .all(|p| p.children.iter().flatten().count() <= 1)
+        {
+            // A serial backbone has a terminal tail, not a limb.
+            0
+        } else {
+            body.parts
+                .iter()
+                .skip(1)
+                .filter(|p| p.children.iter().all(Option::is_none))
+                .count()
+        },
         muscle_area: body.muscles.iter().map(|m| m.area).sum(),
         ..Default::default()
     };
@@ -349,19 +430,10 @@ pub fn evaluate(g: &Genome, c: &Config) -> Result<Evaluation, String> {
     let stand = trial(g, c, TrialKind::Stand, 0.0)?;
     let stands = stand.min_root_height >= c.combine.root_clearance;
     traits.standing_cost =
-        (stand.energy.active_work + stand.energy.isometric_cost) as f32 / c.combine.trial_seconds;
+        (stand.energy.active_work + stand.energy.isometric_cost) as f32 / c.combine.stand_seconds;
     trials.push(stand);
     for kind in TrialKind::ALL.into_iter().skip(1) {
-        let locomotion = matches!(
-            kind,
-            TrialKind::Sprint
-                | TrialKind::Turn
-                | TrialKind::Rough
-                | TrialKind::Slope
-                | TrialKind::Swim
-                | TrialKind::Carry
-        );
-        if !stands && locomotion {
+        if !stands && locomotion(kind) {
             trials.push(TrialResult {
                 kind,
                 skipped: true,
@@ -485,6 +557,113 @@ pub fn dominant_frequency(samples: &[f32], dt: f32) -> f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    fn inert_root(shape: bestiary_core::genome::Shape, config: &Config) -> Genome {
+        let mut g = Genome::starter(&config.genome);
+        g.bones[0].shape = shape;
+        g.bones[0].edges.clear();
+        g.bones[0].muscles.clear();
+        g.bones.truncate(1);
+        g.repair(&config.genome);
+        g
+    }
+    #[test]
+    fn stand_gate_keeps_root_surface_off_ground_for_two_seconds() {
+        let config = Config::bundled();
+        for shape in [
+            bestiary_core::genome::Shape::Box,
+            bestiary_core::genome::Shape::Capsule,
+        ] {
+            let result = evaluate(&inert_root(shape, &config), &config).unwrap();
+            assert!(result.trials[0].min_root_height < config.combine.root_clearance);
+            assert_eq!(result.viability, 0.0);
+            assert_eq!(result.traits.speed, 0.0);
+            assert!(result
+                .trials
+                .iter()
+                .filter(|t| locomotion(t.kind))
+                .all(|t| t.skipped));
+        }
+        let healthy = evaluate(&Genome::starter(&config.genome), &config).unwrap();
+        assert!(healthy.trials[0].min_root_height >= config.combine.root_clearance);
+        assert!(healthy.viability > 0.0);
+    }
+    #[test]
+    fn root_clearance_accounts_for_shape_rotation_and_ground_plane() {
+        let config = Config::bundled();
+        let g = inert_root(bestiary_core::genome::Shape::Box, &config);
+        let mut creature = Creature::new(g, &config).unwrap();
+        let ground = creature.arena.colliders.iter().next().unwrap().0;
+        let root_collider = creature.arena.bodies[creature.arena.parts[0]].colliders()[0];
+        creature.arena.colliders[root_collider].set_position(Isometry::new(
+            vector![0.0, 1.0, 0.0],
+            vector![0.0, 0.0, std::f32::consts::FRAC_PI_2],
+        ));
+        assert!((root_clearance(&creature, ground) - 0.35).abs() < 1e-6);
+        creature.arena.colliders[ground].set_translation(vector![0.0, 0.1, 0.0]);
+        assert!((root_clearance(&creature, ground) - 0.15).abs() < 1e-6);
+    }
+    #[test]
+    fn root_on_raised_terrain_fails_clearance_despite_height_above_base_plane() {
+        let config = Config::bundled();
+        let g = inert_root(bestiary_core::genome::Shape::Box, &config);
+        let mut creature = Creature::new(g, &config).unwrap();
+        let ground = creature.arena.colliders.iter().next().unwrap().0;
+        let root = creature.arena.parts[0];
+        creature.arena.bodies[root].set_translation(vector![0.0, 1.0, 0.0], true);
+        creature
+            .arena
+            .colliders
+            .insert(ColliderBuilder::cuboid(2.0, 0.1, 2.0).translation(vector![0.0, 0.3, 0.0]));
+        for _ in 0..480 {
+            creature.step();
+        }
+        let collider = creature.arena.bodies[root].colliders()[0];
+        assert!(creature.arena.colliders[collider].compute_aabb().mins.y > 0.3);
+        assert!(creature.arena.touches_terrain(root));
+        assert_eq!(root_clearance(&creature, ground), 0.0);
+    }
+    #[test]
+    fn stand_duration_uses_stand_seconds_independently_of_trial_duration() {
+        let mut config = Config::bundled();
+        let g = Genome::starter(&config.genome);
+        let original = trial(&g, &config, TrialKind::Stand, 0.0).unwrap();
+        config.combine.trial_seconds = config.combine.stand_seconds * 2.0;
+        assert_eq!(original, trial(&g, &config, TrialKind::Stand, 0.0).unwrap());
+    }
+    #[test]
+    fn sprint_excludes_initial_settling_and_passive_collapse() {
+        let config = Config::bundled();
+        // Keep the original rigid-leg regression body stable as authored zoo
+        // anatomy evolves; walking and slip have their own founder tests.
+        let active = Genome::rigid_limb_fixture(&config.genome);
+        let mut passive = active.clone();
+        for bone in &mut passive.bones {
+            for neuron in &mut bone.motor.neurons {
+                neuron.bias = -1.0;
+                neuron.activation = bestiary_core::brain::Activation::Threshold;
+                neuron.inputs.clear();
+            }
+        }
+        let passive_trial = trial(&passive, &config, TrialKind::Sprint, 0.0).unwrap();
+        assert!(
+            passive_trial.speed < 0.001,
+            "passive speed={} distance={}",
+            passive_trial.speed,
+            passive_trial.distance
+        );
+        let active_trial = trial(&active, &config, TrialKind::Sprint, 0.0).unwrap();
+        assert!(active_trial.speed > 0.01 && active_trial.speed > passive_trial.speed * 10.0);
+        // A one-legged body can move a long way by tipping and falling. It may
+        // not turn that passive potential-energy release into a locomotion trait.
+        passive.bones[0].edges.truncate(1);
+        passive.repair(&config.genome);
+        let fallen = trial(&passive, &config, TrialKind::Sprint, 0.0).unwrap();
+        assert!(fallen.min_root_height < config.combine.root_clearance);
+        assert_eq!(fallen.speed, 0.0);
+        assert_eq!(fallen.distance, 0.0);
+        assert_eq!(fallen.acceleration, 0.0);
+        assert_eq!(fallen.energy.active_work, 0.0);
+    }
     #[test]
     fn cache_hit_equals_recompute_and_parallel_equals_serial() {
         let config = Config::bundled();
@@ -564,6 +743,9 @@ mod tests {
         config.combine.trial_seconds = 0.0;
         assert!(config.combine.validate().is_err());
         config = Config::bundled();
+        config.combine.root_clearance = 0.0;
+        assert!(config.combine.validate().is_err());
+        config = Config::bundled();
         config.combine.slope_angles.clear();
         assert!(config.combine.validate().is_err());
     }
@@ -578,6 +760,15 @@ mod tests {
             let first = evaluate(&g, &config).unwrap();
             let second = evaluate(&g, &config).unwrap();
             assert_eq!(first, second, "{name}");
+            assert!(!first.exploit_suspect, "{name} triggers the energy audit");
+            assert!(first.viability > 0.0, "{name} must pass the stand gate");
+            assert!(
+                first.trials[0].min_root_height >= config.combine.root_clearance,
+                "{name}"
+            );
+            if name == "serpent" {
+                assert_eq!(first.traits.limbs, 0);
+            }
         }
     }
 }

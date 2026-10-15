@@ -1,6 +1,16 @@
 # Build plan
 
-Current task: M8 — native viewer; long-run ecology, archive coverage floor and stagnation acceptance remain open.
+Current task: MVP checkpoint complete and ready to push (simulation + viewer + zoo + PNG replay export). Full v1 research/designer acceptance remains deferred.
+
+## MVP checkpoint (scope changed at the user's request)
+- [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
+- [x] Keep determinism, conservation, exploit detection and normal regression tests binding.
+- [x] Add short build/run instructions and accurately label unfinished v1 work.
+- [x] Verify one-command demo startup/shutdown and actual GPU rendering/export, including actual saved-world inspection and four launcher lifecycle regressions.
+- [x] Record current throughput gates after the final movement changes: combine 0.755 s, world 12,767 ticks/minute, viewer 116.47 fps.
+- [x] Complete final checks and make a local, pushable MVP commit; no full v1 tag.
+
+The M5/M7 long-run acceptance, M9 designer/first-generation survival and M10 full release checklist below remain deferred, not passed. Do not resume them automatically as part of this MVP checkpoint.
 
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
@@ -90,18 +100,28 @@ Current task: M8 — native viewer; long-run ecology, archive coverage floor and
 - [x] Pass make check and commit M7 mechanics; long-run acceptance remains explicitly open.
 
 ## M8 Viewer
-- [ ] Native Bevy/egui dark desktop application with procedural assets only.
-- [ ] Daemon attachment and offline read-only world file; attachment leaves state hash unchanged.
-- [ ] Terrain/world view, proxy LOD, full bodies, free/follow/director cameras.
-- [ ] Temperature/moisture/biomass/pheromone/species/predation overlays.
-- [ ] Body/joints/morphology inspector, trait radar, motor/ethology activity, health/energy/age/lineage.
-- [ ] Interactive phylogeny, archive axis selection and replay hover.
-- [ ] Population/biomass/species/trait/coverage charts and binning/formatting tests.
-- [ ] Pause/speed, replay scrub, event highlights and auto-director.
-- [ ] PNG clip export and ffmpeg sidecar command.
-- [ ] Headless one-frame render test and real data in every panel.
-- [ ] 60 fps with 2,000 proxies and 20 articulated creatures; record measurement.
-- [ ] Pass make check and commit M8.
+- [x] Coordinated inherited muscle gait with stance/swing contact, measured support/slip/clearance and deterministic replay tests.
+- [x] Inspector preserves absolute physical foot positions; tracking camera, aligned ground, visible contact shapes and fixed grid.
+- [x] Replace emissive pink muscles with restrained thinner tissue, compatible body colors and material tests.
+- [x] Validate locomotion, genome/physics regressions, combine/viewer throughput and make check; capture walking demo (87.2% less stance slip; 112.05 fps).
+- [x] Research Evolution's official muscle, controller, morphology and cosmetic-skin documentation.
+- [x] Procedural bone/joint/tendon/muscle anatomy, live activation, recorded-pose motion and collision view.
+- [x] Anatomy geometry/config/attachment regressions, GPU comparison and performance gate; make check (105 fps, Apple M4 Pro, 2,000 proxies + 20 full bodies).
+- [x] Regression: initial inspector body matches the selected living creature; historical genomes are labeled separately.
+- [x] Native Bevy/egui dark desktop application with procedural assets only.
+- [x] Daemon attachment and offline read-only world file; attachment leaves state hash unchanged.
+- [x] Terrain/world view, proxy LOD, full bodies, free/follow/director cameras.
+- [x] Temperature/moisture/biomass/pheromone/species/predation overlays.
+- [x] Body/joints/morphology inspector, trait radar, motor/ethology activity, health/energy/age/lineage.
+- [x] Interactive phylogeny, archive axis selection and replay hover.
+- [x] Population/biomass/species/trait/coverage charts and binning/formatting tests.
+- [x] Pause/speed, replay scrub, event highlights and auto-director.
+- [x] PNG clip export and ffmpeg sidecar command.
+- [x] Headless one-frame render test and real data in every panel.
+- [x] 60 fps with 2,000 proxies and 20 articulated creatures; final MVP 116.47 fps with 2,020 actual agents and the full UI after virtualizing offscreen sidebar rows.
+- [x] CLI replay PNG export against recorded anatomy, with complete ID and file sequences verified (61 frames each, 2880×1920, unchanged database/hash).
+- [x] Conservative repeated-airborne-gait and pheromone-guided-hunt event detectors, historical predation subjects and paused-release event persistence.
+- [x] Pass make check and commit M8 as the user-requested MVP checkpoint.
 
 ## M9 Designer and zoo
 - [ ] 3D bone/joint/muscle/recursion/reflection/sensor/life-history editing.

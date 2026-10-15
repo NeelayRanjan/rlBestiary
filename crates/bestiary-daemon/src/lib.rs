@@ -96,7 +96,7 @@ pub fn endpoint(path: &Path) -> Result<String> {
     let canonical = std::fs::canonicalize(path)?;
     let hash = bestiary_core::digest(&canonical.to_string_lossy().as_ref())?;
     let name = format!("bestiary-{}", &hex(&hash)[..20]);
-    if GenericNamespaced::is_supported() {
+    if cfg!(windows) {
         Ok(name)
     } else {
         Ok(std::env::temp_dir()
@@ -107,7 +107,7 @@ pub fn endpoint(path: &Path) -> Result<String> {
 }
 pub fn request(path: &Path, request: Request) -> Result<Response> {
     let endpoint = endpoint(path)?;
-    let name = if GenericNamespaced::is_supported() {
+    let name = if cfg!(windows) {
         endpoint.clone().to_ns_name::<GenericNamespaced>()?
     } else {
         endpoint.clone().to_fs_name::<GenericFilePath>()?
@@ -117,10 +117,32 @@ pub fn request(path: &Path, request: Request) -> Result<Response> {
     read_frame(&mut stream)
 }
 pub fn load_snapshot(path: &Path) -> Result<World> {
+    // Validate the on-disk schema before decoding a possibly older daemon's frame.
+    let store = Store::open(path, true)?;
     if let Ok(Response::Snapshot(w)) = request(path, Request::Snapshot) {
         return Ok(*w);
     }
-    Store::open(path, true)?.load()
+    store.load()
+}
+fn replay(world: &World, store: &Store, id: &str) -> Result<Vec<u8>> {
+    // IDs address the compact list of recorded trials. Index zero can be Strike
+    // when a failed stand gate omits Sprint; the Replay itself identifies its kind.
+    let cached = (|| {
+        let (digest, index) = id.rsplit_once('-')?;
+        if digest.len() != 64 || !digest.is_ascii() {
+            return None;
+        }
+        let index = index.parse::<usize>().ok()?;
+        let mut hash = [0u8; 32];
+        for (offset, byte) in hash.iter_mut().enumerate() {
+            *byte = u8::from_str_radix(&digest[offset * 2..offset * 2 + 2], 16).ok()?;
+        }
+        if id != format!("{}-{index}", hex(&hash)) {
+            return None;
+        }
+        world.genomes.get(&hash)?.replays.get(index).cloned()
+    })();
+    cached.map_or_else(|| store.replay(id), Ok)
 }
 pub fn run(path: &Path, until: Option<u64>, snapshot_every: u64, speed: Option<f32>) -> Result<()> {
     if snapshot_every == 0 || speed.is_some_and(|s| !s.is_finite() || s <= 0.0) {
@@ -140,10 +162,10 @@ pub fn run(path: &Path, until: Option<u64>, snapshot_every: u64, speed: Option<f
         genome.replays.clear();
     }
     let endpoint = endpoint(path)?;
-    if !GenericNamespaced::is_supported() && Path::new(&endpoint).exists() {
+    if !cfg!(windows) && Path::new(&endpoint).exists() {
         std::fs::remove_file(&endpoint)?;
     }
-    let name = if GenericNamespaced::is_supported() {
+    let name = if cfg!(windows) {
         endpoint.clone().to_ns_name::<GenericNamespaced>()?
     } else {
         endpoint.clone().to_fs_name::<GenericFilePath>()?
@@ -204,7 +226,7 @@ pub fn run(path: &Path, until: Option<u64>, snapshot_every: u64, speed: Option<f
                             Err(e) => Response::Error(e.to_string()),
                         }
                     }
-                    Request::Replay(id) => match store.replay(&id) {
+                    Request::Replay(id) => match replay(&world, &store, &id) {
                         Ok(bytes) => Response::Replay(bytes),
                         Err(e) => Response::Error(e.to_string()),
                     },
@@ -227,6 +249,10 @@ pub fn run(path: &Path, until: Option<u64>, snapshot_every: u64, speed: Option<f
                         count,
                     } => match world.release(genome, position, count) {
                         Ok(()) => {
+                            // Releases can append discovery events without advancing time.
+                            // Persist the complete current-tick sequence before step clears it;
+                            // Store::events ignores its already-persisted prefix.
+                            store.events(world.tick, &world.ecological_events)?;
                             store.save(&world)?;
                             Response::Ok
                         }
@@ -274,5 +300,57 @@ mod tests {
         ));
         assert!(read_frame::<Request>(&[255u8; 4][..]).is_err());
         assert!(read_frame::<Request>(&bytes[..3]).is_err());
+    }
+
+    #[test]
+    fn unsaved_replay_is_read_only_and_uses_recorded_trial_index() {
+        use bestiary_sim::{
+            combine::{Replay, TrialKind},
+            config::Config,
+            PHYSICS_DT,
+        };
+        let path =
+            std::env::temp_dir().join(format!("bestiary-unsaved-replay-{}.db", std::process::id()));
+        let mut world = World::new(42, Config::bundled(), 2).unwrap();
+        for genome in world.genomes.values_mut() {
+            genome.replays.clear();
+        }
+        let mut store = Store::create(&path).unwrap();
+        store.save(&world).unwrap();
+        let hash = *world.genomes.keys().next().unwrap();
+        let strike = Replay {
+            kind: TrialKind::Strike,
+            dt: PHYSICS_DT,
+            frames: vec![vec![]],
+        }
+        .encode()
+        .unwrap();
+        world
+            .genomes
+            .get_mut(&hash)
+            .unwrap()
+            .replays
+            .push(strike.clone());
+        let id = format!("{}-0", hex(&hash));
+        let before = postcard::to_allocvec(&world).unwrap();
+        assert!(store.replay(&id).is_err());
+        let bytes = replay(&world, &store, &id).unwrap();
+        assert_eq!(bytes, strike);
+        assert_eq!(Replay::decode(&bytes).unwrap().kind, TrialKind::Strike);
+        assert_eq!(before, postcard::to_allocvec(&world).unwrap());
+        assert!(store.replay(&id).is_err());
+        for invalid in [
+            format!("{}-1", hex(&hash)),
+            format!("{}-00", hex(&hash)),
+            "bad-id".into(),
+            "é-0".into(),
+        ] {
+            assert!(replay(&world, &store, &invalid).is_err());
+        }
+        store.save(&world).unwrap();
+        world.genomes.get_mut(&hash).unwrap().replays.clear();
+        assert_eq!(replay(&world, &store, &id).unwrap(), strike);
+        drop(store);
+        std::fs::remove_file(path).unwrap();
     }
 }

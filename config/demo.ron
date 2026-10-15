@@ -11,7 +11,7 @@
     reproduction: (
         // Deterministic mating/evaluation epoch in world ticks.
         epoch: 1000,
-        // Maximum mate distance in metres and genetic compatibility distance.
+        // Mate distance in metres; the genetic threshold also normalizes the species-similarity sensor.
         mate_radius: 128.0,
         compatibility_threshold: 0.04,
         // Fraction of parent's energy reserve required before mating.
@@ -29,6 +29,8 @@
         species_min_duration: 1000,
     ),
     ecology: (
+        // Health lost per full bite at toxicity one and zero immune investment; applied after healing.
+        toxin_damage: 0.05,
         // Damage coefficient for measured strike impulse relative to defender bulk.
         attack_scale: 20.0,
         // Millijoules paid per attempted strike.
@@ -108,11 +110,11 @@
         nutrient_units_per_kg: 1000000.0,
     ),
     combine: (
-        // Duration of each deterministic physical trial in seconds.
+        // Measurement duration per trial; locomotion uses net center-of-mass travel over this interval.
         trial_seconds: 2.0,
-        // Root must clear terrain for at least two seconds.
+        // Stand duration and unscored locomotion settling time; at least two seconds.
         stand_seconds: 2.0,
-        // Minimum root center height above terrain in metres.
+        // Minimum clearance of the root collider surface above terrain in metres.
         root_clearance: 0.05,
         // Height of deterministic rough-ground bumps.
         rough_height: 0.03,

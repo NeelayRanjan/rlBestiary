@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+./scripts/cargo build --release -p bestiary-cli -p bestiary-viewer --locked
+benchmark_directory=$(mktemp -d "${TMPDIR:-/tmp}/bestiary-viewer-bench.XXXXXX")
+trap 'rm -rf "$benchmark_directory"' EXIT HUP INT TERM
+./target/release/bestiary world new --seed 42 --population 2020 --out "$benchmark_directory/world.db"
+./target/release/bestiary-viewer "$benchmark_directory/world.db" --benchmark

@@ -1,0 +1,61 @@
+#!/bin/sh
+# Start an isolated local demo. Keep its saved world when the viewer closes.
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$root"
+./scripts/cargo build --release --locked -p bestiary-cli -p bestiary-viewer
+mkdir -p "$root/worlds"
+demo_dir=$(mktemp -d "$root/worlds/demo.XXXXXX")
+world="$demo_dir/world.db"
+log="$demo_dir/daemon.log"
+cli="$root/target/release/bestiary"
+viewer="$root/target/release/bestiary-viewer"
+"$cli" world new --seed 42 --population 24 --out "$world"
+printf 'Demo world: %s\n' "$world"
+
+daemon_pid=
+viewer_pid=
+cleanup() {
+    status=$?
+    trap - 0 HUP INT TERM
+    if [ -n "$viewer_pid" ]; then
+        kill -TERM "$viewer_pid" 2>/dev/null || :
+        wait "$viewer_pid" 2>/dev/null || :
+    fi
+    if [ -n "$daemon_pid" ]; then
+        # The daemon handles SIGINT by saving its final snapshot and exiting.
+        kill -INT "$daemon_pid" 2>/dev/null || :
+        if ! wait "$daemon_pid"; then
+            printf 'Daemon stopped with an error; inspect %s\n' "$log" >&2
+            if [ "$status" -eq 0 ]; then status=1; fi
+        fi
+    fi
+    printf 'World preserved: %s\nDaemon log: %s\n' "$world" "$log"
+    exit "$status"
+}
+trap cleanup 0
+trap 'exit 130' INT
+trap 'exit 143' TERM
+trap 'exit 129' HUP
+
+endpoint=$("$cli" world attach "$world")
+"$cli" world run "$world" --speed 10 >"$log" 2>&1 &
+daemon_pid=$!
+attempt=0
+while [ ! -S "$endpoint" ]; do
+    if ! kill -0 "$daemon_pid" 2>/dev/null; then
+        printf 'Daemon failed to start; inspect %s\n' "$log" >&2
+        cat "$log" >&2
+        exit 1
+    fi
+    attempt=$((attempt + 1))
+    if [ "$attempt" -ge 100 ]; then
+        printf 'Daemon did not become ready within 10 seconds; inspect %s\n' "$log" >&2
+        exit 1
+    fi
+    sleep 0.1
+done
+"$viewer" "$world" "$@" &
+viewer_pid=$!
+wait "$viewer_pid"
+viewer_pid=

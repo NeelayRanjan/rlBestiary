@@ -51,6 +51,17 @@ pub struct Fluid {
     pub density: f32,
     pub drag: f32,
 }
+/// Loaded contacts on static arena terrain from the most recent solver substep.
+/// Velocities are measured at the body's contact surface, not its centre of mass.
+#[derive(Clone, Debug, PartialEq)]
+pub struct TerrainContact {
+    pub point: Point<Real>,
+    /// Unit normal pointing from the terrain toward the queried body.
+    pub normal: Vector<Real>,
+    pub normal_force: f32,
+    pub tangential_velocity: Vector<Real>,
+    pub tangential_speed: f32,
+}
 pub struct Arena {
     pub fluid: Option<Fluid>,
     pub config: PhysicsConfig,
@@ -187,12 +198,106 @@ impl Arena {
             .sum()
     }
     pub fn contact_force(&self, handle: RigidBodyHandle) -> f32 {
+        let dt = self.contact_solver_dt();
         self.bodies[handle]
             .colliders()
             .iter()
             .flat_map(|h| self.narrow.contact_pairs_with(*h))
-            .map(|pair| pair.total_impulse().norm() / PHYSICS_DT)
+            .map(|pair| {
+                pair.manifolds
+                    .iter()
+                    .map(|manifold| {
+                        manifold.data.normal
+                            * manifold
+                                .points
+                                .iter()
+                                .map(|c| c.data.warmstart_impulse)
+                                .sum::<f32>()
+                    })
+                    .sum::<Vector<Real>>()
+                    .norm()
+                    / dt
+            })
             .sum()
+    }
+    fn contact_solver_dt(&self) -> f32 {
+        // Rapier 0.23's `impulse` accumulator includes the preceding warmstart.
+        // `warmstart_impulse` is written back from the final solved interval, so
+        // it measures current support without counting that prior interval twice.
+        // Arena uses the default Rapier solver iteration count in every step.
+        PHYSICS_DT
+            / self.config.substeps as f32
+            / IntegrationParameters::default().num_solver_iterations.get() as f32
+    }
+    fn terrain_pairs(&self, handle: RigidBodyHandle) -> impl Iterator<Item = &ContactPair> {
+        self.bodies[handle]
+            .colliders()
+            .iter()
+            .flat_map(|h| self.narrow.contact_pairs_with(*h))
+            .filter(|pair| {
+                pair.has_any_active_contact
+                    && [pair.collider1, pair.collider2]
+                        .iter()
+                        .any(|h| self.colliders[*h].parent().is_none())
+            })
+    }
+    /// Normal support load only; contacts against other body parts are excluded.
+    /// Uses the final internal solver interval's impulse and matching duration.
+    pub fn terrain_contact_force(&self, handle: RigidBodyHandle) -> f32 {
+        let dt = self.contact_solver_dt();
+        self.terrain_pairs(handle)
+            .flat_map(|pair| &pair.manifolds)
+            .flat_map(|manifold| &manifold.points)
+            .map(|contact| contact.data.warmstart_impulse.max(0.0) / dt)
+            .sum()
+    }
+    pub fn terrain_contacts(&self, handle: RigidBodyHandle) -> Vec<TerrainContact> {
+        let body = &self.bodies[handle];
+        let dt = self.contact_solver_dt();
+        let mut result = Vec::new();
+        for pair in self.terrain_pairs(handle) {
+            let first = self.colliders[pair.collider1].parent() == Some(handle);
+            let collider = &self.colliders[if first {
+                pair.collider1
+            } else {
+                pair.collider2
+            }];
+            for manifold in &pair.manifolds {
+                let normal = manifold.data.normal * if first { -1.0 } else { 1.0 };
+                let subshape = if first {
+                    manifold.subshape_pos1
+                } else {
+                    manifold.subshape_pos2
+                }
+                .unwrap_or_else(Isometry::identity);
+                let shape_pose = collider.position() * subshape;
+                for contact in &manifold.points {
+                    if contact.data.warmstart_impulse <= 0.0 {
+                        continue;
+                    }
+                    let local = if first {
+                        contact.local_p1
+                    } else {
+                        contact.local_p2
+                    };
+                    let point = shape_pose * local;
+                    let velocity = body.velocity_at_point(&point);
+                    let tangential_velocity = velocity - normal * velocity.dot(&normal);
+                    result.push(TerrainContact {
+                        point,
+                        normal,
+                        normal_force: contact.data.warmstart_impulse / dt,
+                        tangential_velocity,
+                        tangential_speed: tangential_velocity.norm(),
+                    });
+                }
+            }
+        }
+        result
+    }
+    /// Contacts with arena terrain, excluding contacts against other body parts.
+    pub fn touches_terrain(&self, handle: RigidBodyHandle) -> bool {
+        self.terrain_pairs(handle).next().is_some()
     }
     pub fn poses(&self) -> Vec<Pose> {
         self.parts
@@ -442,5 +547,62 @@ mod tests {
         let mut invalid = EnergyAudit::default();
         invalid.observe(1.0, f64::NAN, 0.0, &c);
         assert!(invalid.exploit_suspect);
+    }
+    #[test]
+    fn proper_foot_contact_reports_support_force_independent_of_substeps() {
+        for substeps in [1, 2, 4] {
+            let mut config = Config::bundled().physics;
+            config.substeps = substeps;
+            let mut arena = Arena::new(config).unwrap();
+            let body = arena.add_box([0.0, 0.5, 0.0], [0.5; 3], 4.0);
+            for _ in 0..480 {
+                arena.step(&[]);
+            }
+            let weight = arena.bodies[body].mass() * arena.config.gravity;
+            for _ in 0..30 {
+                arena.step(&[]);
+                let force = arena.terrain_contact_force(body);
+                assert!(
+                    (force - weight).abs() < weight * 0.05,
+                    "{substeps}: {force} vs {weight}"
+                );
+                assert!((arena.contact_force(body) - weight).abs() < weight * 0.05);
+                let contacts = arena.terrain_contacts(body);
+                assert!(!contacts.is_empty());
+                assert!(
+                    (contacts.iter().map(|c| c.normal_force).sum::<f32>() - force).abs() < 1e-4
+                );
+                for contact in contacts {
+                    assert!(contact.normal.y > 0.99);
+                    assert!(contact.point.y.abs() < 0.01);
+                    assert!(contact.tangential_speed < 0.01);
+                    assert!(contact.tangential_velocity.dot(&contact.normal).abs() < 1e-6);
+                }
+            }
+        }
+    }
+    #[test]
+    fn proper_foot_contact_excludes_self_contact_and_measures_surface_velocity() {
+        let mut arena = Arena::new(Config::bundled().physics).unwrap();
+        let support = arena.add_box([0.0, 2.0, 0.0], [0.5; 3], 4.0);
+        arena.bodies[support].set_body_type(RigidBodyType::Fixed, true);
+        let upper = arena.add_box([0.0, 3.0, 0.0], [0.5; 3], 4.0);
+        let grounded = arena.add_box([3.0, 0.5, 0.0], [0.5; 3], 4.0);
+        for _ in 0..480 {
+            arena.step(&[]);
+        }
+        assert!(arena.contact_force(upper) > 0.0);
+        assert_eq!(arena.terrain_contact_force(upper), 0.0);
+        assert!(arena.terrain_contacts(upper).is_empty());
+        assert!(!arena.touches_terrain(upper));
+        // Rotation cancels the centre's forward velocity at the bottom surface.
+        // A centre-velocity proxy would incorrectly report one metre/second slip.
+        arena.bodies[grounded].set_linvel(vector![1.0, 0.0, 0.0], true);
+        arena.bodies[grounded].set_angvel(vector![0.0, 0.0, -2.0], true);
+        let contacts = arena.terrain_contacts(grounded);
+        assert!(!contacts.is_empty());
+        for contact in contacts {
+            assert!(contact.tangential_speed < 0.001, "{contact:?}");
+        }
     }
 }

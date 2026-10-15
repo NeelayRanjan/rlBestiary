@@ -48,5 +48,17 @@ fn viewer_attach_detach_does_not_perturb_state_hash() {
     assert!(child.0.wait().unwrap().success());
     let stored: World = Store::open(&path, true).unwrap().load().unwrap();
     assert_eq!(first.state_hash(), stored.state_hash());
+    // A clean stop must allow a second daemon to bind the exact same endpoint.
+    let status = std::process::Command::new(env!("CARGO_BIN_EXE_bestiary-daemon"))
+        .arg(&path)
+        .arg((stored.tick + 1).to_string())
+        .status()
+        .unwrap();
+    assert!(status.success());
+    let restarted: World = Store::open(&path, true).unwrap().load().unwrap();
+    assert_eq!(restarted.tick, stored.tick + 1);
+    let mut expected = stored;
+    expected.step();
+    assert_eq!(restarted.state_hash(), expected.state_hash());
     std::fs::remove_dir_all(directory).unwrap();
 }

@@ -44,11 +44,7 @@ impl World {
             self.ecological_events
                 .push(EcologyEvent::Exploit { genome: hash });
         }
-        if !self.first_swimmer && evaluation.traits.swim_speed > 0.0 {
-            self.first_swimmer = true;
-            self.ecological_events
-                .push(EcologyEvent::FirstSwimmer { genome: hash });
-        }
+        self.record_body_milestones(&genome, &evaluation);
         if self
             .genomes
             .values()
@@ -73,27 +69,78 @@ impl World {
         );
         Ok(hash)
     }
-    pub(crate) fn reproduce(&mut self) {
-        let cfg = self.config.reproduction.clone();
-        if self.tick % cfg.epoch == 0 {
-            let neighbors = self.neighbors();
-            let regions = self.land_regions();
-            let mut used = BTreeSet::new();
-            let mut proposals = vec![];
-            for (i, neighbor) in neighbors.iter().enumerate() {
-                let Some(neighbor) = neighbor else {
-                    continue;
-                };
-                let j = neighbor.index;
-                if used.contains(&i) || used.contains(&j) || neighbor.distance > cfg.mate_radius {
+    fn mating_pairs(
+        &self,
+        cfg: &bestiary_core::settings::ReproductionConfig,
+    ) -> Vec<(usize, usize)> {
+        if self.agents.len() >= self.config.world.population_limit {
+            return vec![];
+        }
+        let regions = self.land_regions();
+        let extent = self.config.world.grid as f32 * self.config.world.cell_metres;
+        let mut eligible = self
+            .agents
+            .iter()
+            .enumerate()
+            .filter_map(|(index, agent)| {
+                let genome = &self.genomes[&agent.genome];
+                (agent.health > 0.0
+                    && agent.age >= genome.genome.life.maturity
+                    && agent.growth >= 0.8
+                    && agent.energy as f32
+                        >= genome.traits.mass
+                            * self.config.world.reserve_per_kg as f32
+                            * cfg.energy_fraction
+                    && agent.outputs.get(7).copied().unwrap_or(0.0)
+                        > agent.outputs.get(8).copied().unwrap_or(0.0))
+                .then_some(index)
+            })
+            .collect::<Vec<_>>();
+        eligible.sort_by_key(|index| self.agents[*index].id);
+        let preference = |genome: &Genome, traits: &Traits, other: &Genome| {
+            genome
+                .life
+                .mate_weights
+                .iter()
+                .zip([
+                    traits.mass,
+                    traits.reach,
+                    traits.symmetry,
+                    other.life.pheromone_strength,
+                ])
+                .map(|(weight, value)| weight * value)
+                .sum::<f32>()
+        };
+        let mut used = BTreeSet::new();
+        let mut pairs = vec![];
+        for &i in &eligible {
+            if used.contains(&i) {
+                continue;
+            }
+            let a = &self.agents[i];
+            let ga = &self.genomes[&a.genome];
+            let mut best: Option<(f32, u64, usize)> = None;
+            for &j in &eligible {
+                if j == i || used.contains(&j) {
                     continue;
                 }
-                let a = &self.agents[i];
                 let b = &self.agents[j];
-                let ga = &self.genomes[&a.genome];
+                let mut delta = [b.position[0] - a.position[0], b.position[1] - a.position[1]];
+                for coordinate in &mut delta {
+                    if *coordinate > extent * 0.5 {
+                        *coordinate -= extent;
+                    }
+                    if *coordinate < -extent * 0.5 {
+                        *coordinate += extent;
+                    }
+                }
+                let distance = delta[0] * delta[0] + delta[1] * delta[1];
+                if distance > cfg.mate_radius * cfg.mate_radius
+                    || best.is_some_and(|(d, id, _)| distance > d || (distance == d && b.id > id))
+                {
+                    continue;
+                }
                 let gb = &self.genomes[&b.genome];
-                // Terrestrial mates must share a connected land habitat. Swimming bodies
-                // can disperse through water using their measured swimming capacity.
                 if ga.traits.speed > ga.traits.swim_speed && gb.traits.speed > gb.traits.swim_speed
                 {
                     let ra = regions[self.cell_at(a.position)];
@@ -102,44 +149,34 @@ impl World {
                         continue;
                     }
                 }
-                let mature = |a: &Agent, g: &LineageGenome| {
-                    a.health > 0.0
-                        && a.age >= g.genome.life.maturity
-                        && a.growth >= 0.8
-                        && a.energy as f32
-                            >= g.traits.mass
-                                * self.config.world.reserve_per_kg as f32
-                                * cfg.energy_fraction
-                        && a.outputs.get(7).copied().unwrap_or(0.0)
-                            > a.outputs.get(8).copied().unwrap_or(0.0)
-                };
-                if !mature(a, ga)
-                    || !mature(b, gb)
-                    || ga
+                if a.genome != b.genome
+                    && ga
                         .genome
                         .compatibility(&gb.genome, &ga.traits.values(), &gb.traits.values())
                         >= cfg.compatibility_threshold
                 {
                     continue;
                 }
-                // Preference scores gate acceptance using observable size, reach, symmetry and emission.
-                let preference = |g: &Genome, t: &Traits, other: &Genome| {
-                    g.life
-                        .mate_weights
-                        .iter()
-                        .zip([t.mass, t.reach, t.symmetry, other.life.pheromone_strength])
-                        .map(|(w, x)| w * x)
-                        .sum::<f32>()
-                };
                 if preference(&ga.genome, &gb.traits, &gb.genome) < -1.0
                     || preference(&gb.genome, &ga.traits, &ga.genome) < -1.0
                 {
                     continue;
                 }
+                best = Some((distance, b.id, j));
+            }
+            if let Some((_, _, j)) = best {
                 used.insert(i);
                 used.insert(j);
-                proposals.push((i, j));
+                pairs.push((i, j));
             }
+        }
+        pairs
+    }
+
+    pub(crate) fn reproduce(&mut self) {
+        let cfg = self.config.reproduction.clone();
+        if self.tick % cfg.epoch == 0 {
+            let proposals = self.mating_pairs(&cfg);
             // All evaluation happens synchronously in proposal order. Worker wall-clock cannot change birth order.
             for (i, j) in proposals {
                 if self.agents.len() >= self.config.world.population_limit {
@@ -223,6 +260,7 @@ impl World {
                     let id = self.next_id;
                     self.next_id += 1;
                     let a = Agent {
+                        pheromone_guidance: None,
                         infection: None,
                         id,
                         genome: parent_hash,
@@ -400,9 +438,16 @@ impl Persistable for World {
                 .filter(|s| s.population > 0)
                 .count(),
             biomass: self.biomass(),
+            species_populations: self
+                .registry
+                .species
+                .values()
+                .map(|s| (s.id, s.population))
+                .collect(),
             ..TimeSample::default()
         };
         let n = self.agents.len().max(1) as f32;
+        let mut herbivores = 0usize;
         for a in &self.agents {
             let g = &self.genomes[&a.genome];
             let values = g.traits.values();
@@ -419,13 +464,17 @@ impl Persistable for World {
                 1
             };
             sample.trophic_biomass[tier] += f64::from(g.traits.mass * a.growth);
-            sample.herbivore_resistance += g.genome.life.immune_investment / n;
+            if tier == 0 {
+                sample.herbivore_resistance += g.genome.life.immune_investment;
+                herbivores += 1;
+            }
         }
         for a in &self.agents {
             for (i, v) in self.genomes[&a.genome].traits.values().iter().enumerate() {
                 sample.trait_variance[i] += (v - sample.mean_traits[i]).powi(2) / n;
             }
         }
+        sample.herbivore_resistance /= herbivores.max(1) as f32;
         sample.coverage = self.archive.coverage(&self.config.archive);
         sample.plant_toxicity = self.cells.iter().map(|c| c.plant.toxicity).sum::<f32>()
             / self.cells.len().max(1) as f32;
@@ -544,6 +593,7 @@ impl World {
                 },
             );
             self.agents.push(Agent {
+                pheromone_guidance: None,
                 infection: None,
                 id,
                 genome: hash,

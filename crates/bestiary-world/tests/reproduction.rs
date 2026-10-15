@@ -104,6 +104,90 @@ fn disconnected_terrestrial_mates_cannot_reproduce() {
     assert!(w.conserved());
 }
 
+fn mating_fixture(population: usize) -> World {
+    let mut config = Config::bundled();
+    config.world.grid = 4;
+    config.world.initial_energy = 500_000_000;
+    config.world.decision_interval = 10_000;
+    config.reproduction.epoch = 1;
+    config.reproduction.mutation_probability = 0.0;
+    config.reproduction.compatibility_threshold = 0.04;
+    let mut genome = Genome::starter(&config.genome);
+    genome.ethology = forager_brain();
+    genome.life.maturity = 2;
+    let mut world = World::with_founder(42, config, population, genome).unwrap();
+    for cell in &mut world.cells {
+        cell.height = 1.0;
+    }
+    world.tick = 100;
+    world
+}
+
+fn ready_to_mate(world: &mut World) {
+    for agent in &mut world.agents {
+        agent.age = 3;
+        agent.outputs = vec![0.0; 13];
+        agent.outputs[7] = 1.0;
+    }
+}
+
+#[test]
+fn eligible_compatible_mate_is_not_blocked_by_nearer_incompatible_neighbor() {
+    let mut world = mating_fixture(2);
+    world.agents[0].position = [10.0, 10.0];
+    world.agents[1].position = [12.0, 10.0];
+    let mut incompatible = world.genomes[&world.agents[0].genome].genome.clone();
+    incompatible.life.species_marker = [1.0; 4];
+    world.release(incompatible, [10.1, 10.0], 1).unwrap();
+    ready_to_mate(&mut world);
+    world.step();
+    assert!(world.conserved());
+    let children = world
+        .history
+        .values()
+        .filter(|life| !life.parents.is_empty())
+        .collect::<Vec<_>>();
+    assert!(!children.is_empty());
+    assert!(children.iter().all(|life| life.parents == [0, 1]));
+}
+
+#[test]
+fn eligible_mates_choose_distance_then_entity_id_with_deterministic_ties() {
+    let mut world = mating_fixture(3);
+    world.agents[0].position = [10.0, 10.0];
+    world.agents[1].position = [12.0, 10.0];
+    world.agents[2].position = [8.0, 10.0];
+    ready_to_mate(&mut world);
+    world.agents.swap(1, 2);
+    world.step();
+    assert!(world.conserved());
+    let child = world
+        .history
+        .values()
+        .find(|life| !life.parents.is_empty())
+        .unwrap();
+    assert_eq!(child.parents, [0, 1]);
+}
+
+#[test]
+fn eligible_mates_obey_radius_across_toroidal_world_boundary() {
+    let mut world = mating_fixture(3);
+    world.config.reproduction.mate_radius = 3.0;
+    world.agents[0].position = [1.0, 1.0];
+    world.agents[1].position = [127.0, 1.0];
+    world.agents[2].position = [6.0, 1.0];
+    ready_to_mate(&mut world);
+    world.step();
+    assert!(world.conserved());
+    let children = world
+        .history
+        .values()
+        .filter(|life| !life.parents.is_empty())
+        .collect::<Vec<_>>();
+    assert!(!children.is_empty());
+    assert!(children.iter().all(|life| life.parents == [0, 1]));
+}
+
 #[test]
 #[ignore = "250k-tick diversification acceptance; run with --release --ignored"]
 fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {

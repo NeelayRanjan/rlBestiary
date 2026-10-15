@@ -81,6 +81,7 @@ impl WorldConfig {
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct EcologyConfig {
+    pub toxin_damage: f32,
     pub attack_scale: f32,
     pub attack_cost: i64,
     pub injury_fraction: f32,
@@ -109,6 +110,7 @@ impl EcologyConfig {
                 .iter()
                 .any(|x| !x.is_finite() || *x < 0.0)
             || [
+                self.toxin_damage,
                 self.injury_fraction,
                 self.refuge_fraction,
                 self.transmission,

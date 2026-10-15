@@ -7,25 +7,73 @@ pub struct Pathogen {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum EcologyEvent {
-    ArchiveCell { cell: [u8; 7], genome: [u8; 32] },
-    Fragmentation { before: usize, after: usize },
-    Birth { creature: u64, parents: Vec<u64> },
-    SpeciesBorn { species: u64 },
-    SpeciesExtinct { species: u64 },
-    FirstPredation,
-    FirstSwimmer { genome: [u8; 32] },
-    PopulationCrash { before: usize, after: usize },
+    ArchiveCell {
+        cell: [u8; 7],
+        genome: [u8; 32],
+    },
+    Fragmentation {
+        before: usize,
+        after: usize,
+    },
+    Birth {
+        creature: u64,
+        parents: Vec<u64>,
+    },
+    SpeciesBorn {
+        species: u64,
+    },
+    SpeciesExtinct {
+        species: u64,
+    },
+    FirstPredation {
+        attacker: u64,
+        victim: u64,
+    },
+    FirstSwimmer {
+        genome: [u8; 32],
+    },
+    FirstFlyerAdjacentGait {
+        genome: [u8; 32],
+        cycles: u32,
+        max_clearance: f32,
+    },
+    FirstPheromoneGuidedHunt {
+        attacker: u64,
+        victim: u64,
+        decision_tick: u64,
+        pheromone_channels: u8,
+    },
+    PopulationCrash {
+        before: usize,
+        after: usize,
+    },
     MassExtinction,
-    RecordLifespan { creature: u64, age: u64 },
-    RecordSize { genome: [u8; 32], mass: f32 },
-    Exploit { genome: [u8; 32] },
-    Predation { attacker: u64, victim: u64 },
-    Death { creature: u64 },
+    RecordLifespan {
+        creature: u64,
+        age: u64,
+    },
+    RecordSize {
+        genome: [u8; 32],
+        mass: f32,
+    },
+    Exploit {
+        genome: [u8; 32],
+    },
+    Predation {
+        attacker: u64,
+        victim: u64,
+    },
+    Death {
+        creature: u64,
+    },
     Geography,
-    Shock { kind: u8 },
+    Shock {
+        kind: u8,
+    },
 }
 #[derive(Clone, Debug)]
 pub struct Neighbor {
+    pub id: u64,
     pub index: usize,
     pub distance: f32,
     pub direction: [f32; 2],
@@ -106,6 +154,7 @@ impl World {
                             let distance = d[0] * d[0] + d[1] * d[1];
                             if best.as_ref().is_none_or(|n| distance < n.distance) {
                                 best = Some(Neighbor {
+                                    id: b.id,
                                     index: *j,
                                     distance,
                                     direction: d,
@@ -185,13 +234,38 @@ impl World {
                         let damage = cfg.attack_scale * entry.traits.strike_impulse * speed_factor
                             / (neighbor.mass.max(0.001) * (1.0 + armor));
                         if rng.gen::<f32>() >= cfg.refuge_fraction {
+                            let health_before = self.agents[j].health;
                             self.agents[j].health -= damage;
                             self.agents[j].injury =
                                 (self.agents[j].injury + damage * cfg.injury_fraction).min(0.9);
-                            self.ecological_events.push(EcologyEvent::Predation {
-                                attacker: self.agents[i].id,
-                                victim: self.agents[j].id,
-                            });
+                            if self.agents[j].health < health_before {
+                                self.ecological_events.push(EcologyEvent::Predation {
+                                    attacker: self.agents[i].id,
+                                    victim: self.agents[j].id,
+                                });
+                                if !self.first_pheromone_guided_hunt {
+                                    if let Some(evidence) = self.agents[i]
+                                        .pheromone_guidance
+                                        .as_ref()
+                                        .filter(|evidence| {
+                                            evidence.victim == self.agents[j].id
+                                                && self.tick >= evidence.decision_tick
+                                                && self.tick - evidence.decision_tick
+                                                    <= wc.decision_interval
+                                        })
+                                    {
+                                        self.first_pheromone_guided_hunt = true;
+                                        self.ecological_events.push(
+                                            EcologyEvent::FirstPheromoneGuidedHunt {
+                                                attacker: self.agents[i].id,
+                                                victim: self.agents[j].id,
+                                                decision_tick: evidence.decision_tick,
+                                                pheromone_channels: evidence.channels,
+                                            },
+                                        );
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -208,7 +282,7 @@ impl World {
             }
             if output(3) > output(8) {
                 for carcass in &mut self.carcasses {
-                    if cell_at(carcass.position, wc) != cell {
+                    if carcass.energy <= 0 || cell_at(carcass.position, wc) != cell {
                         continue;
                     }
                     let reserve = (entry.traits.mass

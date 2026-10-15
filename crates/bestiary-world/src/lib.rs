@@ -1,5 +1,6 @@
 //! Fixed-tick trait ecology. Rendering and asynchronous execution are forbidden here.
 mod ecology;
+mod milestones;
 mod reproduction;
 use bestiary_core::{
     brain::{Activation, Brain, BrainState, Connection, Input, Neuron},
@@ -10,6 +11,7 @@ use bestiary_sim::{
     config::Config,
 };
 pub use ecology::*;
+pub use milestones::PheromoneGuidance;
 use rand::Rng;
 pub use reproduction::*;
 use serde::{Deserialize, Serialize};
@@ -45,6 +47,7 @@ pub struct LineageGenome {
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct Agent {
+    pub pheromone_guidance: Option<PheromoneGuidance>,
     pub infection: Option<usize>,
     pub id: u64,
     pub genome: [u8; 32],
@@ -72,6 +75,8 @@ pub struct World {
     pub archive: bestiary_archive::grid::Archive,
     pub first_predation: bool,
     pub first_swimmer: bool,
+    pub first_flyer_adjacent_gait: bool,
+    pub first_pheromone_guided_hunt: bool,
     pub record_lifespan: u64,
     pub registry: bestiary_archive::Registry,
     pub history: BTreeMap<u64, LifeRecord>,
@@ -104,14 +109,21 @@ impl WorldRules for NaturalRules {
         world.natural_step();
         world.ecology_step();
         world.reproduce();
-        if !world.first_predation
-            && world
-                .ecological_events
-                .iter()
-                .any(|e| matches!(e, EcologyEvent::Predation { .. }))
-        {
-            world.first_predation = true;
-            world.ecological_events.push(EcologyEvent::FirstPredation);
+        if !world.first_predation {
+            if let Some((attacker, victim)) =
+                world
+                    .ecological_events
+                    .iter()
+                    .find_map(|event| match event {
+                        EcologyEvent::Predation { attacker, victim } => Some((*attacker, *victim)),
+                        _ => None,
+                    })
+            {
+                world.first_predation = true;
+                world
+                    .ecological_events
+                    .push(EcologyEvent::FirstPredation { attacker, victim });
+            }
         }
         if before > 0 && world.agents.is_empty() {
             world.ecological_events.push(EcologyEvent::MassExtinction);
@@ -152,6 +164,53 @@ pub fn forager_brain() -> Brain {
         phase: 0.0,
     }
 }
+
+/// An inherited starting network: hungry adults approach unlike neighbors,
+/// suppress attacks on an identical genome, and retain feeding and mate outputs.
+pub fn predator_brain() -> Brain {
+    let mut brain = forager_brain();
+    let connection = |input, weight| Connection {
+        input: Input::Sensor(input),
+        weight,
+        learning_rate: 0.0,
+        decay: 0.0,
+    };
+    brain.neurons[2] = Neuron {
+        bias: 4.0,
+        activation: Activation::Sigmoid,
+        inputs: vec![connection(0, -6.0)],
+    };
+    brain.neurons[3] = Neuron {
+        bias: 0.0,
+        activation: Activation::Sigmoid,
+        inputs: vec![],
+    };
+    for output in [4, 6] {
+        brain.neurons[output] = Neuron {
+            bias: 6.0,
+            activation: Activation::Sigmoid,
+            inputs: vec![connection(0, -12.0), connection(11, -8.0)],
+        };
+    }
+    brain
+}
+
+/// Scavengers explore and forage; carcass consumption is bounded by their diet gene.
+pub fn scavenger_brain() -> Brain {
+    let mut brain = forager_brain();
+    brain.neurons[2] = Neuron {
+        bias: 0.0,
+        activation: Activation::Sigmoid,
+        inputs: vec![Connection {
+            input: Input::Sensor(0),
+            weight: -2.0,
+            learning_rate: 0.0,
+            decay: 0.0,
+        }],
+    };
+    brain
+}
+
 fn take(value: &mut i64, amount: i64) -> i64 {
     let n = amount.max(0).min(*value);
     *value -= n;
@@ -223,6 +282,7 @@ impl World {
             let mut rng = bestiary_core::rng(seed, 0x42495254, id as u64, 0);
             let cell = land[rng.gen_range(0..land.len())];
             agents.push(Agent {
+                pheromone_guidance: None,
                 infection: None,
                 id: id as u64,
                 genome: hash,
@@ -244,7 +304,7 @@ impl World {
             });
         }
         let mut archive = bestiary_archive::grid::Archive::default();
-        archive.insert(&evaluated, 0, &config.archive);
+        let initial_archive_cell = archive.insert(&evaluated, 0, &config.archive);
         let mut genomes = BTreeMap::new();
         genomes.insert(
             hash,
@@ -257,7 +317,7 @@ impl World {
                     .collect::<Result<Vec<_>, _>>()?,
                 exploit: evaluated.exploit_suspect,
                 genome,
-                traits: evaluated.traits,
+                traits: evaluated.traits.clone(),
                 viability: evaluated.viability,
                 discovered: 0,
                 parents: vec![],
@@ -292,6 +352,8 @@ impl World {
             archive,
             first_predation: false,
             first_swimmer: false,
+            first_flyer_adjacent_gait: false,
+            first_pheromone_guided_hunt: false,
             record_lifespan: 0,
             registry: Default::default(),
             history,
@@ -315,6 +377,16 @@ impl World {
         let (energy, nutrients) = w.totals();
         w.initial_energy = energy;
         w.initial_nutrients = nutrients;
+        let founder = w.genomes[&hash].genome.clone();
+        w.record_body_milestones(&founder, &evaluated);
+        w.ecological_events.push(EcologyEvent::RecordSize {
+            genome: hash,
+            mass: evaluated.traits.mass,
+        });
+        if let Some(cell) = initial_archive_cell {
+            w.ecological_events
+                .push(EcologyEvent::ArchiveCell { cell, genome: hash });
+        }
         Ok(w)
     }
     pub fn cell_at(&self, p: [f32; 2]) -> usize {
@@ -398,6 +470,7 @@ impl World {
             }
         }
         let neighbors = self.neighbors();
+        let mut similarities = BTreeMap::new();
         let extent = cfg.grid as f32 * cfg.cell_metres;
         for (agent_index, agent) in self.agents.iter_mut().enumerate() {
             if agent.health <= 0.0 {
@@ -406,6 +479,7 @@ impl World {
             let entry = &self.genomes[&agent.genome];
             let genes = &entry.genome;
             let traits = &entry.traits;
+            let mut toxin_damage = 0.0;
             let cell_id = cell_at(agent.position, cfg);
             let reserve = (traits.mass * agent.growth * cfg.reserve_per_kg as f32) as i64;
             if self.tick % cfg.decision_interval == agent.id % cfg.decision_interval {
@@ -423,6 +497,26 @@ impl World {
                 let gz: Vec<_> = (0..4)
                     .map(|i| (below.pheromones[i] - above.pheromones[i]) / (2.0 * cfg.cell_metres))
                     .collect();
+                let similarity = neighbor.as_ref().map_or(0.0, |other| {
+                    if other.genome == agent.genome {
+                        return 1.0;
+                    }
+                    let key = if agent.genome < other.genome {
+                        (agent.genome, other.genome)
+                    } else {
+                        (other.genome, agent.genome)
+                    };
+                    *similarities.entry(key).or_insert_with(|| {
+                        let other = &self.genomes[&other.genome];
+                        let distance = genes.compatibility(
+                            &other.genome,
+                            &traits.values(),
+                            &other.traits.values(),
+                        );
+                        (1.0 - distance / self.config.reproduction.compatibility_threshold)
+                            .clamp(0.0, 1.0)
+                    })
+                });
                 let mut inputs = vec![
                     agent.energy as f32 / reserve.max(1) as f32,
                     agent.age as f32 / genes.life.senescence as f32,
@@ -439,9 +533,7 @@ impl World {
                     neighbor
                         .as_ref()
                         .map_or(1.0, |n| n.mass / traits.mass.max(0.001)),
-                    neighbor
-                        .as_ref()
-                        .map_or(0.0, |n| if n.genome == agent.genome { 1.0 } else { 0.0 }),
+                    similarity,
                     cell.temperature + cfg.season_amplitude * seasonal,
                     if cell.height < self.sea_level {
                         1.0
@@ -452,10 +544,29 @@ impl World {
                     seasonal,
                 ];
                 inputs.extend(gz);
+                let counterfactual = if !self.first_pheromone_guided_hunt && neighbor.is_some() {
+                    milestones::without_pheromones(
+                        &genes.ethology,
+                        &agent.brain,
+                        &inputs,
+                        self.tick,
+                    )
+                } else {
+                    None
+                };
                 genes
                     .ethology
                     .step(&mut agent.brain, &inputs, &[], &[], self.tick as f32);
                 agent.outputs = agent.brain.values.clone();
+                agent.pheromone_guidance = counterfactual.and_then(|(neutral, channels)| {
+                    milestones::guidance(
+                        &agent.outputs,
+                        &neutral,
+                        channels,
+                        neighbor.as_ref()?.id,
+                        self.tick,
+                    )
+                });
             }
             let output = |i: usize| agent.outputs.get(i).copied().unwrap_or(0.0);
             let effort = output(2).clamp(0.0, 1.0);
@@ -505,6 +616,14 @@ impl World {
                         .rem_euclid(extent),
                 ];
             }
+            if actual_distance == 0.0
+                && agent
+                    .pheromone_guidance
+                    .as_ref()
+                    .is_some_and(|evidence| evidence.requires_movement)
+            {
+                agent.pheromone_guidance = None;
+            }
             let cell = &mut self.cells[cell_at(agent.position, cfg)];
             if output(3) > output(8) && agent.energy < reserve {
                 let meal = take(
@@ -531,9 +650,11 @@ impl World {
                 agent.growth = (agent.growth
                     + retained as f32 / (traits.mass * cfg.nutrient_units_per_kg).max(1.0))
                 .min(1.0);
-                agent.health = (agent.health
-                    - cell.plant.toxicity * (1.0 - genes.life.immune_investment) * 0.01)
-                    .max(0.0);
+                let dose = meal as f64 / cfg.bite_energy.max(1) as f64;
+                toxin_damage = self.config.ecology.toxin_damage
+                    * cell.plant.toxicity
+                    * (1.0 - genes.life.immune_investment)
+                    * dose as f32;
             }
             let sensors = genes.bones.iter().map(|b| b.sensors.len()).sum::<usize>();
             let neurons = genes
@@ -557,6 +678,8 @@ impl World {
             } else {
                 agent.health = (agent.health + cfg.healing).min(1.0);
             }
+            // A newly ingested toxin acts after recovery; healing cannot erase the same meal.
+            agent.health = (agent.health - toxin_damage).max(0.0);
             agent.age += 1;
             if agent.age > genes.life.senescence {
                 let remaining = 1.0

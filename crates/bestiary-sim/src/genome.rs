@@ -12,24 +12,30 @@ pub struct Creature {
     pub brains: Vec<BrainState>,
     pub arena: Arena,
 }
+/// Initial floor clearance shared by physics and the unstepped viewer pose.
+/// Preserve the conservative bounding-box placement used by recorded trials.
+pub fn spawn_lift(body: &Body) -> f32 {
+    let mut lowest = 0.0f32;
+    for p in &body.parts {
+        for x in [-1.0, 1.0] {
+            for y in [-1.0, 1.0] {
+                for z in [-1.0, 1.0] {
+                    lowest = lowest.min((p.pose * local_point(p.size, [x, y, z], false)).y);
+                }
+            }
+        }
+    }
+    -lowest + 0.01
+}
 impl Creature {
     pub fn new(genome: Genome, config: &Config) -> Result<Self, String> {
         let body = genome.expand(&config.genome)?;
         let mut arena = Arena::new(config.physics.clone())?;
-        let mut lowest = 0.0f32;
-        for p in &body.parts {
-            for x in [-1.0, 1.0] {
-                for y in [-1.0, 1.0] {
-                    for z in [-1.0, 1.0] {
-                        lowest = lowest.min((p.pose * local_point(p.size, [x, y, z], false)).y);
-                    }
-                }
-            }
-        }
+        let lift = spawn_lift(&body);
         for p in &body.parts {
             let bone = &genome.bones[p.gene];
             let mut pose = p.pose;
-            pose.translation.y += -lowest + 0.01;
+            pose.translation.y += lift;
             let h = arena.bodies.insert(
                 RigidBodyBuilder::dynamic()
                     .position(pose)
@@ -121,8 +127,11 @@ impl Creature {
             let bone = &self.genome.bones[p.gene];
             let rigid = &self.arena.bodies[self.arena.parts[i]];
             let parent = p.parent.map(|j| &self.arena.bodies[self.arena.parts[j]]);
+            let joint_frame = p.parent.map_or(Rotation::identity(), |parent| {
+                self.body.parts[parent].pose.rotation.inverse() * p.pose.rotation
+            });
             let relative = parent.map_or(*rigid.rotation(), |b| {
-                b.rotation().inverse() * rigid.rotation()
+                joint_frame.inverse() * b.rotation().inverse() * rigid.rotation()
             });
             let q = relative.quaternion();
             let norm = libm::sqrtf(q.i * q.i + q.j * q.j + q.k * q.k);
@@ -132,7 +141,8 @@ impl Creature {
                 0.0
             };
             let angular = [q.i * angle, q.j * angle, q.k * angle];
-            let velocity = rigid.rotation().inverse()
+            let world_frame = parent.map_or(*rigid.rotation(), |b| b.rotation() * joint_frame);
+            let velocity = world_frame.inverse()
                 * (rigid.angvel() - parent.map_or(Vector::zeros(), |b| *b.angvel()));
             let gravity = rigid.rotation().inverse() * Vector::y();
             let contact = self.arena.contact_force(self.arena.parts[i]);
@@ -157,6 +167,14 @@ impl Creature {
                         }
                     }
                     Sensor::ContactForce => contact,
+                    Sensor::TerrainContact => {
+                        if self.arena.terrain_contact_force(self.arena.parts[i]) > 0.0 {
+                            1.0
+                        } else {
+                            0.0
+                        }
+                    }
+                    Sensor::TerrainForce => self.arena.terrain_contact_force(self.arena.parts[i]),
                     Sensor::MuscleLength(mi) => owned.get(mi).map_or(0.0, |m| {
                         let (a, b) = self.arena.endpoints(m);
                         (b - a).norm() / m.rest
@@ -171,7 +189,9 @@ impl Creature {
                 })
                 .collect();
             // Body orientation and body velocity are the final six global sensor values.
-            sensors.extend(gravity.iter());
+            let root_gravity =
+                self.arena.bodies[self.arena.parts[0]].rotation().inverse() * Vector::y();
+            sensors.extend(root_gravity.iter());
             sensors.extend(self.arena.bodies[self.arena.parts[0]].linvel().iter());
             let mut children = vec![0.0; 32];
             let mut n = 0.0;
@@ -205,13 +225,63 @@ impl Creature {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use bestiary_core::brain::{Activation, Connection, Input, Neuron};
+    #[test]
+    fn proprioception_uses_joint_rest_frames_and_constraint_velocity_axes() {
+        let config = Config::bundled();
+        let mut genome = Genome::starter(&config.genome);
+        for bone in &mut genome.bones {
+            bone.sensors = vec![Sensor::JointAngle(2), Sensor::JointVelocity(2)];
+            bone.motor.neurons = (0..2)
+                .map(|i| Neuron {
+                    bias: 0.0,
+                    activation: Activation::Tanh,
+                    inputs: vec![Connection {
+                        input: Input::Sensor(i),
+                        weight: 1.0,
+                        learning_rate: 0.0,
+                        decay: 0.0,
+                    }],
+                })
+                .collect();
+        }
+        let mut c = Creature::new(genome, &config).unwrap();
+        let rotation = Rotation::from_axis_angle(&Vector::x_axis(), std::f32::consts::FRAC_PI_2);
+        for handle in &c.arena.parts {
+            let mut pose = *c.arena.bodies[*handle].position();
+            pose.rotation = rotation * pose.rotation;
+            pose.translation.vector = rotation * pose.translation.vector;
+            c.arena.bodies[*handle].set_position(pose, true);
+        }
+        let lower = 2;
+        let angular = rotation * Vector::z() * 0.7;
+        c.arena.bodies[c.arena.parts[lower]].set_angvel(angular, true);
+        c.step();
+        // Both hip and knee are authored at nonzero orientations; zero means
+        // zero deflection relative to their actual joint frames, not world axes.
+        for brain in c.brains.iter().skip(1) {
+            assert!(brain.values[0].abs() < 1e-6);
+        }
+        assert!((c.brains[lower].values[1] - libm::tanhf(0.7)).abs() < 1e-6);
+    }
+    #[test]
+    fn shared_spawn_lift_matches_physical_initial_poses() {
+        let config = Config::bundled();
+        let c = Creature::new(Genome::starter(&config.genome), &config).unwrap();
+        let lift = spawn_lift(&c.body);
+        for (part, handle) in c.body.parts.iter().zip(&c.arena.parts) {
+            let mut expected = part.pose;
+            expected.translation.y += lift;
+            assert_eq!(&expected, c.arena.bodies[*handle].position());
+        }
+    }
     #[test]
     fn expanded_body_instantiates_with_no_joint_motors_and_repeats() {
         let config = Config::bundled();
         let g = Genome::starter(&config.genome);
         let mut a = Creature::new(g.clone(), &config).unwrap();
         let mut b = Creature::new(g, &config).unwrap();
-        assert_eq!(a.arena.parts.len(), 7);
+        assert_eq!(a.arena.parts.len(), 13);
         for (_, joint) in a.arena.joints.iter() {
             assert!(joint.data.motor_axes.is_empty());
         }

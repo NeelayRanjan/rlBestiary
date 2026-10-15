@@ -2,6 +2,8 @@ use rusqlite::{params, Connection, OpenFlags};
 use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::path::Path;
 
+pub const SCHEMA_VERSION: i64 = 3;
+
 pub struct Store {
     connection: Connection,
 }
@@ -48,6 +50,7 @@ pub struct TimeSample {
     pub tick: u64,
     pub population: usize,
     pub species: usize,
+    pub species_populations: Vec<(u64, usize)>,
     pub biomass: f64,
     pub trophic_biomass: [f64; 3],
     pub mean_traits: Vec<f32>,
@@ -92,19 +95,46 @@ impl Store {
         let version: i64 = store
             .connection
             .query_row("PRAGMA user_version", [], |r| r.get(0))?;
-        if version != 1 {
-            return Err(format!("unsupported world schema {version}").into());
+        if version == 1 || version == 2 {
+            return Err(format!("legacy world schema {version} is incompatible with this build (schema {SCHEMA_VERSION}); use the earlier binary to inspect or export this world, or create a new world").into());
+        }
+        if version != SCHEMA_VERSION {
+            return Err(format!(
+                "unsupported world schema {version}; this build requires schema {SCHEMA_VERSION}"
+            )
+            .into());
         }
         if !read_only {
+            if store.simulation_revision()? != Some(bestiary_sim::SIMULATION_REVISION) {
+                return Err("this world's cached traits use an earlier physics evaluator; open it read-only for recorded playback, or create a new world for coordinated walking".into());
+            }
             store.connection.execute_batch(
                 "CREATE TABLE IF NOT EXISTS samples(tick INTEGER PRIMARY KEY,data BLOB)",
             )?;
         }
         Ok(store)
     }
+    /// Missing metadata belongs to a legacy development evaluator. Read-only
+    /// replay remains valid, but cached traits cannot be used for new births.
+    pub fn simulation_revision(&self) -> Result<Option<u32>> {
+        let exists: bool = self.connection.query_row(
+            "SELECT EXISTS(SELECT 1 FROM sqlite_master WHERE type='table' AND name='simulation_metadata')", [], |r| r.get(0))?;
+        if !exists {
+            return Ok(None);
+        }
+        use rusqlite::OptionalExtension;
+        Ok(self
+            .connection
+            .query_row(
+                "SELECT revision FROM simulation_metadata WHERE id=1",
+                [],
+                |r| r.get(0),
+            )
+            .optional()?)
+    }
     fn schema(&self) -> Result<()> {
         self.connection.execute_batch("
-        PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA user_version=1;
+        PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;
         CREATE TABLE snapshot(id INTEGER PRIMARY KEY CHECK(id=1),tick INTEGER NOT NULL,blob BLOB NOT NULL);
         CREATE TABLE genome(hash BLOB PRIMARY KEY,blob BLOB,traits BLOB,viability REAL,discovery_time INTEGER,parents BLOB);
         CREATE TABLE creature(id INTEGER PRIMARY KEY,genome BLOB,born INTEGER,died INTEGER,species INTEGER,cause TEXT,offspring INTEGER,parents BLOB);
@@ -118,6 +148,13 @@ impl Store {
         CREATE TABLE archive_cell(cell BLOB PRIMARY KEY,genome BLOB,viability REAL);
         CREATE TABLE exploit_suspect(genome BLOB PRIMARY KEY,discovery_time INTEGER);
     ")?;
+        self.connection.execute_batch("CREATE TABLE simulation_metadata(id INTEGER PRIMARY KEY CHECK(id=1), revision INTEGER NOT NULL)")?;
+        self.connection.execute(
+            "INSERT INTO simulation_metadata VALUES(1, ?1)",
+            [bestiary_sim::SIMULATION_REVISION],
+        )?;
+        self.connection
+            .pragma_update(None, "user_version", SCHEMA_VERSION)?;
         Ok(())
     }
     pub fn load<T: DeserializeOwned>(&self) -> Result<T> {
@@ -288,5 +325,112 @@ impl Store {
             map.insert(table.into(), count.into());
         }
         Ok(map.into())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn stale_physics_traits_allow_recorded_read_only_view_but_never_resume() {
+        let path = std::env::temp_dir().join(format!(
+            "bestiary-physics-revision-{}.db",
+            std::process::id()
+        ));
+        {
+            let store = Store::create(&path).unwrap();
+            assert_eq!(
+                store.simulation_revision().unwrap(),
+                Some(bestiary_sim::SIMULATION_REVISION)
+            );
+            store
+                .connection
+                .execute(
+                    "UPDATE simulation_metadata SET revision=?1",
+                    [bestiary_sim::SIMULATION_REVISION - 1],
+                )
+                .unwrap();
+        }
+        let bytes = std::fs::read(&path).unwrap();
+        assert_eq!(
+            Store::open(&path, true)
+                .unwrap()
+                .simulation_revision()
+                .unwrap(),
+            Some(bestiary_sim::SIMULATION_REVISION - 1)
+        );
+        assert!(Store::open(&path, false)
+            .err()
+            .unwrap()
+            .to_string()
+            .contains("cached traits"));
+        assert_eq!(bytes, std::fs::read(&path).unwrap());
+        Connection::open(&path)
+            .unwrap()
+            .execute("DROP TABLE simulation_metadata", [])
+            .unwrap();
+        assert_eq!(
+            Store::open(&path, true)
+                .unwrap()
+                .simulation_revision()
+                .unwrap(),
+            None
+        );
+        assert!(Store::open(&path, false).is_err());
+        std::fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn legacy_snapshot_schema_is_rejected_without_modifying_the_file() {
+        let path =
+            std::env::temp_dir().join(format!("bestiary-legacy-schema-{}.db", std::process::id()));
+        {
+            let connection = Connection::open(&path).unwrap();
+            connection
+                .execute_batch(
+                    "PRAGMA user_version=1; CREATE TABLE snapshot(blob BLOB); INSERT INTO snapshot VALUES(X'ff');",
+                )
+                .unwrap();
+        }
+        for version in [1, 2] {
+            Connection::open(&path)
+                .unwrap()
+                .pragma_update(None, "user_version", version)
+                .unwrap();
+            let bytes = std::fs::read(&path).unwrap();
+            for read_only in [true, false] {
+                let error = Store::open(&path, read_only).err().unwrap().to_string();
+                assert!(error.contains(&format!("legacy world schema {version}")));
+                assert!(error.contains("earlier binary"));
+                assert!(error.contains("export"));
+                assert_eq!(bytes, std::fs::read(&path).unwrap());
+            }
+        }
+        std::fs::remove_file(path).unwrap();
+    }
+
+    #[test]
+    fn current_schema_opens_and_unknown_versions_are_rejected() {
+        let path =
+            std::env::temp_dir().join(format!("bestiary-current-schema-{}.db", std::process::id()));
+        drop(Store::create(&path).unwrap());
+        for read_only in [true, false] {
+            let store = Store::open(&path, read_only).unwrap();
+            let version: i64 = store
+                .connection
+                .query_row("PRAGMA user_version", [], |row| row.get(0))
+                .unwrap();
+            assert_eq!(version, SCHEMA_VERSION);
+        }
+        for version in [0, SCHEMA_VERSION + 1] {
+            Connection::open(&path)
+                .unwrap()
+                .pragma_update(None, "user_version", version)
+                .unwrap();
+            let error = Store::open(&path, true).err().unwrap().to_string();
+            assert!(error.contains(&format!("unsupported world schema {version}")));
+        }
+        std::fs::remove_file(path).unwrap();
     }
 }

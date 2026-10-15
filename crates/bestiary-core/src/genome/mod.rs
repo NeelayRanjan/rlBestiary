@@ -72,6 +72,10 @@ pub enum Sensor {
     Contact,
     ContactForce,
     Gravity(usize),
+    /// Loaded contact against static terrain, excluding self and other creatures.
+    TerrainContact,
+    /// Sum of normal terrain contact forces in newtons.
+    TerrainForce,
 }
 #[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Edge {
@@ -284,7 +288,8 @@ impl Genome {
         g.validate(limits)?;
         Ok(g)
     }
-    pub fn starter(limits: &Limits) -> Self {
+    /// Historical rigid-limb body retained as a reproducible benchmark/control.
+    pub fn rigid_limb_fixture(limits: &Limits) -> Self {
         let root = Bone {
             shape: Shape::Box,
             size: [1.3, 0.24, 0.5],
@@ -372,6 +377,7 @@ impl Genome {
     }
 }
 
+mod starter;
 mod zoo;
 pub use zoo::*;
 

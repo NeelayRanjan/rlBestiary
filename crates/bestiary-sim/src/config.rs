@@ -101,6 +101,7 @@ impl CombineConfig {
             || !self.stand_seconds.is_finite()
             || self.stand_seconds < 2.0
             || self.stand_seconds > self.trial_seconds
+            || self.root_clearance <= 0.0
             || [
                 self.root_clearance,
                 self.rough_height,

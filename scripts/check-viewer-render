@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+cd "$(dirname "$0")/.."
+./scripts/cargo test -p bestiary-cli --test replay_export --locked --no-run
+exec ./scripts/cargo test -p bestiary-viewer --test render --test replay_export --locked -- --ignored --nocapture --test-threads=1

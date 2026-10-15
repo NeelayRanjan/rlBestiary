@@ -11,9 +11,10 @@ test:
 	$(CARGO) test --workspace --locked
 bench:
 	$(CARGO) bench -p bestiary-sim --bench throughput --locked
+	$(CARGO) bench -p bestiary-world --bench world --locked
+	./scripts/bench-viewer
 run:
-	$(CARGO) run -p bestiary-cli -- world new --seed 42 --out worlds/scratch.db
-	$(CARGO) run -p bestiary-viewer -- worlds/scratch.db
+	./scripts/run-demo
 dist:
 	$(CARGO) build --workspace --release --locked
 	mkdir -p dist

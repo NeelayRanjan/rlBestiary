@@ -1,10 +1,8 @@
+mod replay_export;
 use bestiary_archive::store::Store;
 use bestiary_core::genome::{Genome, Operator};
-use bestiary_daemon::{load_snapshot, Result};
-use bestiary_sim::{
-    combine::{evaluate, Replay},
-    config::Config,
-};
+use bestiary_daemon::{load_snapshot, request, Request, Response, Result};
+use bestiary_sim::{combine::evaluate, config::Config};
 use bestiary_world::{hex, World};
 use std::path::Path;
 fn value<'a>(args: &'a [String], flag: &str) -> Option<&'a str> {
@@ -60,7 +58,7 @@ fn print_json(value: &impl serde::Serialize) -> Result<()> {
 }
 fn run(args: &[String]) -> Result<()> {
     if args.is_empty() || args[0] == "--help" {
-        println!("bestiary world new --seed S --preset temperate|islands|harsh --out WORLD.db\nbestiary world run WORLD.db [--until TICKS] [--snapshot-every N] [--speed max|N]\nbestiary world attach|status WORLD.db\nbestiary combine GENOME_OR_PRESET [--replay OUT.rpl] [--json]\nbestiary archive ls WORLD.db [--export DIR]\nbestiary phylo WORLD.db [--format dot|json]\nbestiary replay FILE.rpl | ID --world WORLD.db\nbestiary genome mutate|cross|validate|show GENOME [SECOND] [--seed S]\nbestiary bench [--report]\nAll commands support --json. Genome inputs are share strings, binary files, or zoo preset names.");
+        println!("bestiary world new --seed S --preset temperate|islands|harsh --out WORLD.db\nbestiary world run WORLD.db [--until TICKS] [--snapshot-every N] [--speed max|N]\nbestiary world attach|status WORLD.db\nbestiary combine GENOME_OR_PRESET [--replay OUT.rpl] [--json]\nbestiary archive ls WORLD.db [--export DIR]\nbestiary phylo WORLD.db [--format dot|json]\nbestiary replay FILE.rpl | ID [--world WORLD.db] [--export NEW_DIRECTORY]\nbestiary genome mutate|cross|validate|show GENOME [SECOND] [--seed S]\nbestiary bench [--report]\nAll commands support --json. Genome inputs are share strings, binary files, or zoo preset names.");
         return Ok(());
     }
     let json = args.iter().any(|s| s == "--json");
@@ -86,7 +84,9 @@ fn run(args: &[String]) -> Result<()> {
                     c,
                     number(args, "--population", 64usize)?,
                 )?;
-                Store::create(path)?.save(&world)?;
+                let mut store = Store::create(path)?;
+                store.save(&world)?;
+                store.events(world.tick, &world.ecological_events)?;
                 if json {
                     print_json(&bestiary_daemon::status(&world, false))?;
                 } else {
@@ -123,14 +123,24 @@ fn run(args: &[String]) -> Result<()> {
                 }
             }
             "status" => {
-                let world = load_snapshot(Path::new(arg(args, 2)?))?;
-                let status = bestiary_daemon::status(&world, false);
+                let path = Path::new(arg(args, 2)?);
+                let store = Store::open(path, true)?;
+                let status = match request(path, Request::Status) {
+                    Ok(Response::Status(status)) => status,
+                    Ok(Response::Error(error)) => return Err(error.into()),
+                    Ok(_) => return Err("unexpected daemon status response".into()),
+                    Err(_) => bestiary_daemon::status(&store.load()?, false),
+                };
                 if json {
                     print_json(&status)?;
                 } else {
                     println!(
-                        "tick={} population={} species={} hash={}",
-                        status.tick, status.population, status.species, status.state_hash
+                        "tick={} population={} species={} paused={} hash={}",
+                        status.tick,
+                        status.population,
+                        status.species,
+                        status.paused,
+                        status.state_hash
                     );
                 }
             }
@@ -247,15 +257,15 @@ fn run(args: &[String]) -> Result<()> {
         }
         "replay" => {
             let id = arg(args, 1)?;
-            let bytes = if let Some(path) = value(args, "--world") {
-                Store::open(Path::new(path), true)?.replay(id)?
-            } else {
-                std::fs::read(id)?
-            };
-            let replay = Replay::decode(&bytes)?;
-            print_json(
-                &serde_json::json!({"kind":replay.kind,"frames":replay.frames.len(),"dt":replay.dt}),
-            )?;
+            let output = value(args, "--export").filter(|value| !value.starts_with("--"));
+            if args.iter().any(|arg| arg == "--export") && output.is_none() {
+                return Err("--export requires a fresh output directory".into());
+            }
+            print_json(&replay_export::run(
+                id,
+                value(args, "--world").map(Path::new),
+                output.map(Path::new),
+            )?)?;
         }
         "bench" => {
             let c = config(args)?;

@@ -19,8 +19,9 @@ fn main() {
         evaluation();
         worst = worst.max(start.elapsed().as_secs_f64());
     }
-    let simulated =
-        f64::from(config.combine.trial_seconds) * (8 + config.combine.slope_angles.len()) as f64;
+    let simulated = f64::from(config.combine.stand_seconds)
+        * (6 + config.combine.slope_angles.len()) as f64
+        + f64::from(config.combine.trial_seconds) * (7 + config.combine.slope_angles.len()) as f64;
     println!("Full combine: 12 parts, nine named trials (slope sweep included), {simulated} creature-seconds");
     println!(
         "worst_seconds={worst:.6} creature_seconds_per_wall_second={:.3}",

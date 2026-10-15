@@ -14,7 +14,7 @@ blake3.workspace = true
 nalgebra.workspace = true
 libm.workspace = true
 base64.workspace = true
+ron.workspace = true
 
 [dev-dependencies]
-ron.workspace = true
 proptest.workspace = true

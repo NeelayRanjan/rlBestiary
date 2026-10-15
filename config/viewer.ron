@@ -1,0 +1,36 @@
+// Cosmetic anatomy only; never used by physics, traits, genomes or world hashes.
+(
+    // Radius multiplier for rendered muscles relative to sqrt(gene area / pi).
+    muscle_radius_scale: 0.13,
+    // Maximum belly radius relative to attachment distance; prevents short bulges.
+    muscle_max_radius_fraction: 0.1,
+    // Narrow, continuous tendon-to-belly taper along the actual muscle line.
+    muscle_taper_power: 1.5,
+    // Clamp visual volume-preserving bulging at extreme physical stretches.
+    stretch_min: 0.4,
+    stretch_max: 2.5,
+    // Joint sphere radius as a fraction of the smallest adjacent bone dimension.
+    joint_radius_fraction: 0.4,
+    // Smooth procedural geometry: radial sides and rings along each bone.
+    radial_segments: 16,
+    bone_rings: 20,
+    // Shaft waist and rounded torso bevel, relative to each bone dimension.
+    bone_waist: 0.72,
+    torso_rounding: 0.16,
+    // Bone pigment mixes inherited color with this neutral material.
+    bone_color: (0.58, 0.55, 0.44),
+    gene_tint: 0.12,
+    // Muted olive muscle and warm tendon pigments, specified in sRGB.
+    muscle_color: (0.25, 0.27, 0.19),
+    tendon_color: (0.52, 0.50, 0.39),
+    // Reflected-light multiplier at full activation; muscles never emit light.
+    // Darkening gently emphasizes contraction without changing tissue color.
+    active_color: (0.90, 0.94, 0.82),
+    // Flat inspector floor and world-anchored grid make planted-foot slip visible.
+    ground_color: (0.18, 0.20, 0.17),
+    grid_color: (0.28, 0.30, 0.25),
+    contact_grid_spacing: 0.25,
+    contact_grid_radius: 4.0,
+    // Inspector-only cast shadows mark foot contact; world LOD stays inexpensive.
+    inspector_shadows: true,
+)

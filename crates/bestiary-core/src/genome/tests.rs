@@ -76,14 +76,14 @@ fn reflection_carries_neurons_and_spanning_muscles() {
     g.bones[0].edges.push(edge);
     g.repair(&limits);
     let body = g.expand(&limits).unwrap();
-    assert_eq!(body.parts.len(), 3);
-    assert_eq!(body.parts[1].gene, body.parts[2].gene);
+    assert_eq!(body.parts.len(), 5);
+    assert_eq!(body.parts[1].gene, body.parts[3].gene);
     assert_eq!(
         body.parts[1].pose.translation.z,
-        -body.parts[2].pose.translation.z
+        -body.parts[3].pose.translation.z
     );
     assert!(body.actuated_axes_covered());
-    let brain = &g.bones[body.parts[2].gene].motor;
+    let brain = &g.bones[body.parts[3].gene].motor;
     let mut state = brain.state();
     brain.step(&mut state, &[], &[], &[], 0.1);
     assert!(state.values.iter().any(|x| *x != 0.0));

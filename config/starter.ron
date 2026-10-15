@@ -1,0 +1,49 @@
+// Authored terrestrial founder genes. Embedded at build time and copied into each
+// new genome: saved worlds retain their own genes; changing this never rewrites them.
+// These are ordinary inheritable neural weights, attachments and joint limits.
+// The engine supplies no gait targets, inverse kinematics, joint motors or foot pins.
+(
+    // Full upper/lower leg collider dimensions in metres. Six two-part legs.
+    upper_shape: Box,
+    upper_size: (0.09, 0.30, 0.09),
+    lower_shape: Box,
+    lower_size: (0.12, 0.32, 0.14),
+    // Rest orientations and hard joint excursions in radians about local Z.
+    hip_rest: 0.25,
+    knee_rest: -0.50,
+    hip_limits: (-0.50, 0.50),
+    knee_limits: (-0.50, 0.45),
+    // Muscle area genes; world.ron still supplies force/area and material physics.
+    hip_area: 0.10,
+    knee_area: 0.10,
+    // Normalized surface attachments near the knee, mirrored in X for antagonists.
+    // Short moment arms that cross the joint centre can invert torque: keep these
+    // near the joint while retaining a lateral lever arm.
+    knee_origin: (1.0, 0.60, 0.0),
+    knee_insertion: (1.0, -0.60, 0.0),
+    // Adjacent legs alternate phase (tripod groups); the knee leads the hip by
+    // a quarter cycle so it flexes during forward recovery and extends in stance.
+    hip: (
+        frequency: 0.70,
+        phase_offset: 0.0,
+        biases: (0.0, 0.0),
+        oscillator: (-3.0, 3.0),
+        // Hip feedback reads orientation against gravity, keeping support upright.
+        proprioception: (4.0, -4.0),
+        angular_velocity: (0.15, -0.15),
+        contact: (0.0, 0.0),
+    ),
+    knee: (
+        frequency: 0.70,
+        phase_offset: 1.5707964,
+        // Extension bias lengthens stance relative to flexed swing.
+        biases: (-2.5, 2.5),
+        oscillator: (4.0, -4.0),
+        // Knee feedback reads deflection in the actual joint's rest frame.
+        proprioception: (4.0, -4.0),
+        angular_velocity: (0.15, -0.15),
+        // Loaded terrain contact suppresses flexion and recruits extension.
+        // Self-collisions are not ground support; both signals remain evolvable.
+        contact: (-1.0, 1.0),
+    ),
+)
