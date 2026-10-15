@@ -15,6 +15,8 @@ pub struct Appearance {
     pub stretch_min: f32,
     pub stretch_max: f32,
     pub joint_radius_fraction: f32,
+    pub proxy_radial_segments: u32,
+    pub proxy_stacks: u32,
     pub radial_segments: usize,
     pub bone_rings: usize,
     pub bone_waist: f32,
@@ -43,6 +45,8 @@ impl Appearance {
             || !(1.0..=10.0).contains(&a.stretch_max)
             || !a.joint_radius_fraction.is_finite()
             || !(0.1..=1.0).contains(&a.joint_radius_fraction)
+            || !(6..=16).contains(&a.proxy_radial_segments)
+            || !(4..=12).contains(&a.proxy_stacks)
             || !(6..=32).contains(&a.radial_segments)
             || !(8..=32).contains(&a.bone_rings)
             || !(0.1..=1.0).contains(&a.bone_waist)
@@ -101,6 +105,16 @@ impl Appearance {
             pigment.blue * multiplier.blue,
         )
     }
+}
+
+/// The world and benchmark share this unit-diameter distant-creature proxy.
+/// Full articulated bodies and joint surfaces use their independent meshes.
+pub fn proxy_mesh(a: &Appearance) -> Mesh {
+    Sphere::new(0.5)
+        .mesh()
+        .uv(a.proxy_radial_segments, a.proxy_stacks)
+        // Bevy UV spheres use Z poles; align them with the original Y capsule.
+        .rotated_by(Quat::from_rotation_x(-std::f32::consts::FRAC_PI_2))
 }
 
 /// Closed surface of revolution, with elliptical scaling applied by the caller.
@@ -345,6 +359,46 @@ mod tests {
         }
     }
     #[test]
+    fn viewer_distant_proxy_lod_preserves_unit_bounds_with_bounded_geometry() {
+        let style = settings();
+        let proxy = proxy_mesh(&style);
+        let prior = Mesh::from(Capsule3d::new(0.5, 0.0));
+        assert_eq!(proxy.count_vertices(), 63);
+        assert_eq!(proxy.indices().unwrap().len() / 3, 80);
+        assert!(proxy.indices().unwrap().len() * 8 < prior.indices().unwrap().len());
+        for (sectors, stacks) in [(6, 4), (8, 6), (16, 12)] {
+            let mut config = style.clone();
+            config.proxy_radial_segments = sectors;
+            config.proxy_stacks = stacks;
+            let mesh = proxy_mesh(&config);
+            assert_eq!(
+                mesh.count_vertices(),
+                ((sectors + 1) * (stacks + 1)) as usize
+            );
+            let bevy::render::mesh::VertexAttributeValues::Float32x3(vertices) =
+                mesh.attribute(Mesh::ATTRIBUTE_POSITION).unwrap()
+            else {
+                panic!("expected positions")
+            };
+            let bevy::render::mesh::VertexAttributeValues::Float32x3(normals) =
+                mesh.attribute(Mesh::ATTRIBUTE_NORMAL).unwrap()
+            else {
+                panic!("expected normals")
+            };
+            for (point, normal) in vertices.iter().zip(normals) {
+                let point = Vec3::from_array(*point);
+                let normal = Vec3::from_array(*normal);
+                assert!(point.is_finite() && point.abs().max_element() <= 0.500001);
+                assert!((point.length() - 0.5).abs() < 1e-5);
+                assert!(normal.is_finite() && (normal.length() - 1.0).abs() < 1e-5);
+                assert!(point.dot(normal) > 0.49);
+            }
+            assert!(mesh.indices().unwrap().iter().all(|i| i < vertices.len()));
+            assert!(vertices.iter().any(|p| (p[1] - 0.5).abs() < 1e-6));
+            assert!(vertices.iter().any(|p| (p[1] + 0.5).abs() < 1e-6));
+        }
+    }
+    #[test]
     fn bone_frame_preserves_each_genome_axis() {
         for size in [[3.0, 1.0, 2.0], [1.0, 3.0, 2.0], [1.0, 2.0, 3.0]] {
             let (rotation, scale) = bone_frame(size);
@@ -364,6 +418,10 @@ mod tests {
             ("stretch_min: 0.4", "stretch_min: 0.0"),
             ("stretch_max: 2.5", "stretch_max: 0.5"),
             ("joint_radius_fraction: 0.4", "joint_radius_fraction: -1.0"),
+            ("proxy_radial_segments: 8", "proxy_radial_segments: 0"),
+            ("proxy_radial_segments: 8", "proxy_radial_segments: 17"),
+            ("proxy_stacks: 6", "proxy_stacks: 3"),
+            ("proxy_stacks: 6", "proxy_stacks: 13"),
             ("16,", "10000,"),
             ("20,", "0,"),
             ("gene_tint: 0.12", "gene_tint: 2.0"),

@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M10 — shipping, coverage and final current-binary validation; M5/M7 numeric failures remain unticked and prohibit tagging.
+Current task: User-requested credit-limited handoff — fix the viewer performance gate, document remaining work, check, package, commit and push the untagged candidate. M5/M7 failures and unfinished M10 checks remain open.
 
 ## MVP checkpoint (scope changed at the user's request)
 - [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
@@ -134,13 +134,13 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [x] Pass make check and commit M9.
 
 ## M10 Ship
-- [ ] RUNBOOK: three-platform builds, daemon/viewer, days-long runs, phylogeny/archive, designer, clips, config, determinism caveat.
-- [ ] TUNING: every knob, muscle symptoms first, sessile-sipper, monoculture, predator/prey collapse and stagnation.
-- [ ] README points to RUNBOOK; final assumptions/deviations review.
+- [x] RUNBOOK: three-platform builds, daemon/viewer, days-long runs, phylogeny/archive, designer, clips, config, determinism caveat.
+- [x] TUNING: every knob, muscle symptoms first, sessile-sipper, monoculture, predator/prey collapse and stagnation.
+- [x] README points to RUNBOOK; final assumptions/deviations review, including the user's credit-limited handoff.
 - [ ] >=80% coverage for core/sim/world; all module/config negative tests.
 - [x] make longrun: five seeds, 1M ticks, conservation, determinism and stability; finite founders, 10,785–11,417 births per seed (evidence/v1/longrun.log).
-- [ ] make bench meets all budgets; record machine, commands and results in RUNBOOK.
-- [ ] make dist creates runnable host binaries; offline runtime verified.
+- [x] make bench meets all budgets; 0.628458 s/combine, 13,700.3 world ticks/min, 128.0886 fps at the unchanged population/resolution (evidence/v1/bench-final.log).
+- [x] make dist creates runnable host binaries; packaged CLI/daemon/offline GPU viewer and checksums verified (evidence/v1/dist-smoke.json).
 - [ ] Fresh-clone make check and all required CLI commands exercised.
 - [ ] Verify every SPEC completion item; clean git status, lockfile committed, outputs ignored.
 - [ ] Commit M10 and tag v0.1.0 only when completion checklist is actually true.

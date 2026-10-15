@@ -189,7 +189,7 @@ fn eligible_mates_obey_radius_across_toroidal_world_boundary() {
 }
 
 #[test]
-#[ignore = "250k-tick diversification acceptance; run with --release --ignored"]
+#[ignore = "million-tick diversification acceptance; run with --release --ignored"]
 fn open_endedness_smoke_three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
     let source = std::env::var("BESTIARY_DEMO_CONFIG")
         .map(|path| std::fs::read_to_string(path).expect("demo config"))
@@ -201,7 +201,7 @@ fn open_endedness_smoke_three_species_coexist_and_phylogeny_splits_after_tectoni
         .map(|p| Store::create(std::path::Path::new(&p)).unwrap());
     let founding_parts = w.genomes.values().map(|g| g.traits.parts).max().unwrap();
     let ticks =
-        std::env::var("BESTIARY_DEMO_TICKS").map_or(250_000, |s| s.parse().expect("demo ticks"));
+        std::env::var("BESTIARY_DEMO_TICKS").map_or(1_000_000, |s| s.parse().expect("demo ticks"));
     let mut fragmented = None;
     for _ in 0..ticks {
         w.step();

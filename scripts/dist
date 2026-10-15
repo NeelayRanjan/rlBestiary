@@ -1,0 +1,286 @@
+#!/usr/bin/env python3
+"""Stage, checksum and install an untagged host distribution from built binaries."""
+
+import argparse
+import hashlib
+import json
+import os
+from pathlib import Path, PurePosixPath
+import platform
+import re
+import shutil
+import stat
+import subprocess
+import sys
+import tempfile
+
+GENERATOR = "bestiary/scripts/dist"
+BINARIES = ("bestiary", "bestiary-daemon", "bestiary-viewer")
+DOCUMENTS = (
+    "README.md", "RUNBOOK.md", "TUNING.md", "ASSUMPTIONS.md",
+    "SPEC.md", "AGENTS.md", "PLAN.md", "Cargo.lock",
+)
+
+
+def checksum(path):
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def regular_file(path):
+    """Never follow a symlink when handling an owned payload."""
+    try:
+        return stat.S_ISREG(path.lstat().st_mode)
+    except FileNotFoundError:
+        return False
+
+
+def owned_name(name):
+    if not isinstance(name, str):
+        return False
+    path = PurePosixPath(name)
+    if path.is_absolute() or ".." in path.parts or str(path) != name:
+        return False
+    if name in DOCUMENTS or name in {"manifest.json", "SHA256SUMS"}:
+        return True
+    if name in BINARIES or name in {binary + ".exe" for binary in BINARIES}:
+        return True
+    return bool(re.fullmatch(r"config/[A-Za-z0-9_.-]+\.ron", name))
+
+
+def payload_path(directory, name):
+    if not owned_name(name):
+        raise ValueError(f"unsafe or unowned package path: {name!r}")
+    result = directory / name
+    for parent in result.relative_to(directory).parents:
+        if (directory / parent).is_symlink():
+            raise ValueError(f"package parent is a symlink: {parent}")
+    return result
+
+
+def read_manifest(directory):
+    manifest_path = directory / "manifest.json"
+    if not regular_file(manifest_path):
+        raise ValueError("distribution lacks a regular manifest.json")
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if (
+        not isinstance(manifest, dict)
+        or manifest.get("generator") != GENERATOR
+        or manifest.get("format_version") != 1
+        or manifest.get("release_status") != "unreleased"
+        or manifest.get("released") is not False
+        or not isinstance(manifest.get("files"), dict)
+        or not isinstance(manifest.get("source"), dict)
+        or not isinstance(manifest.get("platform"), dict)
+    ):
+        raise ValueError("unrecognized distribution manifest or release status")
+    if not re.fullmatch(r"[0-9a-f]{40,64}", str(manifest.get("source", {}).get("commit", ""))):
+        raise ValueError("manifest source commit is invalid")
+    if not isinstance(manifest.get("source", {}).get("dirty"), bool):
+        raise ValueError("manifest dirty provenance is missing")
+    return manifest
+
+
+def verify_distribution(directory):
+    directory = Path(directory)
+    if directory.is_symlink() or not directory.is_dir():
+        raise ValueError("distribution must be a real directory")
+    manifest = read_manifest(directory)
+    expected = dict(manifest["files"])
+    if not expected:
+        raise ValueError("empty distribution manifest")
+    for name, digest in expected.items():
+        path = payload_path(directory, name)
+        if name in {"manifest.json", "SHA256SUMS"}:
+            raise ValueError("manifest files cannot include checksum metadata")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+            raise ValueError(f"invalid digest for {name}")
+        if not regular_file(path) or checksum(path) != digest:
+            raise ValueError(f"integrity check failed: {name}")
+    if not set(DOCUMENTS).issubset(expected) or "config/world.ron" not in expected:
+        raise ValueError("distribution is missing required documents or config/world.ron")
+    binaries = manifest.get("binaries")
+    suffix = ".exe" if manifest.get("platform", {}).get("system") == "Windows" else ""
+    required_binaries = {name + suffix for name in BINARIES}
+    if (
+        not isinstance(binaries, dict)
+        or set(binaries) != required_binaries
+        or not required_binaries.issubset(expected)
+    ):
+        raise ValueError("distribution requires all three host executables")
+    for name, record in binaries.items():
+        path = payload_path(directory, name)
+        if not isinstance(record, dict) or record.get("sha256") != expected.get(name):
+            raise ValueError(f"binary checksum metadata mismatch: {name}")
+        if record.get("bytes") != path.stat().st_size:
+            raise ValueError(f"binary size metadata mismatch: {name}")
+        if suffix == "" and not (path.stat().st_mode & 0o111):
+            raise ValueError(f"binary is not executable: {name}")
+    expected["manifest.json"] = checksum(directory / "manifest.json")
+    sums_path = directory / "SHA256SUMS"
+    if not regular_file(sums_path):
+        raise ValueError("distribution lacks a regular SHA256SUMS")
+    expected_text = "".join(f"{digest}  {name}\n" for name, digest in sorted(expected.items()))
+    if sums_path.read_text(encoding="utf-8") != expected_text:
+        raise ValueError("SHA256SUMS does not match the payload and manifest")
+    return manifest
+
+
+def git(root, *arguments):
+    result = subprocess.run(
+        ["git", "-C", str(root), *arguments],
+        check=True, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    )
+    return result.stdout.rstrip("\n")
+
+
+def version(root):
+    source = (root / "Cargo.toml").read_text(encoding="utf-8")
+    section = re.search(r"(?ms)^\[workspace\.package\]\s*\n(.*?)(?=^\[|\Z)", source)
+    match = re.search(r'(?m)^version\s*=\s*"([^"]+)"\s*$', section.group(1)) if section else None
+    if not match:
+        raise ValueError("workspace package version is missing")
+    return match.group(1)
+
+
+def package(root):
+    root = Path(root).resolve()
+    destination = root / "dist"
+    suffix = ".exe" if platform.system() == "Windows" else ""
+    inputs = {name: root / name for name in DOCUMENTS}
+    config = root / "config"
+    if config.is_symlink() or not config.is_dir():
+        raise ValueError("source config must be a real directory")
+    configs = sorted(config.glob("*.ron"))
+    for path in configs:
+        name = f"config/{path.name}"
+        if not owned_name(name):
+            raise ValueError(f"unsupported config filename: {path.name}")
+        inputs[name] = path
+    if "config/world.ron" not in inputs:
+        raise ValueError("missing source config/world.ron")
+    binary_names = [name + suffix for name in BINARIES]
+    inputs.update({name: root / "target" / "release" / name for name in binary_names})
+    for name, source in inputs.items():
+        if not regular_file(source):
+            raise ValueError(f"missing or non-regular distribution input: {source}")
+        if name in binary_names and not suffix and not os.access(source, os.X_OK):
+            raise ValueError(f"built binary is not executable: {source}")
+    # Capture before creating temporary outputs, so packaging cannot dirty its own provenance.
+    source_status = git(root, "status", "--porcelain=v1", "--untracked-files=all")
+    manifest = {
+        "format_version": 1,
+        "generator": GENERATOR,
+        "name": "bestiary",
+        "version": version(root),
+        "release_status": "unreleased",
+        "released": False,
+        "source": {
+            "commit": git(root, "rev-parse", "HEAD"),
+            "dirty": bool(source_status),
+            "status": source_status.splitlines(),
+            "captured_at": "packaging",
+        },
+        "platform": {
+            "system": platform.system(),
+            "release": platform.release(),
+            "machine": platform.machine(),
+        },
+        "binary_source": "target/release (build before packaging)",
+        "binaries": {},
+        "files": {},
+    }
+    previous_owned = set()
+    if destination.exists() or destination.is_symlink():
+        if destination.is_symlink() or not destination.is_dir():
+            raise ValueError("refusing to replace a non-directory or symlink dist")
+        if (destination / "manifest.json").exists() or (destination / "manifest.json").is_symlink():
+            previous = verify_distribution(destination)
+            previous_owned = set(previous["files"]) | {"manifest.json", "SHA256SUMS"}
+        else:
+            # Only the three binaries are owned by the repository's earlier dist target.
+            previous_owned = {
+                name for name in (*BINARIES, *(binary + ".exe" for binary in BINARIES))
+                if regular_file(destination / name)
+            }
+        for name in set(inputs) | {"manifest.json", "SHA256SUMS"}:
+            path = payload_path(destination, name)
+            if (path.exists() or path.is_symlink()) and name not in previous_owned:
+                raise ValueError(f"refusing to overwrite an unowned dist file: {name}")
+    stage = Path(tempfile.mkdtemp(prefix=".bestiary-dist-stage-", dir=root))
+    backup = None
+    installed = False
+    try:
+        if destination.is_dir():
+            # Preserve unrelated files and symlinks without following them.
+            shutil.copytree(destination, stage, dirs_exist_ok=True, symlinks=True)
+        for name in previous_owned:
+            path = payload_path(stage, name)
+            if path.exists() or path.is_symlink():
+                if not regular_file(path):
+                    raise ValueError(f"owned output is not a regular file: {name}")
+                path.unlink()
+        for name, source in sorted(inputs.items()):
+            target = payload_path(stage, name)
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source, target)
+            digest = checksum(target)
+            if digest != checksum(source):
+                raise ValueError(f"copy integrity check failed: {name}")
+            manifest["files"][name] = digest
+            if name in binary_names:
+                manifest["binaries"][name] = {"sha256": digest, "bytes": target.stat().st_size}
+        (stage / "manifest.json").write_text(
+            json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
+        sums = dict(manifest["files"])
+        sums["manifest.json"] = checksum(stage / "manifest.json")
+        (stage / "SHA256SUMS").write_text(
+            "".join(f"{digest}  {name}\n" for name, digest in sorted(sums.items())), encoding="utf-8"
+        )
+        verify_distribution(stage)
+        if destination.exists():
+            backup = Path(tempfile.mkdtemp(prefix=".bestiary-dist-backup-", dir=root))
+            backup.rmdir()
+            os.replace(destination, backup)
+        try:
+            os.replace(stage, destination)
+        except BaseException:
+            if backup is not None:
+                os.replace(backup, destination)
+                backup = None
+            raise
+        installed = True
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
+        if backup is not None and installed:
+            shutil.rmtree(backup)
+    verify_distribution(destination)
+    return manifest
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--verify", metavar="DIRECTORY", help="verify an existing distribution without writing")
+    arguments = parser.parse_args()
+    if arguments.verify:
+        result = verify_distribution(Path(arguments.verify))
+        print(f"Verified {len(result['files'])} payload files and manifest: {arguments.verify}")
+    else:
+        root = Path(__file__).resolve().parent.parent
+        result = package(root)
+        print(f"Packaged {len(result['binaries'])} host executables and {len(result['files'])} payload files in {root / 'dist'}")
+        print(f"Version {result['version']} UNRELEASED; source {result['source']['commit']}; dirty={result['source']['dirty']}")
+        print("Verified SHA256SUMS including manifest.json; no release tag created.")
+
+
+if __name__ == "__main__":
+    try:
+        main()
+    except (OSError, ValueError, subprocess.CalledProcessError) as error:
+        print(f"dist: {error}", file=sys.stderr)
+        sys.exit(1)

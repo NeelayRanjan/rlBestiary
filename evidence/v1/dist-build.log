@@ -1,0 +1,6 @@
+./scripts/cargo build --workspace --release --locked
+    Finished `release` profile [optimized] target(s) in 0.42s
+python3 scripts/dist
+Packaged 3 host executables and 20 payload files in /Users/diane/Documents/ChatGPT/neelay-bestiary/dist
+Version 0.1.0 UNRELEASED; source d4932b1dfd375052bf7cab770a657752e49f4abb; dirty=True
+Verified SHA256SUMS including manifest.json; no release tag created.

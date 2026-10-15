@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+"""Gate LLVM executable-line coverage for production core/sim/world source.
+
+Uses the pinned toolchain's llvm-tools-preview component, without extra crates.
+See https://doc.rust-lang.org/rustc/instrument-coverage.html and
+https://llvm.org/docs/CommandGuide/llvm-cov.html#export-command .
+"""
+import hashlib
+import json
+import os
+import platform
+from pathlib import Path
+import re
+import shlex
+import shutil
+import subprocess
+import sys
+import tempfile
+
+CRATES = ("bestiary-core", "bestiary-sim", "bestiary-world")
+FLOOR = 80.0
+
+
+def masked_rust(source):
+    """Preserve offsets/newlines while masking comments and literal contents.
+
+    This is only for locating cfg(test) module braces, never for counting code:
+    LLVM supplies executable line numbers and execution counts via LCOV.
+    """
+    chars = list(source)
+    index = 0
+    while index < len(source):
+        start = index
+        if source.startswith("//", index):
+            end = source.find("\n", index)
+            index = len(source) if end == -1 else end
+        elif source.startswith("/*", index):
+            depth = 1
+            index += 2
+            while index < len(source) and depth:
+                if source.startswith("/*", index):
+                    depth += 1
+                    index += 2
+                elif source.startswith("*/", index):
+                    depth -= 1
+                    index += 2
+                else:
+                    index += 1
+            if depth:
+                raise ValueError("unterminated Rust block comment")
+        else:
+            raw = re.match(r'r(#{0,})"', source[index:])
+            character = re.match(r"'(?:\\u\{[0-9a-fA-F_]+\}|\\.|[^\\'\n])'", source[index:])
+            if raw:
+                closing = '"' + raw.group(1)
+                end = source.find(closing, index + raw.end())
+                if end == -1:
+                    raise ValueError("unterminated Rust raw string")
+                index = end + len(closing)
+            elif source[index] == '"':
+                index += 1
+                while index < len(source):
+                    if source[index] == "\\":
+                        index += 2
+                    elif source[index] == '"':
+                        index += 1
+                        break
+                    else:
+                        index += 1
+                else:
+                    raise ValueError("unterminated Rust string")
+            elif character:
+                index += character.end()
+            else:
+                index += 1
+                continue
+        for offset in range(start, index):
+            if chars[offset] != "\n":
+                chars[offset] = " "
+    return "".join(chars)
+
+
+def test_modules(source):
+    """Return inline test-only line ranges and external test-only module names."""
+    masked = masked_rust(source)
+    declaration = re.compile(
+        r"#\s*\[\s*cfg\s*\(\s*test\s*\)\s*\]\s*"
+        r"(?:pub(?:\([^)]*\))?\s+)?mod\s+(\w+)\s*([;{])"
+    )
+    ranges, external = [], []
+    for match in declaration.finditer(masked):
+        first = source.count("\n", 0, match.start()) + 1
+        if match.group(2) == ";":
+            external.append(match.group(1))
+            ranges.append((first, source.count("\n", 0, match.end()) + 1))
+            continue
+        depth = 1
+        index = match.end()
+        while index < len(masked) and depth:
+            depth += (masked[index] == "{") - (masked[index] == "}")
+            index += 1
+        if depth:
+            raise ValueError("unterminated cfg(test) module")
+        ranges.append((first, source.count("\n", 0, index) + 1))
+    # Fail closed instead of silently counting an unrecognized test-only item as
+    # production. Add parser support when a new cfg(test) source style is added.
+    recognized = len(re.findall(r"#\s*\[\s*cfg\s*\([^]]*\btest\b[^]]*\)\s*\]", masked))
+    if recognized != len(ranges):
+        raise ValueError("cfg(test) item is not a supported module declaration")
+    return ranges, external
+
+
+def source_inventory(root, crates=CRATES):
+    files, excluded_files = {}, set()
+    for crate in crates:
+        for path in sorted((root / "crates" / crate / "src").rglob("*.rs")):
+            source = path.read_text()
+            ranges, external = test_modules(source)
+            files[path.resolve()] = (crate, ranges, hashlib.sha256(source.encode()).hexdigest())
+            for name in external:
+                # Rust's module directory is the containing directory for lib.rs
+                # and mod.rs, or the module-name directory for another source file.
+                base = path.parent if path.name in ("lib.rs", "mod.rs") else path.with_suffix("")
+                candidate = base / (name + ".rs")
+                if candidate.exists():
+                    excluded_files.add(candidate.resolve())
+                directory = base / name
+                if directory.exists():
+                    excluded_files.update(p.resolve() for p in directory.rglob("*.rs"))
+    for path, (_, ranges, _) in files.items():
+        if path in excluded_files:
+            continue
+        source = masked_rust(path.read_text())
+        for test in re.finditer(r"#\s*\[\s*test\s*\]", source):
+            line = source.count("\n", 0, test.start()) + 1
+            if not any(first <= line <= last for first, last in ranges):
+                raise ValueError("test outside a recognized test-only module: " + str(path))
+    return files, excluded_files
+
+
+def production_report(root, lcov):
+    inventory, excluded_files = source_inventory(root)
+    lines = {path: {} for path in inventory if path not in excluded_files}
+    excluded_lines = {path: 0 for path in lines}
+    current = None
+    for record in lcov.splitlines():
+        if record.startswith("SF:"):
+            current = Path(record[3:]).resolve()
+        elif record.startswith("DA:") and current in lines:
+            number, count = map(int, record[3:].split(",")[:2])
+            ranges = inventory[current][1]
+            if any(start <= number <= end for start, end in ranges):
+                excluded_lines[current] += 1
+            else:
+                lines[current][number] = max(count, lines[current].get(number, 0))
+        elif record == "end_of_record":
+            current = None
+    result = {crate: {"covered": 0, "executable": 0, "files": {}} for crate in CRATES}
+    for path, counts in lines.items():
+        crate, ranges, digest = inventory[path]
+        covered = sum(count > 0 for count in counts.values())
+        detail = {
+            "covered": covered,
+            "executable": len(counts),
+            "uncovered_lines": sorted(number for number, count in counts.items() if count == 0),
+            "excluded_test_ranges": ranges,
+            "excluded_test_executable_lines": excluded_lines[path],
+            "sha256": digest,
+        }
+        result[crate]["files"][str(path.relative_to(root))] = detail
+        result[crate]["covered"] += covered
+        result[crate]["executable"] += len(counts)
+    for crate, summary in result.items():
+        if summary["executable"] == 0:
+            raise ValueError("missing production coverage for " + crate)
+        summary["percent"] = 100.0 * summary["covered"] / summary["executable"]
+        summary["pass"] = summary["percent"] >= FLOOR
+    return result, sorted(str(path.relative_to(root)) for path in excluded_files)
+
+
+def command(args, env, cwd, output=None):
+    print("+ " + shlex.join(map(str, args)), flush=True)
+    if output is None:
+        subprocess.run(args, cwd=cwd, env=env, check=True)
+    else:
+        with output.open("w") as stream:
+            subprocess.run(args, cwd=cwd, env=env, stdout=stream, check=True)
+
+
+def main():
+    root = Path(__file__).resolve().parent.parent
+    env = dict(os.environ)
+    if (root / ".tools/cargo/bin/rustc").exists():
+        env["CARGO_HOME"] = str(root / ".tools/cargo")
+        env["RUSTUP_HOME"] = str(root / ".tools/rustup")
+        rustc = root / ".tools/cargo/bin/rustc"
+    else:
+        rustc = shutil.which("rustc")
+        if rustc is None:
+            raise RuntimeError("Rust is missing; run make setup")
+    rust_version = subprocess.check_output([rustc, "-vV"], cwd=root, env=env, text=True)
+    sysroot = Path(subprocess.check_output([rustc, "--print", "sysroot"], cwd=root, env=env, text=True).strip())
+    host = next(line.split(": ", 1)[1] for line in rust_version.splitlines() if line.startswith("host: "))
+    llvm_bin = sysroot / "lib" / "rustlib" / host / "bin"
+    suffix = ".exe" if os.name == "nt" else ""
+    cov, profdata = (llvm_bin / (name + suffix) for name in ("llvm-cov", "llvm-profdata"))
+    if not cov.exists() or not profdata.exists():
+        raise RuntimeError("Run rustup component add llvm-tools-preview for the pinned toolchain, then retry")
+    output = root / "target" / "coverage"
+    output.mkdir(parents=True, exist_ok=True)
+    raw = Path(tempfile.mkdtemp(prefix="profiles-", dir=output))
+    env.update(CARGO_TARGET_DIR=str(output), CARGO_INCREMENTAL="0", RUSTFLAGS="-C instrument-coverage", LLVM_PROFILE_FILE=str(raw / "%m-%p.profraw"))
+    packages = [argument for crate in CRATES for argument in ("-p", crate)]
+    cargo = str(root / "scripts/cargo")
+    base = [cargo, "test", "--locked", "--tests", *packages]
+    command([*base, "--no-run", "--message-format=json"], env, root, output / "artifacts.jsonl")
+    binaries = sorted({entry["executable"] for line in (output / "artifacts.jsonl").read_text().splitlines() if (entry := json.loads(line)).get("reason") == "compiler-artifact" and entry.get("profile", {}).get("test") and entry.get("executable")})
+    if not binaries:
+        raise RuntimeError("Cargo produced no instrumented test binaries")
+    command([*base, "--", "--nocapture"], env, root, output / "tests.log")
+    profiles = sorted(raw.glob("*.profraw"))
+    if not profiles:
+        raise RuntimeError("Tests produced no LLVM profiles")
+    command([str(profdata), "merge", "-sparse", *map(str, profiles), "-o", str(output / "coverage.profdata")], env, root)
+    objects = [argument for binary in binaries for argument in ("-object", binary)]
+    sources = sorted(str(path) for path in source_inventory(root)[0])
+    command([str(cov), "export", "-format=lcov", "-instr-profile=" + str(output / "coverage.profdata"), *objects, *("-sources=" + path for path in sources)], env, root, output / "coverage.lcov")
+    crates, excluded = production_report(root, (output / "coverage.lcov").read_text())
+    metadata = {
+        "method": "LLVM executable-line coverage, production src only; cfg(test) modules and external test-only modules excluded; no test-code, examples, dependencies, or ignored long-run tests in denominator",
+        "floor_percent_per_crate": FLOOR,
+        "rustc": rust_version,
+        "llvm": subprocess.check_output([cov, "--version"], text=True),
+        "machine": platform.platform(),
+        "python": platform.python_version(),
+        "rustflags": env["RUSTFLAGS"],
+        "test_binaries": binaries,
+        "profiles": [str(path) for path in profiles],
+        "excluded_test_files": excluded,
+        "crates": crates,
+    }
+    (output / "report.json").write_text(json.dumps(metadata, indent=2) + "\n")
+    report = [metadata["method"], f"Required floor: {FLOOR:.1f}% for each crate."]
+    for crate, summary in crates.items():
+        report.append(f"{crate}: {summary['covered']}/{summary['executable']} = {summary['percent']:.2f}% {'PASS' if summary['pass'] else 'FAIL'}")
+        for path, detail in summary["files"].items():
+            report.append(f"  {path}: {detail['covered']}/{detail['executable']}; uncovered lines {detail['uncovered_lines']}")
+    text = "\n".join(report) + "\n"
+    (output / "report.txt").write_text(text)
+    print(text, end="")
+    return 0 if all(crate["pass"] for crate in crates.values()) else 1
+
+
+if __name__ == "__main__":
+    sys.exit(main())

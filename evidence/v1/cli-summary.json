@@ -1,0 +1,73 @@
+{
+  "criterion": "required_cli_commands_work_against_a_fresh_world",
+  "time_utc": "2026-10-15T05:57:53.504321+00:00",
+  "machine": "macOS-15.3.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "binary": "/Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary",
+  "binary_sha256": "b44eb791fb76d83e0df67e20aba014a0c6f9f6c1e75e0d341fa4e2e28c9c5136",
+  "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+  "viewer_sha256": "ccd344a2ea018f8bfa6eeaadfb042cae1e3232bb0bea29f139f63978d2631b30",
+  "git_commit": "d4932b1dfd375052bf7cab770a657752e49f4abb",
+  "output": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po",
+  "gpu_exports": true,
+  "cli_bench": true,
+  "passed": true,
+  "live_status_tick": 2001,
+  "ipc_endpoint": "/var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock",
+  "replay_id_export": {
+    "frames": 61,
+    "dimensions": [
+      2880,
+      1920
+    ],
+    "distinct_pixel_frames": 61,
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-id"
+  },
+  "replay_file_export": {
+    "frames": 61,
+    "dimensions": [
+      2880,
+      1920
+    ],
+    "distinct_pixel_frames": 61,
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-file"
+  },
+  "benchmark": {
+    "combine_seconds": 0.788657666,
+    "parts": 12,
+    "passes": true
+  },
+  "sqlite_counts": {
+    "genome": 1,
+    "creature": 8,
+    "species": 1,
+    "event": 7,
+    "timeseries": 25,
+    "archive_cell": 1,
+    "replay": 2
+  },
+  "created": {
+    "tick": 0,
+    "population": 8,
+    "species": 0,
+    "state_hash": "edaff78a02b397b4f41e9a67564edbe5a9cde9c4e5cd706e49dbef4f8401792a",
+    "paused": false
+  },
+  "final": {
+    "tick": 2020,
+    "population": 8,
+    "species": 1,
+    "state_hash": "e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b",
+    "paused": false
+  },
+  "archive_coverage": 0.0078125,
+  "archive_cells": 1,
+  "elite_genome": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7",
+  "replay": {
+    "dt": 0.004166666883975267,
+    "frames": 481,
+    "kind": "Sprint"
+  },
+  "commands": 30,
+  "complete": true
+}

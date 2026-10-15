@@ -1,0 +1,80 @@
+#!/usr/bin/env python3
+"""Acceptance: every viewer panel renders real data from a stopped long-run world."""
+import argparse
+import hashlib
+from importlib.machinery import SourceFileLoader
+from importlib.util import module_from_spec, spec_from_loader
+import json
+from pathlib import Path
+import platform
+import sqlite3
+import subprocess
+import sys
+import tempfile
+
+ROOT = Path(__file__).resolve().parent.parent
+PANELS = ("world", "inspector", "designer", "archive", "phylogeny", "charts", "highlights")
+sys.dont_write_bytecode = True
+LOADER = SourceFileLoader("cli_validation", str(ROOT / "scripts/check-cli"))
+PNG = module_from_spec(spec_from_loader(LOADER.name, LOADER))
+LOADER.exec_module(PNG)
+
+
+def digest(path):
+    hasher = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
+
+
+def every_panel_renders_real_data_from_a_long_run_world(world, output, binary_dir):
+    world, binary_dir = world.resolve(), binary_dir.resolve()
+    assert world.is_file()
+    # immutable is safe only for a stopped database with no uncheckpointed WAL.
+    wal = Path(str(world) + "-wal")
+    assert not wal.exists() or wal.stat().st_size == 0, "stop the writer before this audit"
+    before = digest(world)
+    binary = binary_dir / "bestiary-viewer"
+    binary_hash = digest(binary)
+    cli = binary_dir / "bestiary"
+    status_command = [str(cli), "world", "status", str(world), "--json"]
+    status = json.loads(subprocess.check_output(status_command, text=True))
+    assert status["tick"] >= 1_000_000, "requires a genuine million-tick world"
+    with sqlite3.connect(world.as_uri() + "?mode=ro&immutable=1", uri=True) as database:
+        counts = {table: database.execute("SELECT count(*) FROM " + table).fetchone()[0]
+                  for table in ("genome", "creature", "species", "phylogeny_edge", "event", "timeseries", "archive_cell", "mutation")}
+    assert all(count > 0 for count in counts.values()), counts
+    result = {"criterion": "every_panel_renders_real_data_from_a_long_run_world",
+              "machine": platform.platform(), "world": str(world), "world_sha256": before,
+              "viewer_sha256": binary_hash, "status": status, "sqlite_counts": counts,
+              "panels": {}, "passed": False}
+    for panel in PANELS:
+        image = output / (panel + ".png")
+        command = [str(binary), str(world), "--headless", "--panel", panel, "--smoke", str(image)]
+        with (output / (panel + ".log")).open("w") as log:
+            subprocess.run(command, stdout=log, stderr=subprocess.STDOUT, check=True, timeout=180)
+        metadata = json.loads(Path(str(image) + ".json").read_text())
+        assert metadata["tick"] == status["tick"] and not metadata["live"], metadata
+        assert metadata["panel"].lower() == panel, metadata
+        pixels, dimensions = PNG.png_pixels(image)
+        result["panels"][panel] = {"command": command, "metadata": metadata,
+                                   "dimensions": dimensions, "pixels_sha256": pixels}
+        print(panel + ": PASS", flush=True)
+    assert digest(world) == before, "viewer changed the database bytes"
+    assert json.loads(subprocess.check_output(status_command, text=True)) == status
+    assert digest(binary) == binary_hash, "viewer changed during the audit"
+    result["passed"] = True
+    (output / "report.json").write_text(json.dumps(result, indent=2) + "\n")
+    print(output / "report.json")
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("world", type=Path)
+    parser.add_argument("--bin-dir", type=Path, default=ROOT / "target/release")
+    options = parser.parse_args()
+    base = ROOT / "exports/v1"
+    base.mkdir(parents=True, exist_ok=True)
+    directory = Path(tempfile.mkdtemp(prefix="longrun-panels-", dir=base))
+    every_panel_renders_real_data_from_a_long_run_world(options.world, directory, options.bin_dir)

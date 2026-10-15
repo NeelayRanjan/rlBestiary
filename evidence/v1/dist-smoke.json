@@ -1,0 +1,140 @@
+{
+  "criterion": "make_dist_produces_runnable_host_binaries",
+  "passed": true,
+  "output": "/private/tmp/bestiary-dist-smoke-i1j5eyea",
+  "status": {
+    "tick": 10,
+    "population": 8,
+    "species": 0,
+    "state_hash": "c34d127e12608ccfdbee327034d7b65cc6d43a457d645364b652e0f66c78d60c",
+    "paused": false
+  },
+  "viewer": {
+    "anatomy": true,
+    "body_hash": [
+      69,
+      209,
+      22,
+      85,
+      53,
+      109,
+      130,
+      56,
+      239,
+      137,
+      182,
+      241,
+      237,
+      243,
+      77,
+      25,
+      105,
+      29,
+      37,
+      199,
+      182,
+      212,
+      224,
+      137,
+      187,
+      182,
+      54,
+      37,
+      135,
+      47,
+      36,
+      231
+    ],
+    "body_parts": 13,
+    "frames": 90,
+    "live": false,
+    "muscle_meshes": 192,
+    "panel": "World",
+    "tick": 10,
+    "visible_body_parts": 13
+  },
+  "manifest": {
+    "binaries": {
+      "bestiary": {
+        "bytes": 4556640,
+        "sha256": "b44eb791fb76d83e0df67e20aba014a0c6f9f6c1e75e0d341fa4e2e28c9c5136"
+      },
+      "bestiary-daemon": {
+        "bytes": 3831312,
+        "sha256": "397908e58041abaa84117b42ec02c1eee7589d3d02bcd04aa7498d04f904ccb2"
+      },
+      "bestiary-viewer": {
+        "bytes": 42355936,
+        "sha256": "ccd344a2ea018f8bfa6eeaadfb042cae1e3232bb0bea29f139f63978d2631b30"
+      }
+    },
+    "binary_source": "target/release (build before packaging)",
+    "files": {
+      "AGENTS.md": "8ba64b7907958c4ae9e7942a79d0a8eaa10a560e944d364e9a46749878f6a8e1",
+      "ASSUMPTIONS.md": "a188841812bb160add8acea7241d5a2a742b31bffe7966e403a3208c78808e96",
+      "Cargo.lock": "87e9d23a01f14ea76a2d57ecbefcfde4f1f24393e8857267ed2ba444eced830a",
+      "PLAN.md": "624eec50e7fb87c4f4d7b0d50900d546a7eb5be7a1acbd114d71a81293b59c98",
+      "README.md": "aa58ea71c156f9f3eea388c94713c1a9e53670739410c9c5e5689970f15d1758",
+      "RUNBOOK.md": "3472fb23d963e92bd2aaadf4430b2b7fa7adc05b7bc03fd7e6dcff2325e8ea9f",
+      "SPEC.md": "b80c08575875e71eac05eded04be9262c1ce8f491f7d6fb1713bd754e7126716",
+      "TUNING.md": "ea1b5cffcf71e07a5faad8e1ed03d8cd48ff07cea9ebed417e5cd0cdef54054a",
+      "bestiary": "b44eb791fb76d83e0df67e20aba014a0c6f9f6c1e75e0d341fa4e2e28c9c5136",
+      "bestiary-daemon": "397908e58041abaa84117b42ec02c1eee7589d3d02bcd04aa7498d04f904ccb2",
+      "bestiary-viewer": "ccd344a2ea018f8bfa6eeaadfb042cae1e3232bb0bea29f139f63978d2631b30",
+      "config/demo-baseline.ron": "8aee2dc916b3c0b86a9b0ad1e5e0811f90e87ff76930b1231d38e2ddbbe0fe52",
+      "config/demo.ron": "bdbd2a331b075a94a18a0e30913d6412e6811775407574b9826acb13320bf70a",
+      "config/exploration.ron": "217fabef0844f5f76dae3f3642198acba3bdc00126deb244282f4d1b95c18c09",
+      "config/starter.ron": "0574de912aa1daacd6193c53e44ce30f966f5ed6c99b14fa0679e4a149d49163",
+      "config/trophic.ron": "687c56584b7335135707d23b7ac2ed8b45a3880d31916800041ee15380b32088",
+      "config/validation.ron": "957a5443a647eba3e6dc83722d938a2bfa7059e18c437c6449bcbe152dec0c6c",
+      "config/viewer.ron": "f5a172c14ee306ad60094a8152b17cd44a22e3570fb1d515f6b46c52429d45b6",
+      "config/world.ron": "aca94ba56b27be04aeed659d919b2061755caba22266addd9b4db3e94da756f2",
+      "config/zoo.ron": "0e97f3aa722a9e42bde2342ae87bcd5edc9a2cb86b422e6da60d13d2030688b4"
+    },
+    "format_version": 1,
+    "generator": "bestiary/scripts/dist",
+    "name": "bestiary",
+    "platform": {
+      "machine": "arm64",
+      "release": "24.3.0",
+      "system": "Darwin"
+    },
+    "release_status": "unreleased",
+    "released": false,
+    "source": {
+      "captured_at": "packaging",
+      "commit": "d4932b1dfd375052bf7cab770a657752e49f4abb",
+      "dirty": true,
+      "status": [
+        " M ASSUMPTIONS.md",
+        " M Makefile",
+        " M PLAN.md",
+        " M README.md",
+        " M RUNBOOK.md",
+        " M config/viewer.ron",
+        " M crates/bestiary-viewer/src/anatomy.rs",
+        " M crates/bestiary-viewer/src/scene.rs",
+        " M crates/bestiary-world/tests/evolution.rs",
+        " M crates/bestiary-world/tests/reproduction.rs",
+        "?? TUNING.md",
+        "?? evidence/v1/architecture.log",
+        "?? evidence/v1/bench-final.log",
+        "?? evidence/v1/bench-first-attempt.log",
+        "?? evidence/v1/bench-second-attempt.log",
+        "?? evidence/v1/cli-commands.log",
+        "?? evidence/v1/cli-summary.json",
+        "?? evidence/v1/cli-validation.md",
+        "?? evidence/v1/coverage-accounting.log",
+        "?? evidence/v1/host.json",
+        "?? scripts/check-cli",
+        "?? scripts/check-longrun-panels",
+        "?? scripts/coverage",
+        "?? scripts/dist",
+        "?? scripts/test-architecture.py",
+        "?? scripts/test-coverage.py",
+        "?? scripts/test-dist.py"
+      ]
+    },
+    "version": "0.1.0"
+  }
+}

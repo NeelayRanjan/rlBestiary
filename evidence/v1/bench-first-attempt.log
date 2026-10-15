@@ -1,0 +1,36 @@
+./scripts/cargo bench -p bestiary-sim --bench throughput --locked
+   Compiling bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+   Compiling bestiary-sim v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-sim)
+    Finished `bench` profile [optimized] target(s) in 9.61s
+     Running benches/throughput.rs (target/release/deps/throughput-da84d609346b5ba3)
+Full combine: 12 parts, nine named trials (slope sweep included), 38 creature-seconds
+worst_seconds=0.666271 creature_seconds_per_wall_second=57.034
+Gnuplot not found, using plotters backend
+Benchmarking combine_12_parts_nine_trials/full_evaluation
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Warming up for 1.0000 s
+
+Warning: Unable to complete 10 samples in 3.0s. You may wish to increase target time to 10.0s.
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Collecting 10 samples in estimated 9.9923 s (10 iterations)
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Analyzing
+combine_12_parts_nine_trials/full_evaluation
+                        time:   [693.81 ms 834.87 ms 1.0012 s]
+                        thrpt:  [8.9891  elem/s 10.780  elem/s 12.972  elem/s]
+                 change:
+                        time:   [+7.9342% +29.380% +54.863%] (p = 0.02 < 0.05)
+                        thrpt:  [-35.427% -22.708% -7.3510%]
+                        Performance has regressed.
+
+./scripts/cargo bench -p bestiary-world --bench world --locked
+   Compiling bestiary-core v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-core)
+   Compiling bestiary-sim v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-sim)
+   Compiling bestiary-archive v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `bench` profile [optimized] target(s) in 12.16s
+     Running benches/world.rs (target/release/deps/world-546fb266454cb000)
+5000 creatures, single-thread world stepping: 12819.5 ticks/minute
+./scripts/bench-viewer
+    Finished `release` profile [optimized] target(s) in 0.41s
+Created /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T//bestiary-viewer-bench.u7qFe3/world.db with 2020 creatures
+{"fps":48.36483789505613,"full_bodies":20,"passes":false,"proxies":2000}
+bestiary-viewer: viewer stopped with an error
+make: *** [bench] Error 1

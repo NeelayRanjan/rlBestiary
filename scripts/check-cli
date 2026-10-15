@@ -1,0 +1,273 @@
+#!/usr/bin/env python3
+"""Exercise the shipped CLI on a fresh world, including real GPU PNG exports.
+
+Requires the release CLI and sibling viewer (make check builds both), and access
+ to local IPC plus a graphics adapter. No package installs or network are used.
+Outputs are retained under var/v1/cli-* by default. --skip-gpu and --skip-bench
+are development aids and are explicitly recorded as incomplete validation.
+"""
+import argparse
+import base64
+import hashlib
+import json
+import os
+from pathlib import Path
+import platform
+import shlex
+import sqlite3
+import struct
+import sys
+import subprocess
+import tempfile
+import time
+import zlib
+from datetime import datetime, timezone
+
+
+ROOT = Path(__file__).resolve().parent.parent
+
+
+def require(condition, message):
+    if not condition:
+        raise AssertionError(message)
+
+
+def digest(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def float32_records(value):
+    """Compare stored f32 values exactly despite JSON's f32/f64 formatting paths."""
+    if isinstance(value, float):
+        return struct.pack("<f", value)
+    if isinstance(value, list):
+        return [float32_records(item) for item in value]
+    if isinstance(value, dict):
+        return {key: float32_records(item) for key, item in value.items()}
+    return value
+
+
+def png_pixels(path):
+    data = path.read_bytes()
+    require(data[:8] == b"\x89PNG\r\n\x1a\n", f"invalid PNG: {path}")
+    width, height = struct.unpack(">II", data[16:24])
+    require(width >= 720 and height >= 480, f"undersized PNG: {path}")
+    offset = 8
+    compressed = []
+    while offset + 12 <= len(data):
+        size = struct.unpack(">I", data[offset:offset + 4])[0]
+        kind = data[offset + 4:offset + 8]
+        chunk = data[offset + 8:offset + 8 + size]
+        require(len(chunk) == size, f"truncated PNG: {path}")
+        actual_crc = zlib.crc32(kind + chunk) & 0xffffffff
+        saved_crc = struct.unpack(">I", data[offset + 8 + size:offset + 12 + size])[0]
+        require(actual_crc == saved_crc, f"PNG CRC mismatch: {path}")
+        if kind == b"IDAT":
+            compressed.append(chunk)
+        offset += size + 12
+        if kind == b"IEND":
+            break
+    raw = zlib.decompress(b"".join(compressed))
+    require(len(set(raw[::97])) > 32, f"blank PNG camera frame: {path}")
+    return hashlib.sha256(raw).hexdigest(), [width, height]
+
+
+class Validation:
+    def __init__(self, options):
+        self.options = options
+        self.binary = options.bin_dir.resolve() / ("bestiary.exe" if os.name == "nt" else "bestiary")
+        require(self.binary.is_file(), f"build the release CLI first: {self.binary}")
+        if options.output:
+            self.output = options.output.resolve()
+            self.output.mkdir(parents=True, exist_ok=False)
+        else:
+            base = ROOT / "var/v1"
+            base.mkdir(parents=True, exist_ok=True)
+            self.output = Path(tempfile.mkdtemp(prefix="cli-", dir=base))
+        self.log = (self.output / "commands.log").open("w", buffering=1)
+        self.commands = 0
+        self.summary = {
+            "criterion": "required_cli_commands_work_against_a_fresh_world",
+            "time_utc": datetime.now(timezone.utc).isoformat(),
+            "machine": platform.platform(),
+            "architecture": platform.machine(),
+            "binary": str(self.binary),
+            "binary_sha256": digest(self.binary),
+            "python": sys.version,
+            "viewer_sha256": digest(self.binary.with_name("bestiary-viewer.exe" if os.name == "nt" else "bestiary-viewer")),
+            "git_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+            "output": str(self.output),
+            "gpu_exports": not options.skip_gpu,
+            "cli_bench": not options.skip_bench,
+            "passed": False,
+        }
+        self.log.write(json.dumps(self.summary, indent=2) + "\n")
+
+    def invoke(self, *arguments, json_output=True, expected_error=None):
+        command = [str(self.binary), *map(str, arguments)]
+        self.commands += 1
+        self.log.write("\n$ " + shlex.join(command) + "\n")
+        result = subprocess.run(command, cwd=ROOT, text=True, capture_output=True, timeout=180)
+        self.log.write(result.stdout)
+        self.log.write(result.stderr)
+        self.log.write(f"exit_code={result.returncode}\n")
+        if expected_error:
+            require(result.returncode != 0 and expected_error in result.stderr,
+                    f"expected error {expected_error!r}: {result.stderr}")
+            return None
+        require(result.returncode == 0, f"CLI failed: {shlex.join(command)}\n{result.stderr}")
+        return json.loads(result.stdout) if json_output else result.stdout
+
+    def status(self, world):
+        result = self.invoke("world", "status", world, "--json")
+        require(len(result["state_hash"]) == 64, "status omitted canonical state hash")
+        return result
+
+    def run_live_status(self, world, starting_tick):
+        command = [str(self.binary), "world", "run", str(world), "--until", str(starting_tick + 20),
+                   "--speed", "10", "--snapshot-every", "5", "--json"]
+        self.commands += 1
+        self.log.write("\n$ " + shlex.join(command) + "\n")
+        with subprocess.Popen(command, cwd=ROOT, text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE) as child:
+            try:
+                endpoint = self.invoke("world", "attach", world, "--json")["endpoint"]
+                require(endpoint, "attach returned no endpoint")
+                deadline = time.monotonic() + 10
+                if os.name != "nt":
+                    while not Path(endpoint).exists():
+                        require(child.poll() is None and time.monotonic() < deadline, "daemon endpoint never appeared")
+                        time.sleep(0.01)
+                observed = self.status(world)
+                require(starting_tick <= observed["tick"] < starting_tick + 20, "live status failed to observe the running interval")
+                require(self.invoke("world", "attach", world, json_output=False).strip() == endpoint,
+                        "human and JSON attachment endpoints disagree")
+                stdout, stderr = child.communicate(timeout=15)
+                self.log.write(stdout + stderr + f"exit_code={child.returncode}\n")
+                require(child.returncode == 0, f"paced CLI run failed: {stderr}")
+                result = json.loads(stdout)
+                require(result["tick"] == starting_tick + 20, "paced run stopped at the wrong tick")
+                require(result == self.status(world), "shutdown snapshot differs from CLI final status")
+                self.summary["live_status_tick"] = observed["tick"]
+                self.summary["ipc_endpoint"] = endpoint
+                return result
+            finally:
+                if child.poll() is None:
+                    child.terminate()
+                    child.communicate(timeout=15)
+
+    def export_png(self, source, world, target, recorded):
+        result = self.invoke("replay", source, "--world", world, "--export", target, "--json")
+        metadata = json.loads((target / "clip.json").read_text())
+        count = metadata["frames"]
+        require(metadata["complete"] and metadata["camera_only"] and not metadata["loop_replay"],
+                "PNG export did not complete from actual recorded poses")
+        require(metadata["fps"] == 30 and result["export"]["frames"] == count, "export reports disagree")
+        require(metadata["trial"] == recorded["kind"], "export used the wrong recorded trial")
+        require(count >= 2 and len(list(target.glob("frame-*.png"))) == count, "incomplete PNG sequence")
+        hashes = []
+        sizes = []
+        for index in range(count):
+            pixel_hash, size = png_pixels(target / f"frame-{index:05}.png")
+            hashes.append(pixel_hash)
+            sizes.append(size)
+        require(len(set(hashes)) > 1, "recorded replay PNG sequence contains no motion")
+        require(all(size == sizes[0] for size in sizes), "PNG dimensions changed during export")
+        require((target / "ffmpeg.txt").is_file(), "export omitted the ffmpeg sidecar")
+        return {"frames": count, "dimensions": sizes[0], "distinct_pixel_frames": len(set(hashes)), "directory": str(target)}
+
+    def required_cli_commands_work_against_a_fresh_world(self):
+        world = self.output / "world.db"
+        created = self.invoke("world", "new", "--seed", "42", "--preset", "temperate", "--population", "8", "--out", world, "--json")
+        require(created["tick"] == 0 and created["population"] == 8, "new world has the wrong founders/tick")
+        require(self.status(world) == created, "created status differs from saved state")
+        ran = self.invoke("world", "run", world, "--until", "2000", "--speed", "max", "--snapshot-every", "100", "--json")
+        require(ran["tick"] == 2000 and ran["population"] > 0, "fresh world failed to run")
+        require(ran["state_hash"] != created["state_hash"], "world run failed to advance canonical state")
+        final = self.run_live_status(world, 2000)
+        human = self.invoke("world", "status", world, json_output=False)
+        require(f"tick={final['tick']}" in human and final["state_hash"] in human, "human status omitted tick/hash")
+        before = digest(world)
+        coverage = self.invoke("archive", "ls", world, "--sort", "coverage", "--export", self.output / "archive", "--json")
+        viability = self.invoke("archive", "ls", world, "--sort", "viability", "--json")
+        cells = coverage["cells"]
+        require(cells and 0 < coverage["coverage"] <= 1, "fresh archive is empty")
+        require(coverage["coverage"] == len(cells) / coverage["total_cells"], "archive count/coverage disagree")
+        require(sorted(cell[1]["viability"] for cell in viability["cells"]) == sorted(cell[1]["viability"] for cell in cells), "archive sorting changed entries")
+        require([cell[1]["viability"] for cell in viability["cells"]] == sorted((cell[1]["viability"] for cell in cells), reverse=True), "archive viability order is incorrect")
+        elite = cells[0][1]
+        genome_hash = bytes(elite["genome"]).hex()
+        genome = self.output / "archive" / f"{genome_hash}.genome"
+        replay_file = genome.with_suffix(".rpl")
+        require(genome.is_file() and replay_file.is_file(), "archive export omitted genome or replay")
+        require(float32_records(json.loads((genome.parent / "archive.json").read_text())) == float32_records(cells), "archive manifest differs from CLI at f32 precision")
+        share = base64.urlsafe_b64encode(genome.read_bytes()).decode().rstrip("=")
+        share_file = self.output / "founder.share"
+        share_file.write_text(share + "\n")
+        shown = self.invoke("genome", "show", genome, "--json")
+        require(shown == self.invoke("genome", "show", share, "--json"), "binary/share genomes disagree")
+        valid = self.invoke("genome", "validate", share_file, "--json")
+        require(valid["valid"] and valid["parts"] > 0 and valid["mass"] > 0, "genome validation lacks real body metrics")
+        file_combined = self.invoke("combine", genome, "--replay", self.output / "combined-file.rpl", "--json")
+        share_combined = self.invoke("combine", share, "--replay", self.output / "combined-share.rpl", "--json")
+        require(file_combined == share_combined, "share/file combine results differ")
+        require(file_combined["genome"] == genome_hash and not file_combined["exploit_suspect"], "combined wrong or flagged genome")
+        require(file_combined["traits"] == elite["traits"] and file_combined["viability"] == elite["viability"], "fresh archive elite does not recombine exactly")
+        require((self.output / "combined-file.rpl").read_bytes() == (self.output / "combined-share.rpl").read_bytes(), "share/file combine replay bytes differ")
+        mutated = self.invoke("genome", "mutate", genome, "--seed", "73", "--operator", "0", "--json")
+        require(mutated["mutation"]["operator"] and mutated["genome"] != share, "mutation omitted its tagged changed genome")
+        require(self.invoke("genome", "validate", mutated["genome"], "--json")["valid"], "mutated genome is invalid")
+        crossed = self.invoke("genome", "cross", genome, mutated["genome"], "--seed", "74", "--json")
+        require(self.invoke("genome", "validate", crossed["genome"], "--json")["valid"], "crossover genome is invalid")
+        phylogeny = self.invoke("phylo", world, "--format", "json", "--json")
+        dot = self.invoke("phylo", world, "--format", "dot", json_output=False)
+        require(phylogeny and dot.startswith("digraph phylogeny {"), "fresh phylogeny is empty or DOT is malformed")
+        for species in phylogeny.values():
+            require(species["name"] in dot, "DOT omitted a recorded species")
+        replay_id = elite["replay_id"]
+        recorded = self.invoke("replay", replay_id, "--world", world, "--json")
+        require(recorded == self.invoke("replay", replay_file, "--json"), "recorded ID/file replay summaries differ")
+        require(recorded["frames"] > 1 and recorded["dt"] > 0, "replay has no recorded trajectory")
+        if not self.options.skip_gpu:
+            self.summary["replay_id_export"] = self.export_png(replay_id, world, self.output / "png-id", recorded)
+            self.summary["replay_file_export"] = self.export_png(replay_file, world, self.output / "png-file", recorded)
+        require(self.status(world) == final and digest(world) == before, "read-only inspection/export changed the world")
+        self.invoke("genome", "validate", "not-a-genome", "--json", expected_error="bestiary:")
+        self.invoke("world", "run", world, "--snapshot-every", "0", "--json", expected_error="invalid snapshot interval")
+        if not self.options.skip_bench:
+            benchmark = self.invoke("bench", "--report", "--json")
+            require(benchmark["parts"] == 12 and benchmark["passes"] and benchmark["combine_seconds"] < 2, "CLI combine benchmark missed its gate")
+            self.summary["benchmark"] = benchmark
+        with sqlite3.connect(f"file:{world}?mode=ro", uri=True) as database:
+            self.summary["sqlite_counts"] = {table: database.execute(f"SELECT count(*) FROM {table}").fetchone()[0]
+                for table in ["genome", "creature", "species", "event", "timeseries", "archive_cell", "replay"]}
+        require(digest(self.binary) == self.summary["binary_sha256"], "CLI binary changed while validation was running")
+        require(digest(self.binary.with_name("bestiary-viewer.exe" if os.name == "nt" else "bestiary-viewer")) == self.summary["viewer_sha256"], "viewer binary changed while validation was running")
+        self.summary.update({"created": created, "final": final, "archive_coverage": coverage["coverage"],
+            "archive_cells": len(cells), "elite_genome": genome_hash, "replay": recorded, "commands": self.commands,
+            "passed": True, "complete": not self.options.skip_gpu and not self.options.skip_bench})
+
+    def run(self):
+        try:
+            self.required_cli_commands_work_against_a_fresh_world()
+        except Exception as error:
+            self.summary["error"] = str(error)
+            self.summary["commands"] = self.commands
+            raise
+        finally:
+            (self.output / "summary.json").write_text(json.dumps(self.summary, indent=2) + "\n")
+            self.log.write("\n" + json.dumps(self.summary, indent=2) + "\n")
+            self.log.close()
+            print(json.dumps(self.summary, indent=2))
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--bin-dir", type=Path, default=ROOT / "target/release")
+    parser.add_argument("--output", type=Path, help="fresh directory for retained test worlds/logs/PNGs")
+    parser.add_argument("--skip-gpu", action="store_true")
+    parser.add_argument("--skip-bench", action="store_true")
+    Validation(parser.parse_args()).run()
+
+
+if __name__ == "__main__":
+    main()

@@ -10,6 +10,9 @@ Historical MVP databases and measurements do not establish current acceptance.
 Logs are captured from commands, including failures; a failed quantitative gate
 is not waived by ordinary unit tests passing.
 
+See [COMPLETION.md](COMPLETION.md) for the final credit-limited handoff audit,
+passing checks, failed targets and validation that has not yet been run. No v1 tag.
+
 M5 commands:
 
 ```

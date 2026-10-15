@@ -47,6 +47,7 @@ pub struct Palette {
     torso: Handle<Mesh>,
     muscle: Handle<Mesh>,
     capsule: Handle<Mesh>,
+    proxy: Handle<Mesh>,
     colors: BTreeMap<[u8; 3], Handle<StandardMaterial>>,
     body_meshes: BTreeMap<[u32; 3], Handle<Mesh>>,
     muscle_materials: BTreeMap<u8, Handle<StandardMaterial>>,
@@ -91,6 +92,7 @@ pub fn setup(
         torso: meshes.add(anatomy::torso_mesh(&appearance)),
         muscle: meshes.add(anatomy::tissue_mesh(&appearance, true)),
         capsule: meshes.add(Capsule3d::new(0.5, 0.0)),
+        proxy: meshes.add(anatomy::proxy_mesh(&appearance)),
         colors: BTreeMap::new(),
         body_meshes: BTreeMap::new(),
         muscle_materials: BTreeMap::new(),
@@ -449,7 +451,7 @@ pub fn rebuild(
         for i in 0..2000 {
             let material = palette.material(species_color((i % 8) as u64), &mut materials);
             commands.spawn((
-                Mesh3d(palette.capsule.clone()),
+                Mesh3d(palette.proxy.clone()),
                 MeshMaterial3d(material),
                 Transform::from_xyz((i % 50) as f32 * 1.2, 0.35, (i / 50) as f32 * 0.8)
                     .with_scale(Vec3::splat(0.7)),
@@ -519,7 +521,7 @@ pub fn rebuild(
             let material = palette.material(color, &mut materials);
             let size = (g.traits.mass * a.growth).cbrt().max(0.25) * 2.0;
             commands.spawn((
-                Mesh3d(palette.capsule.clone()),
+                Mesh3d(palette.proxy.clone()),
                 MeshMaterial3d(material),
                 Transform::from_translation(offset + Vec3::Y * size * 0.5).with_scale(Vec3::new(
                     size,
@@ -1141,6 +1143,7 @@ mod tests {
                 let mut palette = Palette {
                     cube: meshes.add(Cuboid::new(1.0, 1.0, 1.0)),
                     capsule: meshes.add(Capsule3d::new(0.5, 0.0)),
+                    proxy: meshes.add(anatomy::proxy_mesh(&appearance)),
                     bone: meshes.add(anatomy::tissue_mesh(&appearance, false)),
                     torso: meshes.add(anatomy::torso_mesh(&appearance)),
                     muscle: meshes.add(anatomy::tissue_mesh(&appearance, true)),

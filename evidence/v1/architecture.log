@@ -1,0 +1,11 @@
+test_comments_literals_tests_and_contractile_muscle_math_are_not_joint_motors (__main__.ArchitectureDetectorRegression) ... ok
+test_dependency_graph_finds_transitive_normal_and_build_edges (__main__.ArchitectureDetectorRegression) ... ok
+test_forbidden_apis_are_detected_in_executable_code (__main__.ArchitectureDetectorRegression) ... ok
+test_no_code_path_anywhere_applies_a_joint_motor_torque (__main__.CompletionArchitecture) ... ok
+test_no_simulation_crate_depends_on_bevy_rendering_ui_or_async (__main__.CompletionArchitecture) ... ok
+test_simulation_uses_no_wallclock_thread_local_rng_or_order_sensitive_hashmap (__main__.CompletionArchitecture) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 8.381s
+
+OK

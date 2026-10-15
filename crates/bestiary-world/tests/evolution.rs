@@ -11,8 +11,8 @@ fn variance(sample: &TimeSample) -> f32 {
         .sum()
 }
 #[test]
-#[ignore = "five-seed million-tick evolutionary acceptance; invoked by make longrun"]
-fn five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing() {
+#[ignore = "five-seed million-tick evolutionary acceptance; make evolution-longrun"]
+fn stagnation_guard_five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing() {
     let mut failures = vec![];
     for seed in acceptance::seeds() {
         let c = Config::parse(include_str!("../../../config/demo.ron")).unwrap();

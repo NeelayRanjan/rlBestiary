@@ -1,8 +1,10 @@
 CARGO := ./scripts/cargo
-.PHONY: setup check test bench run dist longrun ecology-longrun evolution-longrun
+.PHONY: setup check test bench run dist coverage check-cli longrun ecology-longrun evolution-longrun
 setup:
 	$(CARGO) fetch --locked
 check:
+	python3 scripts/test-coverage.py
+	python3 scripts/test-dist.py
 	$(CARGO) fmt --all -- --check
 	$(CARGO) clippy --workspace --all-targets --locked -- -D warnings
 	$(CARGO) test --workspace --locked
@@ -17,8 +19,12 @@ run:
 	./scripts/run-demo
 dist:
 	$(CARGO) build --workspace --release --locked
-	mkdir -p dist
-	cp target/release/bestiary target/release/bestiary-daemon target/release/bestiary-viewer dist/
+	python3 scripts/dist
+coverage:
+	python3 scripts/test-coverage.py
+	./scripts/coverage
+check-cli:
+	./scripts/check-cli
 longrun:
 	./scripts/longrun longrun
 

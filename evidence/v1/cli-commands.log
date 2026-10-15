@@ -1,0 +1,5794 @@
+{
+  "criterion": "required_cli_commands_work_against_a_fresh_world",
+  "time_utc": "2026-10-15T05:57:53.504321+00:00",
+  "machine": "macOS-15.3.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "binary": "/Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary",
+  "binary_sha256": "b44eb791fb76d83e0df67e20aba014a0c6f9f6c1e75e0d341fa4e2e28c9c5136",
+  "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+  "viewer_sha256": "ccd344a2ea018f8bfa6eeaadfb042cae1e3232bb0bea29f139f63978d2631b30",
+  "git_commit": "d4932b1dfd375052bf7cab770a657752e49f4abb",
+  "output": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po",
+  "gpu_exports": true,
+  "cli_bench": true,
+  "passed": false
+}
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world new --seed 42 --preset temperate --population 8 --out /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "tick": 0,
+  "population": 8,
+  "species": 0,
+  "state_hash": "edaff78a02b397b4f41e9a67564edbe5a9cde9c4e5cd706e49dbef4f8401792a",
+  "paused": false
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world status /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "tick": 0,
+  "population": 8,
+  "species": 0,
+  "state_hash": "edaff78a02b397b4f41e9a67564edbe5a9cde9c4e5cd706e49dbef4f8401792a",
+  "paused": false
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world run /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --until 2000 --speed max --snapshot-every 100 --json
+{
+  "tick": 2000,
+  "population": 8,
+  "species": 1,
+  "state_hash": "018261dab4fdebbf5d614fda489495473ae996c833982c4ddf44eb8a3b4c7f2f",
+  "paused": false
+}
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world run /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --until 2020 --speed 10 --snapshot-every 5 --json
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world attach /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "endpoint": "/var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world status /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "tick": 2001,
+  "population": 8,
+  "species": 1,
+  "state_hash": "b6e729dd1955bf83a8c9459640088ad13d1bbd20d1cdc16c35b66377658564d7",
+  "paused": false
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world attach /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db
+/var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock
+exit_code=0
+{
+  "tick": 2020,
+  "population": 8,
+  "species": 1,
+  "state_hash": "e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b",
+  "paused": false
+}
+bestiary daemon: /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world status /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "tick": 2020,
+  "population": 8,
+  "species": 1,
+  "state_hash": "e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b",
+  "paused": false
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world status /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db
+tick=2020 population=8 species=1 paused=false hash=e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary archive ls /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --sort coverage --export /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive --json
+{
+  "cells": [
+    [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      {
+        "discovered": 0,
+        "genome": [
+          69,
+          209,
+          22,
+          85,
+          53,
+          109,
+          130,
+          56,
+          239,
+          137,
+          182,
+          241,
+          237,
+          243,
+          77,
+          25,
+          105,
+          29,
+          37,
+          199,
+          182,
+          212,
+          224,
+          137,
+          187,
+          182,
+          54,
+          37,
+          135,
+          47,
+          36,
+          231
+        ],
+        "replay_id": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7-0",
+        "traits": {
+          "acceleration": 0.14700661599636078,
+          "carry_mass": 0.40567201375961304,
+          "energy_per_meter": 15.542645454406738,
+          "gait_frequency": 1.4062498807907104,
+          "limbs": 6,
+          "mass": 0.8113440275192261,
+          "muscle_area": 2.3999998569488525,
+          "parts": 13,
+          "reach": 0.8500204682350159,
+          "rough_speed": 0.5299841165542603,
+          "slope": 0.20000000298023224,
+          "speed": 0.5704824924468994,
+          "standing_cost": 8.977124214172363,
+          "strike_impulse": 0.019438553601503372,
+          "swim_speed": 0.3648281693458557,
+          "symmetry": 1.0,
+          "turn_rate": 0.0003649120917543769,
+          "volume": 0.20283600687980652
+        },
+        "viability": 0.1939747929573059
+      }
+    ]
+  ],
+  "coverage": 0.0078125,
+  "total_cells": 128
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary archive ls /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --sort viability --json
+{
+  "cells": [
+    [
+      [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      {
+        "discovered": 0,
+        "genome": [
+          69,
+          209,
+          22,
+          85,
+          53,
+          109,
+          130,
+          56,
+          239,
+          137,
+          182,
+          241,
+          237,
+          243,
+          77,
+          25,
+          105,
+          29,
+          37,
+          199,
+          182,
+          212,
+          224,
+          137,
+          187,
+          182,
+          54,
+          37,
+          135,
+          47,
+          36,
+          231
+        ],
+        "replay_id": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7-0",
+        "traits": {
+          "acceleration": 0.14700661599636078,
+          "carry_mass": 0.40567201375961304,
+          "energy_per_meter": 15.542645454406738,
+          "gait_frequency": 1.4062498807907104,
+          "limbs": 6,
+          "mass": 0.8113440275192261,
+          "muscle_area": 2.3999998569488525,
+          "parts": 13,
+          "reach": 0.8500204682350159,
+          "rough_speed": 0.5299841165542603,
+          "slope": 0.20000000298023224,
+          "speed": 0.5704824924468994,
+          "standing_cost": 8.977124214172363,
+          "strike_impulse": 0.019438553601503372,
+          "swim_speed": 0.3648281693458557,
+          "symmetry": 1.0,
+          "turn_rate": 0.0003649120917543769,
+          "volume": 0.20283600687980652
+        },
+        "viability": 0.1939747929573059
+      }
+    ]
+  ],
+  "coverage": 0.0078125,
+  "total_cells": 128
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome show /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.genome --json
+{
+  "root": 0,
+  "bones": [
+    {
+      "shape": "Box",
+      "size": [
+        1.3,
+        0.24,
+        0.5
+      ],
+      "density": 4.0,
+      "color": [
+        0.3,
+        0.6,
+        0.4
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        "Contact",
+        {
+          "Gravity": 1
+        }
+      ],
+      "edges": [
+        {
+          "child": 1,
+          "attachment": [
+            -0.65,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 2,
+          "attachment": [
+            -0.65,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 3,
+          "attachment": [
+            0.0,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 4,
+          "attachment": [
+            0.0,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 5,
+          "attachment": [
+            0.65,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 6,
+          "attachment": [
+            0.65,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Local": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Parent": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Children": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Local": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Parent": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Children": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 1.5,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 7,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.83,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.46999997,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 8,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.83,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.46999997,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 9,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.18,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.18,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 10,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.18,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.18,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 11,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.46999997,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.83,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 12,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.46999997,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.83,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    }
+  ],
+  "ethology": {
+    "neurons": [
+      {
+        "bias": 0.0,
+        "activation": "Tanh",
+        "inputs": [
+          {
+            "input": "Oscillator",
+            "weight": 1.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": 0.3,
+        "activation": "Tanh",
+        "inputs": [
+          {
+            "input": {
+              "Local": 0
+            },
+            "weight": 0.4,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -2.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 4
+            },
+            "weight": -4.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": 4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 0
+            },
+            "weight": -2.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -2.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 0
+            },
+            "weight": 5.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      }
+    ],
+    "frequency": 0.001,
+    "phase": 0.0
+  },
+  "life": {
+    "plant_efficiency": 0.8,
+    "offspring_fraction": 0.15,
+    "clutch_size": 2,
+    "maturity": 10000,
+    "senescence": 100000,
+    "immune_investment": 0.1,
+    "resistance": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "pheromone_channel": 0,
+    "pheromone_strength": 0.1,
+    "mate_weights": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "species_marker": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ]
+  },
+  "mutation_rates": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ]
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome show AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkANAAAAAAABBQAAgD8AAAAAAAAAAJqZmT4AAQEAzczMPgAAAAAAAAAAAAAAwAEBAAQAAIDAAAAAAAAAAAAAAIBAAQEAAAAAAMAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAAMABAQAAAACgQAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAG8SgzoAAAAAzcxMP5qZGT4CkE6gjQbNzMw9AAAAPwAAAD8AAAA_AAAAPwDNzMw9AACAPgAAgD4AAIA-AACAPgAAAD8AAAA_AAAAPwAAAD8XzczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD0 --json
+{
+  "root": 0,
+  "bones": [
+    {
+      "shape": "Box",
+      "size": [
+        1.3,
+        0.24,
+        0.5
+      ],
+      "density": 4.0,
+      "color": [
+        0.3,
+        0.6,
+        0.4
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        "Contact",
+        {
+          "Gravity": 1
+        }
+      ],
+      "edges": [
+        {
+          "child": 1,
+          "attachment": [
+            -0.65,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 2,
+          "attachment": [
+            -0.65,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 3,
+          "attachment": [
+            0.0,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 4,
+          "attachment": [
+            0.0,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 5,
+          "attachment": [
+            0.65,
+            -0.5,
+            -1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        },
+        {
+          "child": 6,
+          "attachment": [
+            0.65,
+            -0.5,
+            1.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            0.25
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ],
+            [
+              -0.5,
+              0.5
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Local": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Parent": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Children": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Local": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Parent": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Children": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 1.5,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 7,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.83,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.46999997,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 8,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.83,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.46999997,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 9,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.18,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.18,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 10,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            -0.18,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.18,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 11,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.46999997,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.83,
+            -1.0,
+            -1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 0.0
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.09,
+        0.3,
+        0.09
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "Gravity": 0
+        },
+        {
+          "JointVelocity": 2
+        },
+        "Contact"
+      ],
+      "edges": [
+        {
+          "child": 12,
+          "attachment": [
+            0.0,
+            -1.0,
+            0.0
+          ],
+          "child_attachment": [
+            0.0,
+            1.0,
+            0.0
+          ],
+          "orientation": [
+            0.0,
+            0.0,
+            -0.5
+          ],
+          "scale": 1.0,
+          "kind": "Hinge",
+          "limits": [
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ],
+            [
+              -0.5,
+              0.45
+            ]
+          ],
+          "reflect": false,
+          "terminal_only": false
+        }
+      ],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.46999997,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.0,
+            0.0
+          ],
+          "insertion": [
+            0.83,
+            -1.0,
+            1.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 0.0,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 3.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 0.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 3.1415927
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 1.5707964
+      }
+    },
+    {
+      "shape": "Box",
+      "size": [
+        0.12,
+        0.32,
+        0.14
+      ],
+      "density": 4.0,
+      "color": [
+        0.5,
+        0.7,
+        0.3
+      ],
+      "recursion_limit": 1,
+      "sensors": [
+        {
+          "JointAngle": 2
+        },
+        {
+          "JointVelocity": 2
+        },
+        "TerrainContact"
+      ],
+      "edges": [],
+      "muscles": [
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            -1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            -1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 0
+        },
+        {
+          "properties": {
+            "contraction_scale": 1.0,
+            "stiffness_scale": 1.0,
+            "damping_scale": 1.0
+          },
+          "route": [
+            "Parent"
+          ],
+          "origin": [
+            1.0,
+            0.6,
+            0.0
+          ],
+          "insertion": [
+            1.0,
+            -0.6,
+            0.0
+          ],
+          "area": 0.1,
+          "output": 1
+        }
+      ],
+      "motor": {
+        "neurons": [
+          {
+            "bias": -2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": 4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": 0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": -1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          },
+          {
+            "bias": 2.5,
+            "activation": "Sigmoid",
+            "inputs": [
+              {
+                "input": "Oscillator",
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 0
+                },
+                "weight": -4.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 1
+                },
+                "weight": -0.15,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              },
+              {
+                "input": {
+                  "Sensor": 2
+                },
+                "weight": 1.0,
+                "learning_rate": 0.0,
+                "decay": 0.0
+              }
+            ]
+          }
+        ],
+        "frequency": 0.7,
+        "phase": 4.712389
+      }
+    }
+  ],
+  "ethology": {
+    "neurons": [
+      {
+        "bias": 0.0,
+        "activation": "Tanh",
+        "inputs": [
+          {
+            "input": "Oscillator",
+            "weight": 1.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": 0.3,
+        "activation": "Tanh",
+        "inputs": [
+          {
+            "input": {
+              "Local": 0
+            },
+            "weight": 0.4,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -2.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 4
+            },
+            "weight": -4.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": 4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 0
+            },
+            "weight": -2.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -2.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 0
+            },
+            "weight": 5.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      },
+      {
+        "bias": -4.0,
+        "activation": "Sigmoid",
+        "inputs": [
+          {
+            "input": {
+              "Sensor": 2
+            },
+            "weight": 0.0,
+            "learning_rate": 0.0,
+            "decay": 0.0
+          }
+        ]
+      }
+    ],
+    "frequency": 0.001,
+    "phase": 0.0
+  },
+  "life": {
+    "plant_efficiency": 0.8,
+    "offspring_fraction": 0.15,
+    "clutch_size": 2,
+    "maturity": 10000,
+    "senescence": 100000,
+    "immune_investment": 0.1,
+    "resistance": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ],
+    "pheromone_channel": 0,
+    "pheromone_strength": 0.1,
+    "mate_weights": [
+      0.25,
+      0.25,
+      0.25,
+      0.25
+    ],
+    "species_marker": [
+      0.5,
+      0.5,
+      0.5,
+      0.5
+    ]
+  },
+  "mutation_rates": [
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1,
+    0.1
+  ]
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome validate /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/founder.share --json
+{
+  "mass": 0.8113440275192261,
+  "parts": 13,
+  "valid": true
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary combine /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.genome --replay /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/combined-file.rpl --json
+{
+  "exploit_suspect": false,
+  "genome": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7",
+  "traits": {
+    "acceleration": 0.14700661599636078,
+    "carry_mass": 0.40567201375961304,
+    "energy_per_meter": 15.542645454406738,
+    "gait_frequency": 1.4062498807907104,
+    "limbs": 6,
+    "mass": 0.8113440275192261,
+    "muscle_area": 2.3999998569488525,
+    "parts": 13,
+    "reach": 0.8500204682350159,
+    "rough_speed": 0.5299841165542603,
+    "slope": 0.20000000298023224,
+    "speed": 0.5704824924468994,
+    "standing_cost": 8.977124214172363,
+    "strike_impulse": 0.019438553601503372,
+    "swim_speed": 0.3648281693458557,
+    "symmetry": 1.0,
+    "turn_rate": 0.0003649120917543769,
+    "volume": 0.20283600687980652
+  },
+  "viability": 0.1939747929573059
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary combine AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkANAAAAAAABBQAAgD8AAAAAAAAAAJqZmT4AAQEAzczMPgAAAAAAAAAAAAAAwAEBAAQAAIDAAAAAAAAAAAAAAIBAAQEAAAAAAMAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAAMABAQAAAACgQAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAG8SgzoAAAAAzcxMP5qZGT4CkE6gjQbNzMw9AAAAPwAAAD8AAAA_AAAAPwDNzMw9AACAPgAAgD4AAIA-AACAPgAAAD8AAAA_AAAAPwAAAD8XzczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD0 --replay /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/combined-share.rpl --json
+{
+  "exploit_suspect": false,
+  "genome": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7",
+  "traits": {
+    "acceleration": 0.14700661599636078,
+    "carry_mass": 0.40567201375961304,
+    "energy_per_meter": 15.542645454406738,
+    "gait_frequency": 1.4062498807907104,
+    "limbs": 6,
+    "mass": 0.8113440275192261,
+    "muscle_area": 2.3999998569488525,
+    "parts": 13,
+    "reach": 0.8500204682350159,
+    "rough_speed": 0.5299841165542603,
+    "slope": 0.20000000298023224,
+    "speed": 0.5704824924468994,
+    "standing_cost": 8.977124214172363,
+    "strike_impulse": 0.019438553601503372,
+    "swim_speed": 0.3648281693458557,
+    "symmetry": 1.0,
+    "turn_rate": 0.0003649120917543769,
+    "volume": 0.20283600687980652
+  },
+  "viability": 0.1939747929573059
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome mutate /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.genome --seed 73 --operator 0 --json
+{
+  "genome": "AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAALTfRD_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkANAAAAAAABBQAAgD8AAAAAAAAAAJqZmT4AAQEAzczMPgAAAAAAAAAAAAAAwAEBAAQAAIDAAAAAAAAAAAAAAIBAAQEAAAAAAMAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAAMABAQAAAACgQAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAG8SgzoAAAAAzcxMP5qZGT4CkE6gjQbNzMw9AAAAPwAAAD8AAAA_AAAAPwDNzMw9AACAPgAAgD4AAIA-AACAPgAAAD8AAAA_AAAAPwAAAD8XzczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9Z_DaPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD0",
+  "mutation": {
+    "born": false,
+    "child": [
+      246,
+      160,
+      238,
+      102,
+      55,
+      61,
+      244,
+      119,
+      247,
+      70,
+      215,
+      111,
+      91,
+      232,
+      227,
+      185,
+      48,
+      85,
+      139,
+      5,
+      49,
+      231,
+      138,
+      216,
+      150,
+      253,
+      112,
+      83,
+      244,
+      39,
+      186,
+      30
+    ],
+    "lifespan": null,
+    "lineage_survival": null,
+    "operator": "parameter_jitter",
+    "parent": [
+      69,
+      209,
+      22,
+      85,
+      53,
+      109,
+      130,
+      56,
+      239,
+      137,
+      182,
+      241,
+      237,
+      243,
+      77,
+      25,
+      105,
+      29,
+      37,
+      199,
+      182,
+      212,
+      224,
+      137,
+      187,
+      182,
+      54,
+      37,
+      135,
+      47,
+      36,
+      231
+    ],
+    "traits": null,
+    "viability": null
+  }
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome validate AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAALTfRD_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkANAAAAAAABBQAAgD8AAAAAAAAAAJqZmT4AAQEAzczMPgAAAAAAAAAAAAAAwAEBAAQAAIDAAAAAAAAAAAAAAIBAAQEAAAAAAMAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAAMABAQAAAACgQAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAG8SgzoAAAAAzcxMP5qZGT4CkE6gjQbNzMw9AAAAPwAAAD8AAAA_AAAAPwDNzMw9AACAPgAAgD4AAIA-AACAPgAAAD8AAAA_AAAAPwAAAD8XzczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9Z_DaPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD0 --json
+{
+  "mass": 0.8113440275192261,
+  "parts": 13,
+  "valid": true
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome cross /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.genome AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAALTfRD_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkAAj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP9sPyT8Aj8L1PQrXoz4pXA8-AACAQAAAAD8zMzM_mpmZPgEDAAIBAgcAAgAAgD8AAIA_AACAPwEAAACAv5qZGT8AAAAAAACAv5qZGb8AAAAAzczMPQAAAIA_AACAPwAAgD8BAAAAgD-amRk_AAAAAAAAgD-amRm_AAAAAM3MzD0BAgAAIMABBAUAAIBAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAIC_AAAAAAAAAAAAACBAAQQFAACAwAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAACAPwAAAAAAAAAAMzMzP-TLlkANAAAAAAABBQAAgD8AAAAAAAAAAJqZmT4AAQEAzczMPgAAAAAAAAAAAAAAwAEBAAQAAIDAAAAAAAAAAAAAAIBAAQEAAAAAAMAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAAMABAQAAAACgQAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAG8SgzoAAAAAzcxMP5qZGT4CkE6gjQbNzMw9AAAAPwAAAD8AAAA_AAAAPwDNzMw9AACAPgAAgD4AAIA-AACAPgAAAD8AAAA_AAAAPwAAAD8XzczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9Z_DaPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD0 --seed 74 --json
+{
+  "genome": "AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAABAAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAACAPwAAgD8AAIA_AQEAzcxMvgAAgL8AAAAAAAAAAAAAgL8AAAAAzczMPQAAAIA_AACAPwAAgD8BAQDNzEw-AACAvwAAAAAAAAAAAACAvwAAAADNzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_ky5ZAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_ky5ZAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAACAAAgwAEEBQAAgEAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAgL8AAAAAAAAAAAAAIEABBAUAAIDAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAIA_AAAAAAAAAAAzMzM_5MuWQA0AAAAAAAEFAACAPwAAAAAAAAAAmpmZPgABAQDNzMw-AAAAAAAAAAAAAADAAQEABAAAgMAAAAAAAAAAAAAAgEABAQAAAAAAwAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAAAAwAEBAAAAAKBAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAbxKDOgAAAADNzEw_mpkZPgKQTqCNBs3MzD0AAAA_AAAAPwAAAD8AAAA_AM3MzD0AAIA-AACAPgAAgD4AAIA-AAAAPwAAAD8AAAA_AAAAPxfNzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPQ"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome validate AA0AZmamP4_CdT4AAAA_AACAQJqZmT6amRk_zczMPgECBAYBBgFmZia_AAAAvwAAgL8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAAAmZmJr8AAAC_AACAPwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAADAAAAAAAAAL8AAIC_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAQAAAAAAAAAvwAAgD8AAAAAAACAPwAAAAAAAAAAAAAAAAAAgD4AAIA_AQAAAL8AAAA_AAAAvwAAAD8AAAC_AAAAPwAABWZmJj8AAAC_AACAvwAAAAAAAIA_AAAAAAAAAAAAAAAAAACAPgAAgD8BAAAAvwAAAD8AAAC_AAAAPwAAAL8AAAA_AAAGZmYmPwAAAL8AAIA_AAAAAAAAgD8AAAAAAAAAAAAAAAAAAIA-AACAPwEAAAC_AAAAPwAAAL8AAAA_AAAAvwAAAD8AAAACAAAAAAEFBQAAgEAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEFBQAAgMAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAPwAAAAAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBBwAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADhelS_AACAvwAAgL_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA1qPwvgAAgL8AAIC_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAEIAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAAOF6VL8AAIC_AACAP83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADWo_C-AACAvwAAgD_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQkAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAAAgAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA7FE4vgAAgL8AAIC_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOxROD4AAIC_AACAv83MzD0BAgAAAAABBAUAAEDAAAAAAAAAAAAAAAAAgEAAAAAAAAAAAAABmpkZPgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAQQFAABAQAAAAAAAAAAAAAAAAIDAAAAAAAAAAAAAAZqZGb4AAAAAAAAAAAACAAAAAAAAAAAAAAAAMzMzP9sPSUAA7FG4PZqZmT7sUbg9AACAQAAAAD8zMzM_mpmZPgEDBgABAgQBCgAAAAAAAIC_AAAAAAAAAAAAAIA_AAAAAAAAAAAAAAAAAAAAvwAAgD8BAAAAv2Zm5j4AAAC_ZmbmPgAAAL9mZuY-AAACAACAPwAAgD8AAIA_AQAAAIC_AAAAAAAAAADsUTi-AACAvwAAgD_NzMw9AAAAgD8AAIA_AACAPwEAAACAPwAAAAAAAAAA7FE4PgAAgL8AAIA_zczMPQECAAAAAAEEBQAAQMAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABBAUAAEBAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAAAAAAAAAAAAAAAzMzM_AAAAAADsUbg9mpmZPuxRuD0AAIBAAAAAPzMzMz-amZk-AQMGAAECBAELAAAAAAAAgL8AAAAAAAAAAAAAgD8AAAAAAAAAAAAAAAAAAAC_AACAPwEAAAC_ZmbmPgAAAL9mZuY-AAAAv2Zm5j4AAAIAAIA_AACAPwAAgD8BAAAAgL8AAAAAAAAAANaj8D4AAIC_AACAv83MzD0AAACAPwAAgD8AAIA_AQAAAIA_AAAAAAAAAADhelQ_AACAvwAAgL_NzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz8AAAAAAOxRuD2amZk-7FG4PQAAgEAAAAA_MzMzP5qZmT4BAwYAAQIEAQwAAAAAAACAvwAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAAL8AAIA_AQAAAL9mZuY-AAAAv2Zm5j4AAAC_ZmbmPgAABAAAgD8AAIA_AACAPwEAAACAvwAAAAAAAAAA1qPwPgAAgL8AAIA_zczMPQAAAIA_AACAPwAAgD8BAAAAgD8AAAAAAAAAAOF6VD8AAIC_AACAP83MzD0BAACAPwAAgD8AAIA_AQEAzcxMvgAAgL8AAAAAAAAAAAAAgL8AAAAAzczMPQAAAIA_AACAPwAAgD8BAQDNzEw-AACAvwAAAAAAAAAAAACAvwAAAADNzMw9AQIAAAAAAQQFAABAwAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAEEBQAAQEAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAAAAAAAAAAAAAADMzMz_bD0lAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_ky5ZAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_ky5ZAAI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAIAAIA_AACAPwAAgD8BAAAAgL-amRk_AAAAAAAAgL-amRm_AAAAAM3MzD0AAACAPwAAgD8AAIA_AQAAAIA_mpkZPwAAAAAAAIA_mpkZvwAAAADNzMw9AQIAACDAAQQFAACAQAAAAAAAAAAAAAAAAIBAAAAAAAAAAAAAAZqZGT4AAAAAAAAAAAACAACAvwAAAAAAAAAAAAAgQAEEBQAAgMAAAAAAAAAAAAAAAACAwAAAAAAAAAAAAAGamRm-AAAAAAAAAAAAAgAAgD8AAAAAAAAAADMzMz_bD8k_AI_C9T0K16M-KVwPPgAAgEAAAAA_MzMzP5qZmT4BAwACAQIHAAACAAAgwAEEBQAAgEAAAAAAAAAAAAAAAACAQAAAAAAAAAAAAAGamRk-AAAAAAAAAAAAAgAAgL8AAAAAAAAAAAAAIEABBAUAAIDAAAAAAAAAAAAAAAAAgMAAAAAAAAAAAAABmpkZvgAAAAAAAAAAAAIAAIA_AAAAAAAAAAAzMzM_5MuWQA0AAAAAAAEFAACAPwAAAAAAAAAAmpmZPgABAQDNzMw-AAAAAAAAAAAAAADAAQEABAAAgMAAAAAAAAAAAAAAgEABAQAAAAAAwAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAAAAwAEBAAAAAKBAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAAACAwAEBAAIAAAAAAAAAAAAAAAAAAIDAAQEAAgAAAAAAAAAAAAAAAAAAgMABAQACAAAAAAAAAAAAAAAAbxKDOgAAAADNzEw_mpkZPgKQTqCNBs3MzD0AAAA_AAAAPwAAAD8AAAA_AM3MzD0AAIA-AACAPgAAgD4AAIA-AAAAPwAAAD8AAAA_AAAAPxfNzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPc3MzD3NzMw9zczMPQ --json
+{
+  "mass": 0.8113440275192261,
+  "parts": 13,
+  "valid": true
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary phylo /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --format json --json
+{
+  "1": {
+    "id": 1,
+    "name": "Bruma forma1",
+    "founder": [
+      69,
+      209,
+      22,
+      85,
+      53,
+      109,
+      130,
+      56,
+      239,
+      137,
+      182,
+      241,
+      237,
+      243,
+      77,
+      25,
+      105,
+      29,
+      37,
+      199,
+      182,
+      212,
+      224,
+      137,
+      187,
+      182,
+      54,
+      37,
+      135,
+      47,
+      36,
+      231
+    ],
+    "born": 2000,
+    "extinct": null,
+    "parent": null,
+    "population": 8
+  }
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary phylo /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --format dot
+digraph phylogeny {
+  s1 [label="Bruma forma1"]
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary replay 45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7-0 --world /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "dt": 0.004166666883975267,
+  "frames": 481,
+  "kind": "Sprint"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary replay /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.rpl --json
+{
+  "dt": 0.004166666883975267,
+  "frames": 481,
+  "kind": "Sprint"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary replay 45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7-0 --world /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --export /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-id --json
+{
+  "dt": 0.004166666883975267,
+  "export": {
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-id",
+    "fps": 30,
+    "frames": 61
+  },
+  "frames": 481,
+  "kind": "Sprint"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary replay /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/archive/45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7.rpl --world /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --export /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-file --json
+{
+  "dt": 0.004166666883975267,
+  "export": {
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-file",
+    "fps": 30,
+    "frames": 61
+  },
+  "frames": 481,
+  "kind": "Sprint"
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world status /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --json
+{
+  "tick": 2020,
+  "population": 8,
+  "species": 1,
+  "state_hash": "e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b",
+  "paused": false
+}
+exit_code=0
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary genome validate not-a-genome --json
+bestiary: Serde Deserialization Error
+exit_code=1
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary world run /Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/world.db --snapshot-every 0 --json
+bestiary: invalid snapshot interval or speed
+exit_code=1
+
+$ /Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary bench --report --json
+{
+  "combine_seconds": 0.788657666,
+  "parts": 12,
+  "passes": true
+}
+exit_code=0
+
+{
+  "criterion": "required_cli_commands_work_against_a_fresh_world",
+  "time_utc": "2026-10-15T05:57:53.504321+00:00",
+  "machine": "macOS-15.3.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "binary": "/Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/bestiary",
+  "binary_sha256": "b44eb791fb76d83e0df67e20aba014a0c6f9f6c1e75e0d341fa4e2e28c9c5136",
+  "python": "3.9.6 (default, Apr 30 2025, 02:07:17) \n[Clang 17.0.0 (clang-1700.0.13.5)]",
+  "viewer_sha256": "ccd344a2ea018f8bfa6eeaadfb042cae1e3232bb0bea29f139f63978d2631b30",
+  "git_commit": "d4932b1dfd375052bf7cab770a657752e49f4abb",
+  "output": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po",
+  "gpu_exports": true,
+  "cli_bench": true,
+  "passed": true,
+  "live_status_tick": 2001,
+  "ipc_endpoint": "/var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T/bestiary-d10d56cca9e6e01d2629.sock",
+  "replay_id_export": {
+    "frames": 61,
+    "dimensions": [
+      2880,
+      1920
+    ],
+    "distinct_pixel_frames": 61,
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-id"
+  },
+  "replay_file_export": {
+    "frames": 61,
+    "dimensions": [
+      2880,
+      1920
+    ],
+    "distinct_pixel_frames": 61,
+    "directory": "/Users/diane/Documents/ChatGPT/neelay-bestiary/var/v1/cli-2ygt02po/png-file"
+  },
+  "benchmark": {
+    "combine_seconds": 0.788657666,
+    "parts": 12,
+    "passes": true
+  },
+  "sqlite_counts": {
+    "genome": 1,
+    "creature": 8,
+    "species": 1,
+    "event": 7,
+    "timeseries": 25,
+    "archive_cell": 1,
+    "replay": 2
+  },
+  "created": {
+    "tick": 0,
+    "population": 8,
+    "species": 0,
+    "state_hash": "edaff78a02b397b4f41e9a67564edbe5a9cde9c4e5cd706e49dbef4f8401792a",
+    "paused": false
+  },
+  "final": {
+    "tick": 2020,
+    "population": 8,
+    "species": 1,
+    "state_hash": "e906bac2eeaac3fad885f62fb20d432c72acc89582c298bf0a7c6256d6dfb04b",
+    "paused": false
+  },
+  "archive_coverage": 0.0078125,
+  "archive_cells": 1,
+  "elite_genome": "45d11655356d8238ef89b6f1edf34d19691d25c7b6d4e089bbb63625872f24e7",
+  "replay": {
+    "dt": 0.004166666883975267,
+    "frames": 481,
+    "kind": "Sprint"
+  },
+  "commands": 30,
+  "complete": true
+}

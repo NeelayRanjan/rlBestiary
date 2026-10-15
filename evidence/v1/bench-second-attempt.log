@@ -1,0 +1,32 @@
+./scripts/cargo bench -p bestiary-sim --bench throughput --locked
+    Finished `bench` profile [optimized] target(s) in 0.28s
+     Running benches/throughput.rs (target/release/deps/throughput-da84d609346b5ba3)
+Full combine: 12 parts, nine named trials (slope sweep included), 38 creature-seconds
+worst_seconds=0.619309 creature_seconds_per_wall_second=61.359
+Gnuplot not found, using plotters backend
+Benchmarking combine_12_parts_nine_trials/full_evaluation
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Warming up for 1.0000 s
+
+Warning: Unable to complete 10 samples in 3.0s. You may wish to increase target time to 6.1s.
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Collecting 10 samples in estimated 6.1344 s (10 iterations)
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Analyzing
+combine_12_parts_nine_trials/full_evaluation
+                        time:   [617.51 ms 625.77 ms 639.94 ms]
+                        thrpt:  [14.064  elem/s 14.382  elem/s 14.575  elem/s]
+                 change:
+                        time:   [-37.654% -25.046% -9.6496%] (p = 0.01 < 0.05)
+                        thrpt:  [+10.680% +33.415% +60.395%]
+                        Performance has improved.
+Found 1 outliers among 10 measurements (10.00%)
+  1 (10.00%) high severe
+
+./scripts/cargo bench -p bestiary-world --bench world --locked
+    Finished `bench` profile [optimized] target(s) in 0.14s
+     Running benches/world.rs (target/release/deps/world-546fb266454cb000)
+5000 creatures, single-thread world stepping: 10264.8 ticks/minute
+./scripts/bench-viewer
+    Finished `release` profile [optimized] target(s) in 0.35s
+Created /var/folders/wj/ntn13v211bg16ck4c27q9x500000gn/T//bestiary-viewer-bench.XbMPWv/world.db with 2020 creatures
+{"fps":55.46474828961955,"full_bodies":20,"passes":false,"proxies":2000}
+bestiary-viewer: viewer stopped with an error
+make: *** [bench] Error 1

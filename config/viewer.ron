@@ -11,6 +11,11 @@
     stretch_max: 2.5,
     // Joint sphere radius as a fraction of the smallest adjacent bone dimension.
     joint_radius_fraction: 0.4,
+    // Distant creature proxies use a separate low-detail sphere in both the world
+    // and throughput fixture: longitudinal sectors and latitudinal stacks.
+    // These only change the proxy silhouette, never full bodies or joint meshes.
+    proxy_radial_segments: 8,
+    proxy_stacks: 6,
     // Smooth procedural geometry: radial sides and rings along each bone.
     radial_segments: 16,
     bone_rings: 20,

@@ -1,0 +1,22 @@
+{
+  "machine": "macOS-15.3.1-arm64-arm-64bit",
+  "architecture": "arm64",
+  "cpu": "Apple M4 Pro",
+  "memory_bytes": 25769803776,
+  "os": "ProductName:\t\tmacOS\nProductVersion:\t\t15.3.1\nBuildVersion:\t\t24D70\n",
+  "cargo": "cargo 1.85.1 (d73d2caf9 2024-12-31)\n",
+  "resumption_base": "1f375ed08cba6410d732a632f9639246907ccca3",
+  "timezone": "America/Los_Angeles",
+  "commands": [
+    "make check",
+    "make bench",
+    "make longrun",
+    "make ecology-longrun",
+    "make evolution-longrun",
+    "make coverage",
+    "make check-cli",
+    "scripts/check-viewer-render",
+    "scripts/check-longrun-panels var/v1/demo-tuned.db",
+    "make dist"
+  ]
+}
