@@ -1,3 +1,4 @@
+mod acceptance;
 use bestiary_core::genome::Genome;
 use bestiary_sim::config::Config;
 use bestiary_world::{forager_brain, World};
@@ -35,15 +36,18 @@ fn conservation_determinism_and_snapshot_resume() {
 #[test]
 #[ignore = "one-million-tick acceptance run; invoked by make longrun"]
 fn five_seeds_one_million_ticks_conservation_stability_and_determinism() {
-    for seed in 0..5 {
+    for seed in acceptance::seeds() {
         let config = Config::parse(include_str!("../../../config/validation.ron")).unwrap();
         let mut a = World::new(seed, config.clone(), 24).unwrap();
         let mut b = World::new(seed, config, 24).unwrap();
+        let mut first_collapse = None;
         for tick in 1..=1_000_000 {
             a.step();
             b.step();
             assert!(a.conserved() && b.conserved(), "seed={seed}, tick={tick}");
-            assert!(!a.agents.is_empty(), "collapse seed={seed}, tick={tick}");
+            if a.agents.is_empty() && first_collapse.is_none() {
+                first_collapse = Some(tick);
+            }
             assert!(a.agents.len() <= a.config.world.population_limit);
             if tick % 1000 == 0 {
                 for w in [&mut a, &mut b] {
@@ -65,6 +69,10 @@ fn five_seeds_one_million_ticks_conservation_stability_and_determinism() {
                 );
             }
         }
+        assert!(
+            first_collapse.is_none(),
+            "collapse seed={seed} tick={first_collapse:?}"
+        );
         let births = a.history.values().filter(|h| !h.parents.is_empty()).count();
         let deaths = a.history.values().filter(|h| h.died.is_some()).count();
         assert!(

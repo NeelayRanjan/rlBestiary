@@ -10,7 +10,7 @@
     ),
     reproduction: (
         // Deterministic mating/evaluation epoch in world ticks.
-        epoch: 1000,
+        epoch: 5000,
         // Mate distance in metres; the genetic threshold also normalizes the species-similarity sensor.
         mate_radius: 128.0,
         compatibility_threshold: 0.04,
@@ -19,7 +19,7 @@
         // Fraction of reproductive energy dissipated during gestation.
         gestation_loss: 0.1,
         // Probability of proposing mutations on an offspring genome copy.
-        mutation_probability: 0.5,
+        mutation_probability: 0.2,
         // Default founder life-history genes in world ticks.
         founder_maturity: 2000,
         founder_senescence: 20000,

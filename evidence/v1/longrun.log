@@ -1,0 +1,92 @@
+./scripts/longrun longrun
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 10.60s
+  Executable tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+Five seeds, one million ticks each; logs: /Users/diane/Documents/ChatGPT/neelay-bestiary/var/acceptance/longrun.Ehwo6m
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 17.24s
+     Running tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+
+running 1 test
+seed=0 tick=1000 hash=db18ae0b8d3be3ee7eb3303387fec3b86fa8083be7fc24df4bc52e0e21b43369 population=24 conserved=true
+seed=0 tick=100000 hash=b0dafba843f594b3cf67fb9ad81942b73a2fe34bb898bc7fd4d7d6f945e09c3c population=33 conserved=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism has been running for over 60 seconds
+seed=0 tick=1000000 hash=05ef137b55466162131c12f643561dfa41dfbc961fbc02bd829630ee1b408794 population=23 conserved=true
+seed=0 ticks=1000000 population=23 births=11039 deaths=11040 exact_conservation=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 159.32s
+
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 17.20s
+     Running tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+
+running 1 test
+seed=1 tick=1000 hash=ab2a3c082aff1aa08127d28046f66affa3b715e3c4cd25516283adcda9f01158 population=24 conserved=true
+seed=1 tick=100000 hash=63428dbee325abc781f79e1280126efc8e2d40938636a9ec919ceb19416aeeff population=37 conserved=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism has been running for over 60 seconds
+seed=1 tick=1000000 hash=2fc08fec13fac2e1e213cb7e7eca150c002eb9cad1e9e160e737c07943629a8c population=45 conserved=true
+seed=1 ticks=1000000 population=45 births=10785 deaths=10764 exact_conservation=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 154.41s
+
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 17.22s
+     Running tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+
+running 1 test
+seed=2 tick=1000 hash=d0230a22dfcc3a66f524fe649257a91afb4f732c46c30e559db7297cda333cd0 population=24 conserved=true
+seed=2 tick=100000 hash=f9334a4a46cf78b9d8ddd8117fede71cc225f12643ea007441b1c095090f6c2f population=38 conserved=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism has been running for over 60 seconds
+seed=2 tick=1000000 hash=3b95f4bce1ec8e59853e56d92d1040a1c37f39059e571bc6e7bd58af096dedb5 population=31 conserved=true
+seed=2 ticks=1000000 population=31 births=11365 deaths=11358 exact_conservation=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 161.07s
+
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 17.18s
+     Running tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+
+running 1 test
+seed=3 tick=1000 hash=7be4d3ce3a9c4d0c9dfd74dc516e2a98008ac9aff83277fe3dfb35f9c3c352d3 population=24 conserved=true
+seed=3 tick=100000 hash=0c0b93294913d9ea9c5356f7febab7344a3c80d9d11dc74b94f1b98a4579e268 population=40 conserved=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism has been running for over 60 seconds
+seed=3 tick=1000000 hash=908c2555b08d5826313f046dc2476d381396997d374ad18026f9ad7d69703ded population=34 conserved=true
+seed=3 ticks=1000000 population=34 births=11417 deaths=11407 exact_conservation=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 164.38s
+
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `release` profile [optimized] target(s) in 17.25s
+     Running tests/longrun.rs (target/release/deps/longrun-26eceb913937669d)
+
+running 1 test
+seed=4 tick=1000 hash=3718df77841299cc7dc7dfd9762678ac7822830190e4c91a8f8be721453ecbad population=24 conserved=true
+seed=4 tick=100000 hash=cdebe3079f70ca4bdd4918aadf6526c6b5d16cc4dbdd34a956a77e29096912a3 population=28 conserved=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism has been running for over 60 seconds
+seed=4 tick=1000000 hash=648e7a99c23ed8aa591beb698f50bc8946842574dcf662789c350de0e012a4a7 population=24 conserved=true
+seed=4 ticks=1000000 population=24 births=10968 deaths=10968 exact_conservation=true
+test five_seeds_one_million_ticks_conservation_stability_and_determinism ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 5 filtered out; finished in 158.46s
+

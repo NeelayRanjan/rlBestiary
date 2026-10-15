@@ -1,0 +1,15 @@
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 14.97s
+     Running tests/reproduction.rs (target/release/deps/reproduction-931cb3a0ba048ef8)
+
+running 1 test
+test open_endedness_smoke_three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation has been running for over 60 seconds
+tick=10000 population=40 species=2 fragmentation=None
+tick=20000 population=47 species=4 fragmentation=None
+tick=30000 population=26 species=3 fragmentation=Some(22000)
+tick=40000 population=48 species=4 fragmentation=Some(22000)
+tick=50000 population=54 species=3 fragmentation=Some(22000)
+error: test failed, to rerun pass `-p bestiary-world --test reproduction`
+
+Caused by:
+  process didn't exit successfully: `/Users/diane/Documents/ChatGPT/neelay-bestiary/target/release/deps/reproduction-931cb3a0ba048ef8 open_endedness_smoke --ignored --nocapture` (signal: 15, SIGTERM: termination signal)

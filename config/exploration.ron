@@ -1,0 +1,178 @@
+// M7 tuning candidate: more mutation proposals, broader compatibility, longer-lived parents.
+(
+    archive: (
+        // Interior bin edges: parts, limbs, mass kg, reach m, symmetry, gait Hz, swim m/s.
+        // Coverage uses all 128 Cartesian cells, including combinations not yet observed.
+        thresholds: ([8.0], [2.0], [0.75], [0.6], [0.5], [1.0], [0.05]),
+        // Zero disables reseeding. Otherwise release an elite every N world ticks.
+        reseed_interval: 0,
+        // Founders per reseeding event; draws resources from the existing world.
+        reseed_count: 2,
+    ),
+    reproduction: (
+        // Deterministic mating/evaluation epoch in world ticks.
+        epoch: 2000,
+        // Mate distance in metres; the genetic threshold also normalizes the species-similarity sensor.
+        mate_radius: 128.0,
+        compatibility_threshold: 0.08,
+        // Fraction of parent's energy reserve required before mating.
+        energy_fraction: 0.65,
+        // Fraction of reproductive energy dissipated during gestation.
+        gestation_loss: 0.1,
+        // Probability of proposing mutations on an offspring genome copy.
+        mutation_probability: 0.8,
+        // Default founder life-history genes in world ticks.
+        founder_maturity: 2000,
+        founder_senescence: 30000,
+        // Species clustering epoch and registration persistence requirements.
+        species_epoch: 2000,
+        species_min_population: 2,
+        species_min_duration: 1000,
+    ),
+    ecology: (
+        // Health lost per full bite at toxicity one and zero immune investment; applied after healing.
+        toxin_damage: 0.05,
+        // Damage coefficient for measured strike impulse relative to defender bulk.
+        attack_scale: 20.0,
+        // Millijoules paid per attempted strike.
+        attack_cost: 10000,
+        // Fraction of damage retained as a persistent mobility injury.
+        injury_fraction: 0.2,
+        // Terrain refuge fraction that reduces attack success.
+        refuge_fraction: 0.3,
+        // Number of evolving pathogen strains and selection epoch.
+        pathogen_count: 4,
+        pathogen_epoch: 2000,
+        // Per-encounter transmission, per-tick damage, and antigen drift.
+        transmission: 0.002,
+        virulence: 0.001,
+        antigen_drift: 0.01,
+        // Four-channel diffusion and decay coefficients per tick.
+        pheromone_diffusion: 0.15,
+        pheromone_decay: 0.05,
+        // Millijoules per unit pheromone emission.
+        pheromone_cost: 1000,
+        // Geographic update interval and incremental uplift amplitude.
+        tectonic_epoch: 2000,
+        uplift: 0.001,
+        // Sea-level oscillation amplitude over a long geographic cycle.
+        sea_amplitude: 0.55,
+        // Probability of a cold/drought/disease shock per geographic epoch.
+        shock_probability: 0.002,
+    ),
+    world: (
+        // Square terrain cell count along each axis.
+        grid: 8,
+        // Width of one terrain cell in metres.
+        cell_metres: 32.0,
+        // Ten fixed ticks per simulated hour.
+        seconds_per_tick: 360.0,
+        // Recurrent decisions are refreshed on deterministic staggered ticks.
+        decision_interval: 10,
+        // One seasonal cycle in world ticks.
+        season_ticks: 3600,
+        // Plant reproduction/selection interval.
+        plant_epoch: 100,
+        // Maximum energy supplied by sunlight per cell/tick, in millijoules.
+        solar_per_cell: 10000000,
+        // Soil nutrient inventory per cell, in microkilograms.
+        soil_per_cell: 2000000,
+        // Initial plant energy and nutrient inventories per cell.
+        plant_energy: 2000000000,
+        plant_nutrients: 2000000,
+        // Initial individual energy reserve, in millijoules.
+        initial_energy: 200000000,
+        // Maximum energy reserve per kilogram of grown body mass.
+        reserve_per_kg: 500000000,
+        // Maximum energy removed in one foraging action.
+        bite_energy: 50000000,
+        // Basal metabolic watts per kilogram, additional to measured posture.
+        basal_per_kg: 0.2,
+        // Additional watts per sensor and neuron.
+        sensor_cost: 0.002,
+        brain_cost: 0.001,
+        // Maximum fraction of adult mass grown per tick.
+        growth_per_tick: 0.005,
+        // Fraction of carcass resources returned to soil/heat each tick.
+        decay_fraction: 0.01,
+        // Health loss per fully unpaid metabolic tick and recovery per fed tick.
+        starvation_damage: 0.02,
+        healing: 0.01,
+        // Terrain threshold separating land from water.
+        water_level: -0.4,
+        // Number of procedural terrain waves per map axis; higher values create islands.
+        terrain_frequency: 2.0,
+        // Seasonal variation in temperature and solar availability.
+        season_amplitude: 0.3,
+        // Explicit finite carrying bound; births beyond it are not admitted.
+        population_limit: 128,
+        // Fixed integer resource resolution.
+        energy_units_per_joule: 1000.0,
+        nutrient_units_per_kg: 1000000.0,
+    ),
+    combine: (
+        // Measurement duration per trial; locomotion uses net center-of-mass travel over this interval.
+        trial_seconds: 2.0,
+        // Stand duration and unscored locomotion settling time; at least two seconds.
+        stand_seconds: 2.0,
+        // Minimum clearance of the root collider surface above terrain in metres.
+        root_clearance: 0.05,
+        // Height of deterministic rough-ground bumps.
+        rough_height: 0.03,
+        // Sampled slope angles in radians, in increasing order.
+        slope_angles: [0.1, 0.2, 0.35],
+        // Fluid density in the simulator's SI mass convention.
+        water_density: 2.0,
+        // Linear fluid drag coefficient per immersed volume.
+        water_drag: 4.0,
+        // Added carry load as a fraction of body mass.
+        carry_fraction: 0.5,
+    ),
+    genome: (
+        // Absolute bound on expanded rigid parts.
+        max_parts: 32,
+        // Maximum edge depth of an expanded body.
+        max_depth: 12,
+        // Maximum expanded mass in kilograms.
+        max_mass: 100.0,
+        // Minimum full part dimension in metres.
+        min_size: 0.02,
+        // Maximum joints crossed by a muscle.
+        max_span: 2,
+        // Bounds on heritable per-copy mutation probabilities.
+        mutation_floor: 0.03,
+        mutation_ceiling: 0.5,
+        // Genesis attachment offset in normalized surface coordinates.
+        attachment_jitter: 0.2,
+    ),
+    physics: (
+        // Gravitational acceleration, metres per second squared.
+        gravity: 9.81,
+        // Substeps within each fixed 1/240-second physics tick.
+        substeps: 2,
+        // Coulomb ground friction coefficient.
+        friction: 0.9,
+        // Maximum force per unit muscle cross-sectional area.
+        force_per_area: 120.0,
+        // Relative width of the parabolic length-tension curve.
+        length_tension_width: 0.8,
+        // Minimum active length is rest length times (1 - fraction).
+        max_contraction_fraction: 0.55,
+        // Passive stretch-only spring stiffness (newtons/metre).
+        passive_stiffness: 20.0,
+        // Passive axial damping coefficient.
+        damping: 0.5,
+        // Holding energy per area, activation and simulated second.
+        isometric_cost: 0.05,
+        // Absolute numerical energy allowance per substep, joules.
+        audit_absolute_tolerance: 0.01,
+        // Relative numerical energy allowance per substep.
+        audit_relative_tolerance: 0.005,
+        // M1 fixture's controller frequency in hertz.
+        fixture_frequency: 1.5,
+        // M1 fixture's muscle cross-sectional area.
+        fixture_muscle_area: 0.1,
+        // Seconds simulated per trial in the M1 nine-workload gate.
+        benchmark_trial_seconds: 2.0,
+    ),
+)

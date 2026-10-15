@@ -1,3 +1,4 @@
+mod acceptance;
 use bestiary_archive::store::{Persistable, TimeSample};
 use bestiary_sim::config::Config;
 use bestiary_world::World;
@@ -13,19 +14,18 @@ fn variance(sample: &TimeSample) -> f32 {
 #[ignore = "five-seed million-tick evolutionary acceptance; invoked by make longrun"]
 fn five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing() {
     let mut failures = vec![];
-    for seed in 0..5 {
+    for seed in acceptance::seeds() {
         let c = Config::parse(include_str!("../../../config/demo.ron")).unwrap();
         let mut a = World::new(seed, c, 24).unwrap();
         let mut baseline = None;
+        let mut first_collapse = None;
         for _ in 0..1_000_000 {
             a.step();
             if a.tick % 1000 == 0 {
                 assert!(a.conserved(), "seed={seed} tick={}", a.tick);
-                assert!(
-                    !a.agents.is_empty(),
-                    "population collapse seed={seed} tick={}",
-                    a.tick
-                );
+                if a.agents.is_empty() && first_collapse.is_none() {
+                    first_collapse = Some(a.tick);
+                }
                 assert!(a.agents.len() <= a.config.world.population_limit);
                 for g in a.genomes.values_mut() {
                     g.replays.clear();
@@ -52,7 +52,11 @@ fn five_seed_end_of_run_trait_variance_and_archive_coverage_are_increasing() {
             variance(&before),
             variance(&after)
         );
-        if after.coverage <= before.coverage || variance(&after) <= variance(&before) {
+        println!("seed={seed} first_collapse={first_collapse:?}");
+        if first_collapse.is_some()
+            || after.coverage <= before.coverage
+            || variance(&after) <= variance(&before)
+        {
             failures.push(seed);
         }
     }

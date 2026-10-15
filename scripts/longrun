@@ -1,0 +1,22 @@
+#!/bin/sh
+# Independent worlds run in separate processes; every world tick remains serial.
+set -eu
+root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd)
+cd "$root"
+test_name=${1:-longrun}
+case "$test_name" in longrun|evolution) ;; *) echo 'expected longrun or evolution' >&2; exit 2;; esac
+./scripts/cargo test --release -p bestiary-world --test "$test_name" --locked --no-run
+mkdir -p var/acceptance
+logs=$(mktemp -d "$root/var/acceptance/$test_name.XXXXXX")
+echo "Five seeds, one million ticks each; logs: $logs"
+pids=''
+for seed in 0 1 2 3 4; do
+    BESTIARY_ACCEPTANCE_SEED=$seed ./scripts/cargo test --release -p bestiary-world --test "$test_name" --locked -- --ignored --nocapture > "$logs/seed-$seed.log" 2>&1 &
+    pids="$pids $!"
+done
+failed=0
+for pid in $pids; do
+    if ! wait "$pid"; then failed=1; fi
+done
+for seed in 0 1 2 3 4; do cat "$logs/seed-$seed.log"; done
+exit "$failed"

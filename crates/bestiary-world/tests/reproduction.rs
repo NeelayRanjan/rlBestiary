@@ -190,14 +190,20 @@ fn eligible_mates_obey_radius_across_toroidal_world_boundary() {
 
 #[test]
 #[ignore = "250k-tick diversification acceptance; run with --release --ignored"]
-fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
-    let c = Config::parse(include_str!("../../../config/demo.ron")).unwrap();
+fn open_endedness_smoke_three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
+    let source = std::env::var("BESTIARY_DEMO_CONFIG")
+        .map(|path| std::fs::read_to_string(path).expect("demo config"))
+        .unwrap_or_else(|_| include_str!("../../../config/demo.ron").into());
+    let c = Config::parse(&source).unwrap();
     let mut w = World::new(42, c, 24).unwrap();
     let mut store = std::env::var("BESTIARY_DEMO_OUT")
         .ok()
         .map(|p| Store::create(std::path::Path::new(&p)).unwrap());
+    let founding_parts = w.genomes.values().map(|g| g.traits.parts).max().unwrap();
+    let ticks =
+        std::env::var("BESTIARY_DEMO_TICKS").map_or(250_000, |s| s.parse().expect("demo ticks"));
     let mut fragmented = None;
-    for _ in 0..250_000 {
+    for _ in 0..ticks {
         w.step();
         if let Some(store) = &store {
             store.events(w.tick, &w.ecological_events).unwrap();
@@ -267,7 +273,22 @@ fn three_species_coexist_and_phylogeny_splits_after_tectonic_fragmentation() {
         assert_eq!(elite.traits, evaluation.traits);
         assert!(!evaluation.exploit_suspect);
     }
-    assert!(max_parts > 7);
+    let species_parts = w
+        .registry
+        .species
+        .values()
+        .filter(|s| s.population > 0)
+        .map(|s| w.genomes[&s.founder].traits.parts)
+        .max()
+        .unwrap_or(0);
+    println!(
+        "founding_parts={founding_parts} largest_living_species_founder_parts={species_parts}"
+    );
+    assert!(max_parts > founding_parts);
+    assert!(
+        species_parts > founding_parts,
+        "a living species exceeds every founder"
+    );
     assert!(
         coverage >= 0.15,
         "coverage {coverage} is below the fixed-grid floor"

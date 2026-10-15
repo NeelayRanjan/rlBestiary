@@ -1,4 +1,4 @@
-// Reproductive stability fixture: same physical/ecological rules, bounded population and lower mutation proposal rate.
+// Reproductive stability fixture: same physical/ecological rules, bounded population and mutation disabled to isolate turnover, accounting and determinism from the separate evolutionary study.
 (
     archive: (
         // Interior bin edges: parts, limbs, mass kg, reach m, symmetry, gait Hz, swim m/s.
@@ -20,7 +20,7 @@
         // Fraction of reproductive energy dissipated during gestation.
         gestation_loss: 0.1,
         // Probability of proposing mutations on an offspring genome copy.
-        mutation_probability: 0.01,
+        mutation_probability: 0.0,
         // Default founder life-history genes in world ticks.
         founder_maturity: 2000,
         founder_senescence: 20000,

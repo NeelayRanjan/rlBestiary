@@ -20,9 +20,9 @@ dist:
 	mkdir -p dist
 	cp target/release/bestiary target/release/bestiary-daemon target/release/bestiary-viewer dist/
 longrun:
-	$(CARGO) test --release -p bestiary-world --test longrun --locked -- --ignored --nocapture
+	./scripts/longrun longrun
 
 ecology-longrun:
 	$(CARGO) test --release -p bestiary-world --test trophic --locked -- --ignored --nocapture --test-threads=1
 evolution-longrun:
-	$(CARGO) test --release -p bestiary-world --test evolution --locked -- --ignored --nocapture --test-threads=1
+	./scripts/longrun evolution

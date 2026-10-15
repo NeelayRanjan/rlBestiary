@@ -1,6 +1,6 @@
 # Build plan
 
-Current task: M7 — run fresh demo coverage and five-seed stagnation acceptance; M5 numeric failures remain open.
+Current task: M9 — Designer and zoo; M7 runs continue in parallel, and their numeric results will be revisited after implementation at the user’s request.
 
 ## MVP checkpoint (scope changed at the user's request)
 - [x] Freeze scope at the working simulation, native viewer, starter zoo and recorded export.
@@ -65,7 +65,7 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [x] Trait-based movement and recurrent ethology choices; growth, senescence and death.
 - [x] Deterministic collections, subsystem/entity/tick RNG, libm, canonical full-state hash.
 - [x] World rule trait for phase-two extension; document two-brain compromise.
-- [ ] Revalidate conservation for 1M ticks, five-seed stability and hashes at 1k/100k/1M with actual births and deaths on the current binary.
+- [x] Revalidate conservation for 1M ticks, five-seed stability and hashes at 1k/100k/1M with actual births and deaths on the current binary (evidence/v1/longrun.log).
 - [x] World throughput >=5,000 creatures at 10,000 ticks/minute on one core.
 - [x] Pass make check and commit M4.
 
@@ -138,7 +138,7 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [ ] TUNING: every knob, muscle symptoms first, sessile-sipper, monoculture, predator/prey collapse and stagnation.
 - [ ] README points to RUNBOOK; final assumptions/deviations review.
 - [ ] >=80% coverage for core/sim/world; all module/config negative tests.
-- [ ] make longrun: five seeds, 1M ticks, conservation, determinism and stability.
+- [x] make longrun: five seeds, 1M ticks, conservation, determinism and stability; finite founders, 10,785–11,417 births per seed (evidence/v1/longrun.log).
 - [ ] make bench meets all budgets; record machine, commands and results in RUNBOOK.
 - [ ] make dist creates runnable host binaries; offline runtime verified.
 - [ ] Fresh-clone make check and all required CLI commands exercised.

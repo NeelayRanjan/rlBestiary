@@ -1,0 +1,16 @@
+   Compiling bestiary-world v0.1.0 (/Users/diane/Documents/ChatGPT/neelay-bestiary/crates/bestiary-world)
+    Finished `release` profile [optimized] target(s) in 20.44s
+     Running `target/release/examples/inspect crates/bestiary-world/var/v1/demo.db --recombine`
+tick=30000 population=90 species=11 splits_after_fragmentation=9 first_fragmentation=Some(11000) max_valid_parts=Some(16) conserved=true mutations=196
+archive_cells=4 coverage=0.03125 founding_parts=13 max_archive_parts=14 max_living_species_parts=16
+first_saved_coverage_and_coexistence=none
+sample_tick=10000 population=39 species=2 coverage=0.03125 largest_living_body=14 normalized_trait_variance=0.021673601 trophic_biomass=[28.404402643442154, 0.0, 0.0] plant_toxicity=0.013321368 mean_immune_investment=0.09999996
+sample_tick=20000 population=33 species=2 coverage=0.03125 largest_living_body=14 normalized_trait_variance=0.02610797 trophic_biomass=[23.550472110509872, 0.0, 0.0] plant_toxicity=0.02613995 mean_immune_investment=0.09999997
+sample_tick=30000 population=90 species=11 coverage=0.03125 largest_living_body=16 normalized_trait_variance=2.253406 trophic_biomass=[53.647884249687195, 0.0, 0.0] plant_toxicity=0.017315887 mean_immune_investment=0.09999998
+samples_with_all_three_diet_tiers=0/3
+larger_species=10 born=23000 extinct=None founder_parts=14 population=5
+larger_species=12 born=28000 extinct=None founder_parts=14 population=2
+larger_species=14 born=30000 extinct=None founder_parts=14 population=2
+larger_species=15 born=30000 extinct=None founder_parts=16 population=2
+larger_species=17 born=30000 extinct=None founder_parts=15 population=2
+exact_archive_recombinations_passed=4

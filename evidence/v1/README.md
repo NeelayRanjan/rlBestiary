@@ -29,3 +29,26 @@ tick. Scavengers occupy the flesh tier; the optional intermediate diet bin is no
 an additional trophic level. Founders must pass real combines. The million-tick
 criterion also requires predation and actual births/deaths, with conservation
 and a finite population bound.
+
+M7 commands (fresh worlds; no archive bin or denominator change):
+
+```
+BESTIARY_DEMO_TICKS=1000000 BESTIARY_DEMO_OUT="$PWD/var/v1/demo-tuned.db" ./scripts/cargo test --release -p bestiary-world --test reproduction open_endedness_smoke -- --ignored --nocapture
+make evolution-longrun
+make longrun
+```
+
+The first demo and high-mutation exploratory runs were stopped at their saved
+checkpoints for tuning; their `*-partial.log` files are not final acceptance.
+Their configurations are preserved in `config/demo-baseline.ron` and
+`config/exploration.ron`. The saved initial demo lives under
+`var/v1/package-relative/v1/demo.db` (moved intact from the package-relative
+`crates/bestiary-world/var/v1/demo.db` after that exploratory run stopped).
+Cargo tests run in their package working directory. The final demo uses the absolute output path above.
+
+`make longrun` uses `config/validation.ron`: sexual reproduction and mortality
+remain enabled, mutation is disabled in this accounting/determinism control.
+`make evolution-longrun` uses the separate mutation-enabled `config/demo.ron`.
+Both invoke all five explicit seeds through `scripts/longrun`, with independent
+processes and serial world ticks. A partition regression checks exact coverage
+of seeds 0–4. Failed assertions propagate to Make's exit status.

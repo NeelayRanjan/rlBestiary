@@ -9,3 +9,9 @@ tick=2000 diet_live=[509, 0, 3] diet_births=[641, 0, 4] lineage_live=[509, 3, 0]
 tick=3000 diet_live=[376, 0, 0] diet_births=[1116, 0, 4] lineage_live=[376, 0, 0] lineage_births=[1116, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.018565957 resistance=0.099999994 conserved=true
 tick=4000 diet_live=[512, 0, 0] diet_births=[1662, 0, 4] lineage_live=[512, 0, 0] lineage_births=[1662, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.010277053 resistance=0.09999959 conserved=true
 tick=5000 diet_live=[512, 0, 0] diet_births=[1998, 0, 4] lineage_live=[512, 0, 0] lineage_births=[1998, 4, 0] species=3 predation=2030 coverage=0.015625 toxicity=0.014385047 resistance=0.09999959 conserved=true
+tick=6000 diet_live=[512, 0, 0] diet_births=[2474, 0, 4] lineage_live=[512, 0, 0] lineage_births=[2474, 4, 0] species=4 predation=2030 coverage=0.0234375 toxicity=0.021832736 resistance=0.09999959 conserved=true
+tick=7000 diet_live=[426, 0, 0] diet_births=[2985, 0, 4] lineage_live=[426, 0, 0] lineage_births=[2985, 4, 0] species=4 predation=2030 coverage=0.0234375 toxicity=0.02213442 resistance=0.099999815 conserved=true
+tick=8000 diet_live=[512, 0, 0] diet_births=[3432, 0, 4] lineage_live=[512, 0, 0] lineage_births=[3432, 4, 0] species=5 predation=2030 coverage=0.0234375 toxicity=0.011481856 resistance=0.09999959 conserved=true
+tick=9000 diet_live=[512, 0, 0] diet_births=[3768, 0, 4] lineage_live=[512, 0, 0] lineage_births=[3768, 4, 0] species=6 predation=2030 coverage=0.0234375 toxicity=0.015343915 resistance=0.09999959 conserved=true
+tick=10000 diet_live=[306, 0, 0] diet_births=[4149, 0, 4] lineage_live=[306, 0, 0] lineage_births=[4149, 4, 0] species=5 predation=2030 coverage=0.0234375 toxicity=0.0113108605 resistance=0.10000026 conserved=true
+first_missing_carnivore=Some(3000)
