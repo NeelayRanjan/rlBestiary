@@ -1,8 +1,10 @@
 //! Heritable graph encoding, deterministic expansion and genetic operators.
+mod controller;
 mod expand;
 mod genetics;
 use crate::brain::Brain;
 use base64::{engine::general_purpose::URL_SAFE_NO_PAD, Engine};
+pub use controller::*;
 pub use expand::*;
 pub use genetics::*;
 use serde::{Deserialize, Serialize};
