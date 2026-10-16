@@ -123,6 +123,16 @@ pub fn rank(runs: &[RunSummary]) -> Vec<usize> {
     order
 }
 
+/// How many leading runs of a ranked list may become elites: at most `limit`,
+/// and never an exploit-suspect or non-finite run.
+pub fn elite_count(ranked: &[RunSummary], limit: usize) -> usize {
+    ranked
+        .iter()
+        .take_while(|r| !r.exploit && r.fitness.is_finite())
+        .count()
+        .min(limit)
+}
+
 #[derive(Clone)]
 struct Individual {
     genome: Genome,
@@ -246,7 +256,9 @@ impl Training {
             genomes: all.iter().map(|i| i.genome.clone()).collect(),
             replays: all.iter().map(|i| i.replay.clone()).collect(),
         };
-        let elites = self.settings.elites();
+        // Only clean, finite runs may become parents; the champion check above
+        // guarantees at least one.
+        let elites = elite_count(&report.runs, self.settings.elites());
         self.elites = all.into_iter().take(elites).collect();
         self.generation += 1;
         self.pending = (0..(self.settings.population - elites) as u64)
@@ -330,6 +342,51 @@ mod tests {
         assert_eq!(rank(&runs), vec![3, 0, 4, 1, 2]);
         let still = vec![s(7, 0.0, false), s(2, 0.0, false), s(5, 0.0, false)];
         assert_eq!(rank(&still), vec![1, 2, 0]);
+    }
+    #[test]
+    fn elites_exclude_exploit_and_failed_runs() {
+        let s = |fitness: f32, exploit: bool| RunSummary {
+            hash: [0; 32],
+            fitness,
+            exploit,
+        };
+        // Ranked order: two clean runs, then an exploit and a failed run.
+        let ranked = vec![
+            s(2.0, false),
+            s(1.0, false),
+            s(9.0, true),
+            s(f32::NEG_INFINITY, false),
+        ];
+        assert_eq!(elite_count(&ranked, 10), 2);
+        assert_eq!(elite_count(&ranked, 1), 1);
+        assert_eq!(elite_count(&ranked[2..], 3), 0);
+    }
+    #[test]
+    fn motionless_body_still_reports_a_deterministic_champion() {
+        let c = Config::bundled();
+        let mut still = grazer(&c);
+        for bone in &mut still.bones {
+            for n in &mut bone.motor.neurons {
+                n.bias = -16.0;
+                for conn in &mut n.inputs {
+                    conn.weight = 0.0;
+                }
+            }
+        }
+        let frozen = TrainingSettings {
+            population: 4,
+            weight_rate: 0.0,
+            weight_sigma: 0.0,
+            oscillator_sigma: 0.0,
+            activation_rate: 0.0,
+            ..TrainingSettings::bundled()
+        };
+        let mut t = Training::new(still.clone(), Task::Sprint, frozen, c, 1).unwrap();
+        let first = t.next_generation(true).unwrap();
+        let second = t.next_generation(true).unwrap();
+        assert_eq!(first.champion, still);
+        assert_eq!(second.best, first.best);
+        assert!(first.runs.windows(2).all(|w| w[0].fitness == w[1].fitness));
     }
     #[test]
     fn body_mutation_mode_completes_and_reports_valid_champions() {

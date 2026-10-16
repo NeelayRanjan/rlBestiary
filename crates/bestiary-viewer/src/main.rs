@@ -257,7 +257,11 @@ fn run() -> Result<(), String> {
         benchmark_visible: [usize::MAX; 2],
         canvas_rect: [0.0, 0.0, 1440.0, 960.0],
         canvas_scale: 1.0,
-        training: training::TrainingView::new(),
+        training: {
+            let mut training = training::TrainingView::new();
+            training.settings = training::settings_from_args(&args)?;
+            training
+        },
     };
     let exporting = export::configure(&args, &mut view)?;
     let completion = CaptureCompletion(Arc::new(AtomicBool::new(false)));
@@ -397,9 +401,7 @@ fn poll_training(mut view: ResMut<View>, worker: Res<training::Worker>) {
     while let Ok(event) = rx.try_recv() {
         match event {
             training::Event::Report(run, report) => {
-                if view.training.accept(run, *report) && view.tab == Tab::Training {
-                    view.dirty = true;
-                }
+                view.training.accept(run, *report);
             }
             training::Event::Failed(run, error) if run == view.training.run => {
                 view.training.running = false;
@@ -513,18 +515,9 @@ fn poll(mut view: ResMut<View>, feed: Res<Feed>, time: Res<Time>) {
     if view.playing && view.clip.is_none() {
         view.play_time += time.delta_secs();
     }
-    if view.tab == Tab::Training && view.clip.is_none() {
-        // Loop the shown runs, holding the final pose for a second.
-        let duration = view
-            .training
-            .slots()
-            .iter()
-            .map(|(_, r, _)| r.frames.len() as f32 * r.dt)
-            .fold(0.0, f32::max);
-        view.training.time += time.delta_secs();
-        if view.training.time > duration + 1.0 {
-            view.training.time = 0.0;
-        }
+    if view.tab == Tab::Training && view.clip.is_none() && view.training.advance(time.delta_secs())
+    {
+        view.dirty = true;
     }
     if let Some(replay) = view.replays.get(&(view.body_hash(), view.trial)) {
         if view.playing && view.clip.is_none() {

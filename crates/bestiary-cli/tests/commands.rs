@@ -191,3 +191,19 @@ fn train_command_writes_a_loadable_champion_and_replay() {
     assert!(!bad.status.success());
     std::fs::remove_dir_all(&dir).unwrap();
 }
+
+#[test]
+fn train_command_rejects_degenerate_settings() {
+    for args in [
+        ["train", "grazer", "--task", "sprint", "--population", "0"],
+        ["train", "grazer", "--task", "sprint", "--population", "1"],
+        ["train", "grazer", "--task", "sprint", "--generations", "0"],
+    ] {
+        let out = Command::new(env!("CARGO_BIN_EXE_bestiary"))
+            .args(args)
+            .output()
+            .unwrap();
+        assert!(!out.status.success(), "{args:?} accepted");
+        assert!(!String::from_utf8_lossy(&out.stderr).trim().is_empty());
+    }
+}

@@ -235,7 +235,8 @@ measure the resulting body before release.
 
 Training settings are separate from world configuration: they never reach a world
 file, trait cache or state hash. Pass a modified copy with
-`bestiary train … --training PATH`. Compare settings with the same body, task and
+`bestiary train … --training PATH`, or to the viewer with
+`bestiary-viewer WORLD.db --training PATH`. Compare settings with the same body, task and
 `--seed`, and read the best and median curves together.
 
 | Field | Default | Effect and symptom to investigate |

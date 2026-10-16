@@ -257,14 +257,17 @@ carry on unchanged and the rest of the next generation are their mutated copies.
 Tasks are `sprint`, `swim`, `turn`, `slope`, `rough` and `strike`; fitness is the
 same measurement the combine uses for that trial. `--json` prints one JSON object
 per generation. `--population`, `--generations`, `--seed` and `--body-mutation`
-override `config/training.ron`; `--training PATH` loads a whole settings file.
+override `config/training.ron`; `--training PATH` loads a whole settings file
+(`bestiary-viewer WORLD.db --training PATH` does the same for the Training tab).
 Runs are deterministic for a given body, task, settings and seed.
 
 In the viewer, open **Training** (or start with `--panel training`), choose a
 body (a starter preset, the Designer draft or the selected creature) and a task,
 then press **Start**. Each generation's runs are drawn side by side, with the
 champion in full anatomy and the rest in grey; the chart shows best and median
-fitness per generation. **Pause** takes effect after the generation in progress.
+fitness per generation. Each generation plays out in full before the next is
+shown; the chart updates as soon as a generation finishes. **Pause** takes
+effect after the generation in progress.
 Drag the generation slider to replay an earlier champion, then **Save genome**
 (to `exports/training/`), **Open in designer**, or **Release into world** when a
 daemon is attached.

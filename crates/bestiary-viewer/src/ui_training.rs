@@ -162,7 +162,7 @@ pub fn panel(ctx: &egui::Context, view: &mut View, worker: &training::Worker, fe
                 ui.small(&t.status);
             }
             fitness_chart(ui, &t.history);
-            if let Some(latest) = t.champions.len().checked_sub(1) {
+            if let Some(latest) = t.generations().checked_sub(1) {
                 let mut shown = t.shown.map_or(latest, |n| n as usize);
                 if ui
                     .add(egui::Slider::new(&mut shown, 0..=latest).text("generation"))
@@ -178,7 +178,8 @@ pub fn panel(ctx: &egui::Context, view: &mut View, worker: &training::Worker, fe
                 {
                     redraw = true;
                 }
-                let champion = t.champions[shown].0.clone();
+                let champion = t.champion(shown).map(|(g, _)| g.clone());
+                if let Some(champion) = champion {
                 ui.horizontal_wrapped(|ui| {
                     if ui.button("Save genome").clicked() {
                         let dir = std::path::Path::new("exports/training");
@@ -198,6 +199,7 @@ pub fn panel(ctx: &egui::Context, view: &mut View, worker: &training::Worker, fe
                         action = Some(Action::Release(champion.clone()));
                     }
                 });
+                }
                 if !live {
                     ui.small("Start this world's daemon to release creatures.");
                 }
