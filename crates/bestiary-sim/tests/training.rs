@@ -65,5 +65,8 @@ fn training_improves_swimmer_swim() {
     let source = r.distance / c.combine.trial_seconds;
     println!("swimmer source swim {source}");
     let best = trained_best(g, Task::Swim, 15);
-    assert!(best >= source + MARGIN_SWIM, "best {best} vs source {source}");
+    assert!(
+        best >= source + MARGIN_SWIM,
+        "best {best} vs source {source}"
+    );
 }
