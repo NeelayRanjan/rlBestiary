@@ -12,3 +12,4 @@ pub mod combine;
 pub mod replay;
 
 pub mod locomotion;
+pub mod training;

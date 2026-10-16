@@ -1,0 +1,20 @@
+(
+    // Individuals evaluated per generation (2..=512).
+    population: 50,
+    // Fraction kept unchanged as parents of the next generation (0 < f < 1).
+    elite_fraction: 0.2,
+    // Default generation budget for headless runs; the viewer runs until paused.
+    generations: 50,
+    // Incline in radians for the Slope task.
+    slope_angle: 0.2,
+    // Probability that each motor connection weight is perturbed per child.
+    weight_rate: 0.2,
+    // Half-width of each of two summed uniform weight perturbations.
+    weight_sigma: 0.6,
+    // Half-width of oscillator frequency/phase/bias perturbations.
+    oscillator_sigma: 0.15,
+    // Probability per bone that one motor neuron's activation is redrawn.
+    activation_rate: 0.05,
+    // Also apply one morphology operator per child (off: Evolution-style fixed body).
+    body_mutation: false,
+)
