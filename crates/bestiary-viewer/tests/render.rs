@@ -254,6 +254,7 @@ fn headless_render_smoke_and_viewer_attach_detach_preserve_state_hash() {
         "Phylogeny",
         "Charts",
         "Highlights",
+        "Training",
     ] {
         render(
             &path,

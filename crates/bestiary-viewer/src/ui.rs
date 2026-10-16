@@ -1,13 +1,14 @@
 use super::*;
 use bestiary_archive::grid::{descriptors, AXES};
 use bevy_egui::{egui, EguiContexts};
-const TEAL: egui::Color32 = egui::Color32::from_rgb(107, 215, 177);
+pub(crate) const TEAL: egui::Color32 = egui::Color32::from_rgb(107, 215, 177);
 const GOLD: egui::Color32 = egui::Color32::from_rgb(232, 178, 103);
 pub fn panel(
     mut contexts: EguiContexts,
     mut view: ResMut<View>,
     feed: Res<Feed>,
     inspector: NonSend<Inspector>,
+    worker: Res<crate::training::Worker>,
 ) {
     let ctx = contexts.ctx_mut();
     let snapshot = view.snapshot.clone();
@@ -65,6 +66,7 @@ pub fn panel(
                 (Tab::World, "World"),
                 (Tab::Inspector, "Creature inspector"),
                 (Tab::Designer, "Creature designer"),
+                (Tab::Training, "Training"),
                 (Tab::Archive, "Body-plan archive"),
                 (Tab::Phylogeny, "Phylogeny"),
                 (Tab::Charts, "History"),
@@ -81,6 +83,9 @@ pub fn panel(
                     if tab == Tab::Designer {
                         view.radius = 5.0;
                         view.mode = CameraMode::Free;
+                    }
+                    if tab == Tab::Training {
+                        view.radius = 8.0;
                     }
                     if tab == Tab::World {
                         view.radius =
@@ -432,6 +437,7 @@ pub fn panel(
         Tab::Charts => {
             egui::CentralPanel::default().show(ctx, |ui| charts(ui, &snapshot.samples));
         }
+        Tab::Training => crate::ui_training::panel(ctx, &mut view, &worker, &feed),
         Tab::Highlights => {
             egui::CentralPanel::default().show(ctx, |ui| {
                 ui.heading("Highlights & energy audits");
@@ -1179,6 +1185,7 @@ mod tests {
             benchmark_visible: [0; 2],
             canvas_rect: [0.0, 0.0, 1440.0, 960.0],
             canvas_scale: 1.0,
+            training: crate::training::TrainingView::new(),
         }
     }
 

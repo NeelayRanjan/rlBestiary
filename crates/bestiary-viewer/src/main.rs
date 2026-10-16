@@ -6,8 +6,10 @@ mod designer_handles;
 mod export;
 mod playback;
 mod scene;
+mod training;
 mod ui;
 mod ui_designer;
+mod ui_training;
 use bestiary_sim::{
     combine::{Replay, TrialKind},
     genome::Creature,
@@ -37,6 +39,7 @@ enum Tab {
     Phylogeny,
     Charts,
     Highlights,
+    Training,
 }
 impl Tab {
     fn is_body(self) -> bool {
@@ -101,6 +104,7 @@ struct View {
     benchmark_visible: [usize; 2],
     canvas_rect: [f32; 4],
     canvas_scale: f32,
+    training: training::TrainingView,
 }
 impl View {
     fn body_genome(&self) -> Option<&bestiary_core::genome::Genome> {
@@ -178,6 +182,7 @@ fn run() -> Result<(), String> {
         Some("phylogeny") => Tab::Phylogeny,
         Some("charts") => Tab::Charts,
         Some("highlights") => Tab::Highlights,
+        Some("training") => Tab::Training,
         Some(_) => return Err("unknown panel".into()),
     };
     let appearance = if let Some(i) = args.iter().position(|s| s == "--appearance") {
@@ -252,6 +257,7 @@ fn run() -> Result<(), String> {
         benchmark_visible: [usize::MAX; 2],
         canvas_rect: [0.0, 0.0, 1440.0, 960.0],
         canvas_scale: 1.0,
+        training: training::TrainingView::new(),
     };
     let exporting = export::configure(&args, &mut view)?;
     let completion = CaptureCompletion(Arc::new(AtomicBool::new(false)));
@@ -298,6 +304,7 @@ fn run() -> Result<(), String> {
     .insert_resource(view)
     .insert_resource(completion.clone())
     .insert_resource(feed)
+    .insert_resource(training::Worker::new())
     .insert_non_send_resource(Inspector::default())
     .add_systems(Startup, scene::setup)
     .add_systems(
@@ -308,6 +315,7 @@ fn run() -> Result<(), String> {
         Update,
         (
             poll,
+            poll_training,
             ui::panel.run_if(not(resource_exists::<export::CameraOnly>)),
             designer_handles::draw,
             prepare_clip_frame,
@@ -382,6 +390,23 @@ fn focus(view: &mut View, id: u64, feed: &Feed) {
         select_genome(view, hash, feed);
         view.tab = Tab::Inspector;
         view.radius = 5.0;
+    }
+}
+fn poll_training(mut view: ResMut<View>, worker: Res<training::Worker>) {
+    let Ok(rx) = worker.rx.lock() else { return };
+    while let Ok(event) = rx.try_recv() {
+        match event {
+            training::Event::Report(run, report) => {
+                if view.training.accept(run, *report) && view.tab == Tab::Training {
+                    view.dirty = true;
+                }
+            }
+            training::Event::Failed(run, error) if run == view.training.run => {
+                view.training.running = false;
+                view.training.status = error;
+            }
+            training::Event::Failed(..) => {}
+        }
     }
 }
 fn poll(mut view: ResMut<View>, feed: Res<Feed>, time: Res<Time>) {
@@ -487,6 +512,19 @@ fn poll(mut view: ResMut<View>, feed: Res<Feed>, time: Res<Time>) {
     );
     if view.playing && view.clip.is_none() {
         view.play_time += time.delta_secs();
+    }
+    if view.tab == Tab::Training && view.clip.is_none() {
+        // Loop the shown runs, holding the final pose for a second.
+        let duration = view
+            .training
+            .slots()
+            .iter()
+            .map(|(_, r, _)| r.frames.len() as f32 * r.dt)
+            .fold(0.0, f32::max);
+        view.training.time += time.delta_secs();
+        if view.training.time > duration + 1.0 {
+            view.training.time = 0.0;
+        }
     }
     if let Some(replay) = view.replays.get(&(view.body_hash(), view.trial)) {
         if view.playing && view.clip.is_none() {

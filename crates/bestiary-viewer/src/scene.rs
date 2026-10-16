@@ -22,7 +22,7 @@ pub(crate) struct BodyPart {
     pub(crate) index: usize,
     offset: Vec3,
     base: Pose,
-    inspector: bool,
+    source: PoseSource,
     local_rotation: Quat,
     local_translation: Vec3,
 }
@@ -31,7 +31,7 @@ pub(crate) struct MuscleVisual {
     hash: [u8; 32],
     index: usize,
     offset: Vec3,
-    inspector: bool,
+    source: PoseSource,
     origin_part: usize,
     insertion_part: usize,
     origin: Vec3,
@@ -39,6 +39,16 @@ pub(crate) struct MuscleVisual {
     bases: [Pose; 2],
     rest: f32,
     area: f32,
+}
+/// Where a drawn body takes its poses from.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub(crate) enum PoseSource {
+    /// The inspector or designer body: live physics or the selected recording.
+    Inspector,
+    /// A world-view body near the camera, pinned in place, playing its sprint.
+    WorldSprint,
+    /// A training lane, by index into `TrainingView::slots`.
+    Training(usize),
 }
 #[derive(Resource)]
 pub struct Palette {
@@ -190,7 +200,7 @@ fn draw_body(
     body: &Body,
     genome: &bestiary_core::genome::Genome,
     offset: Vec3,
-    inspector: bool,
+    source: PoseSource,
     color_override: Option<[f32; 3]>,
     anatomy: bool,
     appearance: &anatomy::Appearance,
@@ -262,7 +272,7 @@ fn draw_body(
                 index,
                 offset,
                 base: pose.clone(),
-                inspector,
+                source,
                 local_rotation,
                 local_translation: Vec3::ZERO,
             },
@@ -294,7 +304,7 @@ fn draw_body(
                         index,
                         offset,
                         base: pose,
-                        inspector,
+                        source,
                         local_rotation: Quat::IDENTITY,
                         local_translation,
                     },
@@ -330,7 +340,7 @@ fn draw_body(
                     hash,
                     index,
                     offset,
-                    inspector,
+                    source,
                     origin_part: m.origin_part,
                     insertion_part: m.insertion_part,
                     origin,
@@ -369,6 +379,36 @@ pub fn rebuild(
     }
     let snapshot = view.snapshot.clone();
     let world = &snapshot.world;
+    if view.tab == Tab::Training {
+        let floor = palette.material(appearance.ground_color, &mut materials);
+        commands.spawn((
+            Mesh3d(palette.cube.clone()),
+            MeshMaterial3d(floor),
+            Transform::from_xyz(0.0, -0.1, 0.0).with_scale(Vec3::new(200.0, 0.2, 200.0)),
+            Visual,
+        ));
+        let slots = view.training.slots();
+        let count = slots.len();
+        for (slot, (genome, _, champion)) in slots.into_iter().enumerate() {
+            if let Ok(body) = genome.expand(&world.config.genome) {
+                draw_body(
+                    &mut commands,
+                    &mut palette,
+                    &mut materials,
+                    &mut meshes,
+                    genome.hash(),
+                    &body,
+                    genome,
+                    crate::ui_training::lane_offset(slot, count),
+                    PoseSource::Training(slot),
+                    crate::ui_training::ghost_color(champion),
+                    view.anatomy && champion,
+                    &appearance,
+                );
+            }
+        }
+        return;
+    }
     if view.tab.is_body() {
         let floor = palette.material(appearance.ground_color, &mut materials);
         commands.spawn((
@@ -388,7 +428,7 @@ pub fn rebuild(
                     &body,
                     genome,
                     Vec3::ZERO,
-                    true,
+                    PoseSource::Inspector,
                     None,
                     view.anatomy,
                     &appearance,
@@ -439,7 +479,7 @@ pub fn rebuild(
                             0.0,
                             38.0 + (i / 5) as f32 * 4.0,
                         ),
-                        false,
+                        PoseSource::WorldSprint,
                         None,
                         view.anatomy,
                         &appearance,
@@ -502,7 +542,7 @@ pub fn rebuild(
                     &body,
                     &g.genome,
                     offset,
-                    false,
+                    PoseSource::WorldSprint,
                     match view.overlay {
                         Overlay::Species => Some(species_color(a.species)),
                         Overlay::Predation if predation.contains(&a.id) => Some([0.95, 0.25, 0.18]),
@@ -542,20 +582,7 @@ pub fn animate(
     mut targets: Query<(&ReplayTarget, &mut Transform, &mut Visibility), Without<BodyPart>>,
 ) {
     for (part, mut transform) in &mut parts {
-        let frames = if part.inspector {
-            inspector_poses(&view, &inspector)
-        } else {
-            view.replays
-                .get(&(part.hash, TrialKind::Sprint))
-                .and_then(|r| {
-                    r.frames.get(playback::frame_index(
-                        view.world_play_time,
-                        r.dt,
-                        r.frames.len(),
-                    ))
-                })
-                .map(Vec::as_slice)
-        };
+        let frames = source_frames(&view, &inspector, part.source, part.hash);
         let pose = frames.and_then(|f| f.get(part.index)).unwrap_or(&part.base);
         let root = frames
             .and_then(|f| f.first())
@@ -566,7 +593,7 @@ pub fn animate(
             part.local_translation,
             root,
             part.offset,
-            part.inspector,
+            part.source != PoseSource::WorldSprint,
         );
         transform.rotation = Quat::from_array(pose.rotation) * part.local_rotation;
     }
@@ -617,6 +644,39 @@ pub(super) fn body_rest_poses(body: &Body) -> Vec<Pose> {
             }
         })
         .collect()
+}
+fn source_frames<'a>(
+    view: &'a View,
+    inspector: &'a Inspector,
+    source: PoseSource,
+    hash: [u8; 32],
+) -> Option<&'a [Pose]> {
+    match source {
+        PoseSource::Inspector => inspector_poses(view, inspector),
+        PoseSource::WorldSprint => view
+            .replays
+            .get(&(hash, TrialKind::Sprint))
+            .and_then(|r| {
+                r.frames.get(playback::frame_index(
+                    view.world_play_time,
+                    r.dt,
+                    r.frames.len(),
+                ))
+            })
+            .map(Vec::as_slice),
+        PoseSource::Training(slot) => view
+            .training
+            .slots()
+            .get(slot)
+            .and_then(|(_, r, _)| {
+                r.frames.get(playback::clamped_frame_index(
+                    view.training.time,
+                    r.dt,
+                    r.frames.len(),
+                ))
+            })
+            .map(Vec::as_slice),
+    }
 }
 fn body_preview_enabled(view: &View) -> bool {
     view.tab != Tab::Designer || view.designer.preview
@@ -683,20 +743,7 @@ pub fn animate_tissue(
     mut materials: ResMut<Assets<StandardMaterial>>,
 ) {
     for (muscle, mut transform, mut visibility, mut material) in &mut muscles {
-        let frames = if muscle.inspector {
-            inspector_poses(&view, &inspector)
-        } else {
-            view.replays
-                .get(&(muscle.hash, TrialKind::Sprint))
-                .and_then(|r| {
-                    r.frames.get(playback::frame_index(
-                        view.world_play_time,
-                        r.dt,
-                        r.frames.len(),
-                    ))
-                })
-                .map(Vec::as_slice)
-        };
+        let frames = source_frames(&view, &inspector, muscle.source, muscle.hash);
         let root = frames
             .and_then(|f| f.first())
             .map(|p| Vec3::new(p.translation[0], 0.0, p.translation[2]))
@@ -707,7 +754,7 @@ pub fn animate_tissue(
                 local,
                 root.to_array(),
                 muscle.offset,
-                muscle.inspector,
+                muscle.source != PoseSource::WorldSprint,
             )
         };
         let a = point(muscle.origin_part, &muscle.bases[0], muscle.origin);
@@ -719,7 +766,10 @@ pub fn animate_tissue(
             *visibility = Visibility::Hidden;
         }
         // Replay files contain poses, not activation: never fabricate a brain signal.
-        let activation = if muscle.inspector && view.live_preview && body_preview_enabled(&view) {
+        let activation = if muscle.source == PoseSource::Inspector
+            && view.live_preview
+            && body_preview_enabled(&view)
+        {
             inspector
                 .creature
                 .as_ref()
@@ -763,7 +813,13 @@ pub fn camera(
             view.radius = (view.radius * (-scroll * 0.1).exp()).clamp(2.0, 5000.0);
         }
     }
-    if view.tab.is_body() {
+    if view.tab == Tab::Training {
+        let count = view.training.slots().len();
+        view.target = source_frames(&view, &inspector, PoseSource::Training(0), [0; 32])
+            .and_then(|p| p.first())
+            .map(|p| Vec3::from_array(p.translation) + crate::ui_training::lane_offset(0, count))
+            .unwrap_or(Vec3::new(0.0, 0.7, 0.0));
+    } else if view.tab.is_body() {
         view.target = inspector_poses(&view, &inspector)
             .and_then(|p| p.first())
             .map(|p| Vec3::from_array(p.translation))
@@ -1160,7 +1216,7 @@ mod tests {
                     &body,
                     &genome,
                     Vec3::ZERO,
-                    true,
+                    PoseSource::Inspector,
                     None,
                     anatomy,
                     &appearance,
