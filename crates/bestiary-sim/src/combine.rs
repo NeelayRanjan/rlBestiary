@@ -216,6 +216,23 @@ fn root_clearance(creature: &Creature, ground: ColliderHandle) -> f32 {
         .fold(f32::INFINITY, f32::min)
 }
 pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<TrialResult, String> {
+    trial_recorded(
+        g,
+        c,
+        kind,
+        slope,
+        matches!(kind, TrialKind::Sprint | TrialKind::Strike),
+    )
+}
+/// Like `trial`, but records poses for any kind when `record` is set. Recording
+/// never changes the simulated result.
+pub fn trial_recorded(
+    g: &Genome,
+    c: &Config,
+    kind: TrialKind,
+    slope: f32,
+    record: bool,
+) -> Result<TrialResult, String> {
     let mut creature = Creature::new(g.clone(), c)?;
     let ground = creature.arena.colliders.iter().next().expect("ground").0;
     if kind == TrialKind::Rough {
@@ -301,7 +318,7 @@ pub fn trial(g: &Genome, c: &Config, kind: TrialKind, slope: f32) -> Result<Tria
     };
     let ticks = (seconds / PHYSICS_DT).round() as usize;
     let seconds = ticks as f32 * PHYSICS_DT;
-    let save = matches!(kind, TrialKind::Sprint | TrialKind::Strike);
+    let save = record;
     let mut frames = if save {
         vec![creature.arena.poses()]
     } else {
@@ -557,6 +574,36 @@ pub fn dominant_frequency(samples: &[f32], dt: f32) -> f32 {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn recorded_trials_match_unrecorded_results_for_every_task() {
+        let config = Config::bundled();
+        let g = Genome::starter(&config.genome);
+        for kind in [
+            TrialKind::Sprint,
+            TrialKind::Swim,
+            TrialKind::Turn,
+            TrialKind::Rough,
+            TrialKind::Strike,
+        ] {
+            let plain = trial(&g, &config, kind, 0.0).unwrap();
+            let recorded = trial_recorded(&g, &config, kind, 0.0, true).unwrap();
+            let replay = recorded.replay.clone().expect("recorded replay");
+            assert_eq!(replay.kind, kind);
+            assert!(replay.frames.len() > 1);
+            assert_eq!(
+                TrialResult {
+                    replay: None,
+                    ..recorded
+                },
+                TrialResult {
+                    replay: None,
+                    ..plain
+                }
+            );
+        }
+        let slope = trial_recorded(&g, &config, TrialKind::Slope, 0.2, true).unwrap();
+        assert!(slope.replay.is_some());
+    }
     fn inert_root(shape: bestiary_core::genome::Shape, config: &Config) -> Genome {
         let mut g = Genome::starter(&config.genome);
         g.bones[0].shape = shape;
