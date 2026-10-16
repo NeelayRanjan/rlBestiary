@@ -242,6 +242,33 @@ parents must reach its inherited maturity alive at growth >=0.8. Compatible
 outcrossing is allowed. All eight passed at ticks 7,000 or 12,000; see
 [evidence/v1/zoo-first-generation.log](evidence/v1/zoo-first-generation.log).
 
+## Train a body
+
+Training evolves one body's motor brain for one physics task, generation by
+generation, in the manner of Keiwan's Evolution. The body stays fixed unless body
+mutation is enabled. Each individual runs one real physics trial; the best fifth
+carry on unchanged and the rest of the next generation are their mutated copies.
+
+```sh
+./target/release/bestiary train swimmer --task swim --generations 30 --out exports/swimmer.genome --replay exports/swimmer.rpl
+./target/release/bestiary combine exports/swimmer.genome
+```
+
+Tasks are `sprint`, `swim`, `turn`, `slope`, `rough` and `strike`; fitness is the
+same measurement the combine uses for that trial. `--json` prints one JSON object
+per generation. `--population`, `--generations`, `--seed` and `--body-mutation`
+override `config/training.ron`; `--training PATH` loads a whole settings file.
+Runs are deterministic for a given body, task, settings and seed.
+
+In the viewer, open **Training** (or start with `--panel training`), choose a
+body (a starter preset, the Designer draft or the selected creature) and a task,
+then press **Start**. Each generation's runs are drawn side by side, with the
+champion in full anatomy and the rest in grey; the chart shows best and median
+fitness per generation. **Pause** takes effect after the generation in progress.
+Drag the generation slider to replay an earlier champion, then **Save genome**
+(to `exports/training/`), **Open in designer**, or **Release into world** when a
+daemon is attached.
+
 ## Export camera clips
 
 In the inspector or designer, choose a recorded replay. In the world view, wait
@@ -402,6 +429,14 @@ visible proxies and 20 articulated bodies, renders the full UI at 2880×1920,
 warms up 120 frames and measures 600 GPU-completed frames. The host log is
 `/tmp/bestiary-v1-bench-proxy.log`; retained release evidence belongs under
 `evidence/v1/`. These timings supersede earlier attempts.
+
+Linux host, 2026-10-16: Intel i9-13900H (20 threads), 31 GiB, Fedora 44 x86_64,
+NVIDIA RTX 4070 Laptop (Vulkan), Rust 1.85.1, after adding training mode.
+`make bench` passed: combine 0.582 seconds worst-of-three, world 11,993.4
+ticks/minute with 5,000 creatures (one unrelated daemon was running on the host),
+viewer 350.8 fps on the same 2,000-proxy/20-body fixture. A fresh clone of
+1f1e11e passed `make check` on this host
+([fresh-clone-check.log](evidence/linux/fresh-clone-check.log)).
 
 The fresh stability run passed all five seeds for 1M ticks, with exact resource
 accounting, matching repeated hashes at 1k/100k/1M, no collapse and finite original

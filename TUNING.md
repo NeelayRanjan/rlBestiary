@@ -231,6 +231,25 @@ These are saved inherited values, not hidden world constants. Inspect them with
 `bestiary genome show ... --json`, edit supported controls in the Designer, and
 measure the resulting body before release.
 
+## Training (`config/training.ron`)
+
+Training settings are separate from world configuration: they never reach a world
+file, trait cache or state hash. Pass a modified copy with
+`bestiary train … --training PATH`. Compare settings with the same body, task and
+`--seed`, and read the best and median curves together.
+
+| Field | Default | Effect and symptom to investigate |
+| --- | --- | --- |
+| `population` | 50 | Individuals per generation (2–512). Too small: the best curve stalls for many generations and depends heavily on the seed. Larger costs proportionally more physics per generation. |
+| `elite_fraction` | 0.2 | Fraction kept unchanged as parents. Too high: little exploration and the curve rises slowly. Too low: good controllers are lost to a few lucky mutants. |
+| `generations` | 50 | Budget for headless `bestiary train`; the viewer runs until paused. |
+| `slope_angle` | 0.2 | Incline in radians for the Slope task only. |
+| `weight_rate` | 0.15 | Chance each motor connection is perturbed per child. Too high: the median collapses towards zero while the best stays flat (most children lose a working gait). Too low: a slow, step-like curve. |
+| `weight_sigma` | 0.6 | Size of each weight perturbation. Raise when a zeroed or flat brain never starts moving; lower when the best curve is jagged and regresses through elitism. |
+| `oscillator_sigma` | 0.03 | Size of per-bone oscillator frequency, phase and bias perturbations, applied to every bone of every child. Raising it quickly scrambles multi-limb coordination: a hexapod's best curve went flat at 0.15. Zero freezes gait timing. |
+| `activation_rate` | 0.05 | Chance per bone that one motor neuron's activation function is redrawn. Large changes in behaviour; keep it low. |
+| `body_mutation` | false | Also applies one morphology operator per child. Expect a noisier curve and bodies that leave the source's archive cell. |
+
 ## Experiment configurations and current results
 
 - `config/demo.ron`: seed-42 diversification candidate with 24 original founders,

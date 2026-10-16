@@ -19,6 +19,16 @@ The MVP scope freeze was lifted at the user’s request on 2026-10-14. Resume M5
 - [ ] Rerun M5 trophic, M7 demo and stagnation acceptance on the current binary.
 - [ ] Measure core/sim/world line coverage; rerun longrun, bench and the long-run viewer panel audit.
 
+## Training mode (2026-10-15, user-requested addition; spec docs/superpowers/specs/2026-10-15-training-mode-design.md)
+- [x] Controller-only mutation and morphology-equality check.
+- [x] Recordable trials for every task without changing combine results.
+- [x] config/training.ron with validated schema and negative tests.
+- [x] Deterministic generational training engine (serial == parallel, monotone best, exploit/NaN ranking, brain-only body invariance).
+- [x] Acceptance: training_improves_zeroed_grazer_sprint and training_improves_swimmer_swim.
+- [x] `bestiary train` CLI with JSON lines, champion genome and replay output.
+- [x] Viewer Training tab: worker, lanes, fitness chart, generation scrubber, save/open/release.
+- [x] RUNBOOK and TUNING sections; make check and make bench.
+
 ## M0 Scaffold
 - [x] Read AGENTS.md and SPEC.md in full; fetch and check out upstream.
 - [x] Create all seven workspace crates and preserve simulation/viewer boundary.

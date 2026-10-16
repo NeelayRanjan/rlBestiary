@@ -1,0 +1,35 @@
+./scripts/cargo bench -p bestiary-sim --bench throughput --locked
+   Compiling bestiary-sim v0.1.0 (/home/neelayranjan/Documents/rlBestiary/crates/bestiary-sim)
+    Finished `bench` profile [optimized] target(s) in 8.68s
+     Running benches/throughput.rs (target/release/deps/throughput-ded9d096476fb38b)
+Full combine: 12 parts, nine named trials (slope sweep included), 38 creature-seconds
+worst_seconds=0.582083 creature_seconds_per_wall_second=65.283
+Gnuplot not found, using plotters backend
+Benchmarking combine_12_parts_nine_trials/full_evaluation
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Warming up for 1.0000 s
+
+Warning: Unable to complete 10 samples in 3.0s. You may wish to increase target time to 6.0s.
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Collecting 10 samples in estimated 6.0291 s (10 iterations)
+Benchmarking combine_12_parts_nine_trials/full_evaluation: Analyzing
+combine_12_parts_nine_trials/full_evaluation
+                        time:   [584.52 ms 589.53 ms 594.80 ms]
+                        thrpt:  [15.131  elem/s 15.266  elem/s 15.397  elem/s]
+
+./scripts/cargo bench -p bestiary-world --bench world --locked
+   Compiling bestiary-core v0.1.0 (/home/neelayranjan/Documents/rlBestiary/crates/bestiary-core)
+   Compiling bestiary-sim v0.1.0 (/home/neelayranjan/Documents/rlBestiary/crates/bestiary-sim)
+   Compiling bestiary-archive v0.1.0 (/home/neelayranjan/Documents/rlBestiary/crates/bestiary-archive)
+   Compiling bestiary-world v0.1.0 (/home/neelayranjan/Documents/rlBestiary/crates/bestiary-world)
+    Finished `bench` profile [optimized] target(s) in 8.07s
+     Running benches/world.rs (target/release/deps/world-47c647b60f00606c)
+5000 creatures, single-thread world stepping: 11993.4 ticks/minute
+./scripts/bench-viewer
+    Finished `release` profile [optimized] target(s) in 0.13s
+Created /tmp/bestiary-viewer-bench.6c7h9s/world.db with 2020 creatures
+[2m2026-10-16T05:07:34.627206Z[0m [32m INFO[0m [2mbevy_render::renderer[0m[2m:[0m AdapterInfo { name: "NVIDIA GeForce RTX 4070 Laptop GPU", vendor: 4318, device: 10272, device_type: DiscreteGpu, driver: "NVIDIA", driver_info: "595.80", backend: Vulkan }
+{"fps":350.84263416230664,"full_bodies":20,"passes":true,"proxies":2000}
+
+real	0m33.843s
+user	1m7.543s
+sys	0m2.853s
+EXIT 0
