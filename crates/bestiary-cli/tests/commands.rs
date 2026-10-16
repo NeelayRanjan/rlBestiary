@@ -141,3 +141,53 @@ fn world_status_reports_live_pause_state() {
     assert_eq!(offline["state_hash"], live.state_hash);
     std::fs::remove_dir_all(dir).unwrap();
 }
+
+#[test]
+fn train_command_writes_a_loadable_champion_and_replay() {
+    let dir = std::env::temp_dir().join(format!("bestiary-train-{}", std::process::id()));
+    std::fs::create_dir_all(&dir).unwrap();
+    let out = dir.join("champion.genome");
+    let replay = dir.join("champion.rpl");
+    let run = Command::new(env!("CARGO_BIN_EXE_bestiary"))
+        .args([
+            "train",
+            "grazer",
+            "--task",
+            "sprint",
+            "--generations",
+            "2",
+            "--population",
+            "4",
+            "--seed",
+            "3",
+            "--json",
+            "--out",
+            out.to_str().unwrap(),
+            "--replay",
+            replay.to_str().unwrap(),
+        ])
+        .output()
+        .unwrap();
+    assert!(
+        run.status.success(),
+        "{}",
+        String::from_utf8_lossy(&run.stderr)
+    );
+    let lines: Vec<serde_json::Value> = String::from_utf8(run.stdout)
+        .unwrap()
+        .lines()
+        .map(|l| serde_json::from_str(l).unwrap())
+        .collect();
+    assert_eq!(lines.len(), 2);
+    assert_eq!(lines[1]["generation"], 1);
+    assert!(lines[1]["best"].as_f64().unwrap() >= lines[0]["best"].as_f64().unwrap());
+    let combined = cli(&["combine", out.to_str().unwrap(), "--json"]);
+    assert_eq!(combined["genome"], lines[1]["champion"]);
+    assert!(bestiary_sim::combine::Replay::decode(&std::fs::read(&replay).unwrap()).is_ok());
+    let bad = Command::new(env!("CARGO_BIN_EXE_bestiary"))
+        .args(["train", "grazer", "--task", "fly"])
+        .output()
+        .unwrap();
+    assert!(!bad.status.success());
+    std::fs::remove_dir_all(&dir).unwrap();
+}

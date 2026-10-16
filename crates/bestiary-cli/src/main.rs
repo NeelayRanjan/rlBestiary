@@ -58,7 +58,7 @@ fn print_json(value: &impl serde::Serialize) -> Result<()> {
 }
 fn run(args: &[String]) -> Result<()> {
     if args.is_empty() || args[0] == "--help" {
-        println!("bestiary world new --seed S --preset temperate|islands|harsh --out WORLD.db\nbestiary world run WORLD.db [--until TICKS] [--snapshot-every N] [--speed max|N]\nbestiary world attach|status WORLD.db\nbestiary combine GENOME_OR_PRESET [--replay OUT.rpl] [--json]\nbestiary archive ls WORLD.db [--export DIR]\nbestiary phylo WORLD.db [--format dot|json]\nbestiary replay FILE.rpl | ID [--world WORLD.db] [--export NEW_DIRECTORY]\nbestiary genome mutate|cross|validate|show GENOME [SECOND] [--seed S]\nbestiary bench [--report]\nAll commands support --json. Genome inputs are share strings, binary files, or zoo preset names.");
+        println!("bestiary world new --seed S --preset temperate|islands|harsh --out WORLD.db\nbestiary world run WORLD.db [--until TICKS] [--snapshot-every N] [--speed max|N]\nbestiary world attach|status WORLD.db\nbestiary combine GENOME_OR_PRESET [--replay OUT.rpl] [--json]\nbestiary archive ls WORLD.db [--export DIR]\nbestiary phylo WORLD.db [--format dot|json]\nbestiary replay FILE.rpl | ID [--world WORLD.db] [--export NEW_DIRECTORY]\nbestiary genome mutate|cross|validate|show GENOME [SECOND] [--seed S]\nbestiary bench [--report]\nbestiary train GENOME_OR_PRESET --task sprint|swim|turn|slope|rough|strike [--generations N] [--population P] [--seed S] [--body-mutation] [--training PATH] [--out FILE] [--replay FILE]\nAll commands support --json. Genome inputs are share strings, binary files, or zoo preset names.");
         return Ok(());
     }
     let json = args.iter().any(|s| s == "--json");
@@ -172,6 +172,50 @@ fn run(args: &[String]) -> Result<()> {
                     result.traits.parts,
                     result.exploit_suspect
                 );
+            }
+        }
+        "train" => {
+            use bestiary_sim::training::{Task, Training, TrainingSettings};
+            let c = config(args)?;
+            let source = genome(arg(args, 1)?, &c)?;
+            let task = value(args, "--task")
+                .and_then(Task::parse)
+                .ok_or("--task must be sprint|swim|turn|slope|rough|strike")?;
+            let mut settings = match value(args, "--training") {
+                Some(path) => TrainingSettings::parse(&std::fs::read_to_string(path)?)
+                    .map_err(|e| format!("training: {e}"))?,
+                None => TrainingSettings::bundled(),
+            };
+            settings.population = number(args, "--population", settings.population)?;
+            settings.generations = number(args, "--generations", settings.generations)?;
+            settings.body_mutation |= args.iter().any(|a| a == "--body-mutation");
+            settings.validate()?;
+            let generations = settings.generations;
+            let seed = number(args, "--seed", 42u64)?;
+            let mut training = Training::new(source, task, settings, c, seed)?;
+            let mut last = None;
+            for _ in 0..generations {
+                let r = training.next_generation(true)?;
+                let champion = hex(&r.champion.hash());
+                if json {
+                    println!(
+                        "{}",
+                        serde_json::json!({"generation": r.generation, "best": r.best, "median": r.median, "worst": r.worst, "champion": champion})
+                    );
+                } else {
+                    println!(
+                        "generation={} best={:.4} median={:.4} worst={:.4} champion={champion}",
+                        r.generation, r.best, r.median, r.worst
+                    );
+                }
+                last = Some(r);
+            }
+            let last = last.ok_or("no generations run")?;
+            if let Some(path) = value(args, "--out") {
+                std::fs::write(path, last.champion.to_share())?;
+            }
+            if let Some(path) = value(args, "--replay") {
+                std::fs::write(path, last.champion_replay.encode()?)?;
             }
         }
         "genome" => {
